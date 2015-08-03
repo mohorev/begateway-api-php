@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class CaptureTest extends TestCase {
+class beGateway_CaptureTest extends TestCase {
 
   public function test_setParentUid() {
     $transaction = $this->getTestObjectInstance();
@@ -21,7 +19,7 @@ class CaptureTest extends TestCase {
       )
     );
 
-    $reflection = new \ReflectionClass( 'beGateway\Capture' );
+    $reflection = new ReflectionClass( 'beGateway_Capture' );
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -34,12 +32,12 @@ class CaptureTest extends TestCase {
 
     $auth = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Capture');
+    $reflection = new ReflectionClass('beGateway_Capture');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($auth, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/captures');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/captures');
 
   }
 
@@ -85,7 +83,7 @@ class CaptureTest extends TestCase {
   protected function runParentTransaction($amount = 10.00 ) {
     self::authorizeFromEnv();
 
-    $transaction = new Authorization();
+    $transaction = new beGateway_Authorization();
 
     $transaction->money->setAmount($amount);
     $transaction->money->setCurrency('EUR');
@@ -124,7 +122,7 @@ class CaptureTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new Capture();
+    return new beGateway_Capture();
   }
 }
 ?>

@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class CreditTest extends TestCase {
+class beGateway_CreditTest extends TestCase {
 
  public function test_setDescription() {
 
@@ -38,7 +36,7 @@ class CreditTest extends TestCase {
       )
     );
 
-    $reflection = new \ReflectionClass( 'beGateway\Credit' );
+    $reflection = new ReflectionClass( 'beGateway_Credit' );
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -51,12 +49,12 @@ class CreditTest extends TestCase {
 
     $auth = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Credit');
+    $reflection = new ReflectionClass('beGateway_Credit');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($auth, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/credits');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/credits');
 
   }
 
@@ -106,7 +104,7 @@ class CreditTest extends TestCase {
   protected function runParentTransaction($amount = 10.00 ) {
     self::authorizeFromEnv();
 
-    $transaction = new Payment();
+    $transaction = new beGateway_Payment();
 
     $transaction->money->setAmount($amount);
     $transaction->money->setCurrency('EUR');
@@ -147,7 +145,7 @@ class CreditTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new Credit();
+    return new beGateway_Credit();
   }
 }
 ?>

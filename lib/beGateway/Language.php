@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Language {
+class beGateway_Language {
   public static function getSupportedLanguages() {
     return array('en','es','tr','de','it','ru','zh','fr');
   }

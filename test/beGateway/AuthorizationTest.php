@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class AuthorizationTest extends TestCase {
+class beGateway_AuthorizationTest extends TestCase {
 
   public function test_setDescription() {
 
@@ -74,7 +72,7 @@ class AuthorizationTest extends TestCase {
       )
     );
 
-    $reflection = new \ReflectionClass( 'beGateway\Authorization');
+    $reflection = new ReflectionClass( 'beGateway_Authorization');
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -87,12 +85,12 @@ class AuthorizationTest extends TestCase {
 
     $auth = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Authorization');
+    $reflection = new ReflectionClass('beGateway_Authorization');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($auth, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/authorizations');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/authorizations');
   }
 
   public function test_successAuthorization() {
@@ -202,7 +200,7 @@ class AuthorizationTest extends TestCase {
   protected function getTestObjectInstance($threeds = false) {
     self::authorizeFromEnv($threeds);
 
-    return new Authorization();
+    return new beGateway_Authorization();
   }
 }
 ?>

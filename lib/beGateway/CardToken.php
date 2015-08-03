@@ -1,19 +1,17 @@
 <?php
-namespace beGateway;
-
-class CardToken extends ApiAbstract {
+class beGateway_CardToken extends beGateway_ApiAbstract {
   public $card;
 
   public function __construct() {
-    $this->card = new Card();
+    $this->card = new beGateway_Card();
   }
 
   public function submit() {
-    return new ResponseCardToken($this->_remoteRequest());
+    return new beGateway_ResponseCardToken($this->_remoteRequest());
   }
 
   protected function _endpoint() {
-    return Settings::$gatewayBase . '/credit_cards';
+    return beGateway_Settings::$gatewayBase . '/credit_cards';
   }
 
   protected function _buildRequestMessage() {
@@ -27,7 +25,7 @@ class CardToken extends ApiAbstract {
       )
     );
 
-    Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
+    beGateway_Logger::getInstance()->write($request, beGateway_Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
     return $request;
   }

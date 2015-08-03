@@ -1,12 +1,10 @@
 <?php
-namespace beGateway;
-
-class WebhookTest extends TestCase {
+class beGateway_WebhookTest extends TestCase {
 
   public function test_WebhookIsSentWithCorrectCredentials() {
     $w = $this->getTestObjectInstance();
-    $s = Settings::$shopId;
-    $k = Settings::$shopKey;
+    $s = beGateway_Settings::$shopId;
+    $k = beGateway_Settings::$shopKey;
 
     $_SERVER['PHP_AUTH_USER'] = $s;
     $_SERVER['PHP_AUTH_PW'] = $k;
@@ -27,7 +25,7 @@ class WebhookTest extends TestCase {
   public function test_RequestIsValidAndItIsSuccess() {
     $w = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Webhook');
+    $reflection = new ReflectionClass('beGateway_Webhook');
     $property = $reflection->getProperty('_response');
     $property->setAccessible(true);
     $property->setValue($w,json_decode($this->webhookMessage()));
@@ -42,7 +40,7 @@ class WebhookTest extends TestCase {
   public function test_RequestIsValidAndItIsFailed() {
     $w = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Webhook');
+    $reflection = new ReflectionClass('beGateway_Webhook');
     $property = $reflection->getProperty('_response');
     $property->setAccessible(true);
     $property->setValue($w,json_decode($this->webhookMessage('failed')));
@@ -58,7 +56,7 @@ class WebhookTest extends TestCase {
   public function test_RequestIsValidAndItIsTest() {
     $w = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Webhook');
+    $reflection = new ReflectionClass('beGateway_Webhook');
     $property = $reflection->getProperty('_response');
     $property->setAccessible(true);
     $property->setValue($w,json_decode($this->webhookMessage('failed', true)));
@@ -75,7 +73,7 @@ class WebhookTest extends TestCase {
   public function test_NotValidRequestReceived() {
     $w = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Webhook');
+    $reflection = new ReflectionClass('beGateway_Webhook');
     $property = $reflection->getProperty('_response');
     $property->setAccessible(true);
     $property->setValue($w,json_decode(''));
@@ -86,7 +84,7 @@ class WebhookTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new Webhook();
+    return new beGateway_Webhook();
   }
 
   private function webhookMessage($status = 'successful', $test = true ) {

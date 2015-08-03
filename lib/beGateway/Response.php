@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Response extends ResponseBase {
+class beGateway_Response extends beGateway_ResponseBase {
 
   public function isSuccess() {
     return $this->getStatus() == 'successful';

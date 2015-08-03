@@ -1,15 +1,13 @@
 <?php
-namespace beGateway;
-
-class GatewayTransportExceptionTest extends TestCase {
+class beGateway_GatewayTransportExceptionTest extends TestCase {
 
   function setUp() {
-    $this->_apiBase = Settings::$gatewayBase;
-    Settings::$gatewayBase = 'https://thedomaindoesntexist.begatewaynotexist.com';
+    $this->_apiBase = beGateway_Settings::$gatewayBase;
+    beGateway_Settings::$gatewayBase = 'https://thedomaindoesntexist.begatewaynotexist.com';
   }
 
   function tearDown() {
-    Settings::$gatewayBase = $this->_apiBase;
+    beGateway_Settings::$gatewayBase = $this->_apiBase;
   }
 
   public function test_networkIssuesHandledCorrectly() {
@@ -57,7 +55,7 @@ class GatewayTransportExceptionTest extends TestCase {
   protected function getTestObjectInstance($threed = false) {
     self::authorizeFromEnv($threed);
 
-    return new Authorization();
+    return new beGateway_Authorization();
   }
 
 

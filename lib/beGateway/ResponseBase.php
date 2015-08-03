@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-abstract class ResponseBase {
+abstract class beGateway_ResponseBase {
 
   protected $_response;
 

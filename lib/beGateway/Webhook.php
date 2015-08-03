@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Webhook extends Response {
+class beGateway_Webhook extends beGateway_Response {
   protected $_json_in = 'php://input';
 
   public function __construct() {
@@ -9,8 +7,8 @@ class Webhook extends Response {
   }
 
   public function isAuthorized() {
-    return $this->_getShopIdFromAuthorization() == Settings::$shopId
-           && $this->_getShopKeyFromAuthorization() == Settings::$shopKey;
+    return $this->_getShopIdFromAuthorization() == beGateway_Settings::$shopId
+           && $this->_getShopKeyFromAuthorization() == beGateway_Settings::$shopKey;
   }
 
   public function decodeReceivedJson() {

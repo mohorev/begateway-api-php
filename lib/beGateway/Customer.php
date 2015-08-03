@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Customer {
+class beGateway_Customer {
   protected $_customer_ip;
   protected $_customer_email;
 

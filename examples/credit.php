@@ -2,9 +2,9 @@
 require_once __DIR__ . '/../lib/beGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
-\beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::DEBUG);
+beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::DEBUG);
 
-$transaction = new \beGateway\Payment;
+$transaction = new beGateway_Payment;
 
 $amount = rand(100, 10000);
 
@@ -38,7 +38,7 @@ if ($response->isSuccess() ) {
   print("Transaction UID: " . $response->getUid() . PHP_EOL);
   print("Trying to Credit to card " . $transaction->card->getCardNumber() . PHP_EOL);
 
-  $credit = new \beGateway\Credit;
+  $credit = new beGateway_Credit;
 
   $amount = rand(100, 10000);
 

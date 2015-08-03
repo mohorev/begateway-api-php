@@ -1,11 +1,9 @@
 <?php
-namespace beGateway;
-
-class QueryByToken extends ApiAbstract {
+class beGateway_QueryByToken extends beGateway_ApiAbstract {
   protected $_token;
 
   protected function _endpoint() {
-    return Settings::$checkoutBase . '/ctp/api/checkouts/' . $this->getToken();
+    return beGateway_Settings::$checkoutBase . '/ctp/api/checkouts/' . $this->getToken();
   }
   public function setToken($token) {
     $this->_token = $token;
@@ -18,7 +16,7 @@ class QueryByToken extends ApiAbstract {
   }
 
   public function submit() {
-    return new ResponseCheckout($this->_remoteRequest());
+    return new beGateway_ResponseCheckout($this->_remoteRequest());
   }
 }
 ?>

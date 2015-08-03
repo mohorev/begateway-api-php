@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class QueryByTokenTest extends TestCase {
+class beGateway_QueryByTokenTest extends TestCase {
 
   public function test_setToken() {
     $q = $this->getTestObjectInstance();
@@ -16,12 +14,12 @@ class QueryByTokenTest extends TestCase {
     $q = $this->getTestObjectInstance();
     $q->setToken('1234');
 
-    $reflection = new \ReflectionClass('beGateway\QueryByToken');
+    $reflection = new ReflectionClass('beGateway_QueryByToken');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($q, '_endpoint');
 
-    $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts/1234');
+    $this->assertEqual($url, beGateway_Settings::$checkoutBase . '/ctp/api/checkouts/1234');
 
   }
 
@@ -56,7 +54,7 @@ class QueryByTokenTest extends TestCase {
   protected function runParentTransaction($amount = 10.00 ) {
     self::authorizeFromEnv();
 
-    $transaction = new GetPaymentPageToken();
+    $transaction = new beGateway_GetPaymentPageToken();
 
     $url = 'http://www.example.com';
 
@@ -86,7 +84,7 @@ class QueryByTokenTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new QueryByToken();
+    return new beGateway_QueryByToken();
   }
 }
 ?>

@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class QueryByTrackingIdTest extends TestCase {
+class beGateway_QueryByTrackingIdTest extends TestCase {
 
   public function test_trackingId() {
     $q = $this->getTestObjectInstance();
@@ -16,12 +14,12 @@ class QueryByTrackingIdTest extends TestCase {
     $q = $this->getTestObjectInstance();
     $q->setTrackingId('1234');
 
-    $reflection = new \ReflectionClass('beGateway\QueryByTrackingId');
+    $reflection = new ReflectionClass('beGateway_QueryByTrackingId');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($q, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/tracking_id/1234');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/tracking_id/1234');
 
   }
 
@@ -61,7 +59,7 @@ class QueryByTrackingIdTest extends TestCase {
   protected function runParentTransaction($amount = 10.00, $tracking_id = '12345' ) {
     self::authorizeFromEnv();
 
-    $transaction = new Payment();
+    $transaction = new beGateway_Payment();
 
     $transaction->money->setAmount($amount);
     $transaction->money->setCurrency('EUR');
@@ -89,7 +87,7 @@ class QueryByTrackingIdTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new QueryByTrackingId();
+    return new beGateway_QueryByTrackingId();
   }
 }
 ?>

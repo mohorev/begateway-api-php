@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Logger {
+class beGateway_Logger {
 
   const INFO = 0;
   const WARNING = 1;
@@ -54,7 +52,7 @@ class Logger {
       case self::WARNING : return 'WARNING'; break;
       case self::DEBUG : return 'DEBUG'; break;
       default:
-        throw new \Exception('Unknown log level ' . $level);
+        throw new Exception('Unknown log level ' . $level);
       }
   }
 

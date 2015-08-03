@@ -1,11 +1,9 @@
 <?php
-namespace beGateway;
-
-class QueryByUid extends ApiAbstract {
+class beGateway_QueryByUid extends beGateway_ApiAbstract {
   protected $_uid;
 
   protected function _endpoint() {
-    return Settings::$gatewayBase . '/transactions/' . $this->getUid();
+    return beGateway_Settings::$gatewayBase . '/transactions/' . $this->getUid();
   }
   public function setUid($uid) {
     $this->_uid = $uid;

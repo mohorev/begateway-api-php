@@ -1,12 +1,10 @@
 <?php
-namespace beGateway;
-
-class ResponseCardToken extends ResponseBase {
+class beGateway_ResponseCardToken extends beGateway_ResponseBase {
 
   public $card;
 
   public function __construct($message) {
-    $this->card = new Card();
+    $this->card = new beGateway_Card();
 
     parent::__construct($message);
 

@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class CreditCardTokenizationTest extends TestCase {
+class beGateway_CreditCardTokenizationTest extends TestCase {
 
   public function test_buildRequestMessage() {
     $token = $this->getTestObject();
@@ -16,7 +14,7 @@ class CreditCardTokenizationTest extends TestCase {
     );
 
 
-    $reflection = new \ReflectionClass( 'beGateway\CardToken');
+    $reflection = new ReflectionClass( 'beGateway_CardToken');
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -29,12 +27,12 @@ class CreditCardTokenizationTest extends TestCase {
 
     $token = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\CardToken');
+    $reflection = new ReflectionClass('beGateway_CardToken');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($token, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/credit_cards');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/credit_cards');
 
   }
 
@@ -128,13 +126,13 @@ class CreditCardTokenizationTest extends TestCase {
   protected function getTestObjectInstance($threed = false) {
     self::authorizeFromEnv($threed);
 
-    return new CardToken();
+    return new beGateway_CardToken();
   }
 
   protected function getAuthorizationTestObjectInstance($threed = false) {
     self::authorizeFromEnv($threed);
 
-    return new Authorization();
+    return new beGateway_Authorization();
   }
 
 

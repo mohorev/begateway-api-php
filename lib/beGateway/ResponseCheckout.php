@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class ResponseCheckout extends ResponseBase {
+class beGateway_ResponseCheckout extends beGateway_ResponseBase {
 
   public function isSuccess() {
     return isset($this->getResponse()->checkout);

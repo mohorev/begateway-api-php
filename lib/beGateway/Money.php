@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Money {
+class beGateway_Money {
   protected $_amount;
   protected $_currency;
   protected $_cents;

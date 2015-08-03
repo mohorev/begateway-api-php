@@ -1,6 +1,4 @@
 <?php
-namespace beGateway;
-
-class Void extends ChildTransaction {
+class beGateway_Void extends beGateway_ChildTransaction {
 }
 ?>

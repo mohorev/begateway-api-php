@@ -1,8 +1,5 @@
 <?php
-
-namespace beGateway;
-
-class Settings {
+class beGateway_Settings {
   public static $shopId;
   public static $shopKey;
   public static $gatewayBase = 'https://demo-gateway.begateway.com';

@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class MoneyTest extends TestCase {
+class beGateway_MoneyTest extends TestCase {
 
   public function test_setAmount_with_decimals() {
     $money = $this->getTestObject();
@@ -44,7 +42,7 @@ class MoneyTest extends TestCase {
   }
 
   protected function getTestObject() {
-    return new Money();
+    return new beGateway_Money();
   }
 }
 ?>

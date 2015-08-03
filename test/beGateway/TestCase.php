@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class TestCase extends \UnitTestCase {
+class TestCase extends UnitTestCase {
 
   const SHOP_ID = 361;
   const SHOP_KEY = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
@@ -36,8 +34,8 @@ class TestCase extends \UnitTestCase {
       }
     }
 
-    Settings::$shopId = $shop_id;
-    Settings::$shopKey = $shop_key;
+    beGateway_Settings::$shopId = $shop_id;
+    beGateway_Settings::$shopKey = $shop_key;
   }
 }
 ?>

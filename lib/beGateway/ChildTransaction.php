@@ -1,12 +1,10 @@
 <?php
-namespace beGateway;
-
-abstract class ChildTransaction extends ApiAbstract {
+abstract class beGateway_ChildTransaction extends beGateway_ApiAbstract {
   protected $_parent_uid;
   public $money;
 
   public function __construct() {
-    $this->money = new Money();
+    $this->money = new beGateway_Money();
   }
 
   public function setParentUid($uid) {
@@ -25,7 +23,7 @@ abstract class ChildTransaction extends ApiAbstract {
       ),
     );
 
-    Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
+    beGateway_Logger::getInstance()->write($request, beGateway_Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
     return $request;
   }

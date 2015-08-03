@@ -1,10 +1,10 @@
 # beGateway payment system API integration library
 
-[![Build Status Master](https://travis-ci.org/beGateway/begateway-api-php.svg?branch=master)](https://travis-ci.org/beGateway/begateway-api-php)
+[![Build Status Master](https://travis-ci.org/beGateway/begateway-api-php.svg?branch=php5.2)](https://travis-ci.org/beGateway/begateway-api-php)
 
 ## Requirements
 
-PHP 5.3+
+PHP 5.2+
 
 ## Test data
 
@@ -44,10 +44,10 @@ You have to setup values of variables as follows:
 This data you will receive from your payment processor.
 
 ```php
-\beGateway\Settings::$shopId  = 361;
-\beGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
-\beGateway\Settings::$gatewayBase = 'https://demo-gateway.begateway.com';
-\beGateway\Settings::$checkoutBase = 'https://checkout.begateway.com';
+beGateway_Settings::$shopId  = 361;
+beGateway_Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
+beGateway_Settings::$gatewayBase = 'https://demo-gateway.begateway.com';
+beGateway_Settings::$checkoutBase = 'https://checkout.begateway.com';
 ```
 
 ### Hosted payment page
@@ -56,12 +56,12 @@ Simple usage looks like:
 
 ```php
 require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/lib/beGateway.php';
-\beGateway\Settings::$shopId  = 361;
-\beGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
+beGateway_Settings::$shopId  = 361;
+beGateway_Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
 
-\beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::INFO);
+beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::INFO);
 
-$transaction = new \beGateway\GetPaymentPageToken;
+$transaction = new beGateway_GetPaymentPageToken;
 
 $transaction->money->setAmount(1.00);
 $transaction->money->setCurrency('EUR');
@@ -87,7 +87,7 @@ $transaction->setAddressHidden();
 $response = $transaction->submit();
 
 if ($response->isSuccess() ) {
-  header("Location: " . \beGateway\Settings::$checkoutBase . "/checkout?token=" . $response->getToken() );
+  header("Location: " . beGateway_Settings::$checkoutBase . "/checkout?token=" . $response->getToken() );
 }
 ```
 
@@ -97,12 +97,12 @@ Simple usage looks like:
 
 ```php
 require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/lib/beGateway.php';
-\beGateway\Settings::$shopId  = 361;
-\beGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
+beGateway_Settings::$shopId  = 361;
+beGateway_Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
 
-\beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::INFO);
+beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::INFO);
 
-$transaction = new \beGateway\Payment;
+$transaction = new beGateway_Payment;
 
 $transaction->money->setAmount(1.00);
 $transaction->money->setCurrency('EUR');

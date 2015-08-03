@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Card {
+class beGateway_Card {
   protected $_card_number;
   protected $_card_holder;
   protected $_card_exp_month;

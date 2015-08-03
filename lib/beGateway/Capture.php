@@ -1,6 +1,4 @@
 <?php
-namespace beGateway;
-
-class Capture extends ChildTransaction {
+class beGateway_Capture extends beGateway_ChildTransaction {
 }
 ?>

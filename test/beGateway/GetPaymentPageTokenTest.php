@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class GetPaymentPageTokenTest extends TestCase {
+class beGateway_GetPaymentPageTokenTest extends TestCase {
 
   public function test_setDescription() {
     $auth = $this->getTestObjectInstance();
@@ -110,7 +108,7 @@ class GetPaymentPageTokenTest extends TestCase {
       )
     );
 
-    $reflection = new \ReflectionClass( 'beGateway\GetPaymentPageToken');
+    $reflection = new ReflectionClass( 'beGateway_GetPaymentPageToken');
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -123,12 +121,12 @@ class GetPaymentPageTokenTest extends TestCase {
 
     $auth = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\GetPaymentPageToken');
+    $reflection = new ReflectionClass('beGateway_GetPaymentPageToken');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($auth, '_endpoint');
 
-    $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts');
+    $this->assertEqual($url, beGateway_Settings::$checkoutBase . '/ctp/api/checkouts');
 
   }
 
@@ -198,7 +196,7 @@ class GetPaymentPageTokenTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new GetPaymentPageToken();
+    return new beGateway_GetPaymentPageToken();
   }
 
 

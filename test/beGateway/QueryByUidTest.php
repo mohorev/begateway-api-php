@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class QueryByUidTest extends TestCase {
+class beGateway_QueryByUidTest extends TestCase {
 
   public function test_setUid() {
     $q = $this->getTestObjectInstance();
@@ -16,12 +14,12 @@ class QueryByUidTest extends TestCase {
     $q = $this->getTestObjectInstance();
     $q->setUid('1234');
 
-    $reflection = new \ReflectionClass('beGateway\QueryByUid');
+    $reflection = new ReflectionClass('beGateway_QueryByUid');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($q, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/1234');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/1234');
 
   }
 
@@ -57,7 +55,7 @@ class QueryByUidTest extends TestCase {
   protected function runParentTransaction($amount = 10.00 ) {
     self::authorizeFromEnv();
 
-    $transaction = new Payment();
+    $transaction = new beGateway_Payment();
 
     $transaction->money->setAmount($amount);
     $transaction->money->setCurrency('EUR');
@@ -85,7 +83,7 @@ class QueryByUidTest extends TestCase {
   protected function getTestObjectInstance() {
     self::authorizeFromEnv();
 
-    return new QueryByUid();
+    return new beGateway_QueryByUid();
   }
 }
 ?>

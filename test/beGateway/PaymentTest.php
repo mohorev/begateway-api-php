@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class PaymentTest extends TestCase {
+class beGateway_PaymentTest extends TestCase {
 
   public function test_setDescription() {
 
@@ -51,12 +49,12 @@ class PaymentTest extends TestCase {
 
     $auth = $this->getTestObjectInstance();
 
-    $reflection = new \ReflectionClass('beGateway\Payment');
+    $reflection = new ReflectionClass('beGateway_Payment');
     $method = $reflection->getMethod('_endpoint');
     $method->setAccessible(true);
     $url = $method->invoke($auth, '_endpoint');
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/payments');
+    $this->assertEqual($url, beGateway_Settings::$gatewayBase . '/transactions/payments');
 
   }
 
@@ -99,7 +97,7 @@ class PaymentTest extends TestCase {
       )
     );
 
-    $reflection = new \ReflectionClass( 'beGateway\Payment');
+    $reflection = new ReflectionClass( 'beGateway_Payment');
     $method = $reflection->getMethod('_buildRequestMessage');
     $method->setAccessible(true);
 
@@ -200,7 +198,7 @@ class PaymentTest extends TestCase {
   protected function getTestObjectInstance($threed = false) {
     self::authorizeFromEnv($threed);
 
-    return new Payment();
+    return new beGateway_Payment();
   }
 }
 ?>

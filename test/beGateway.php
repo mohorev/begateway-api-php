@@ -26,9 +26,9 @@ require_once(dirname(__FILE__) . '/../lib/beGateway.php');
 $log_level = getenv('LOG_LEVEL');
 
 if ($log_level == 'DEBUG') {
-  \beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::DEBUG);
+  beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::DEBUG);
 } else {
-  \beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::INFO);
+  beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::INFO);
 }
 
 require_once(dirname(__FILE__) . '/beGateway/TestCase.php');

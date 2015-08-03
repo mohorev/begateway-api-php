@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Authorization extends ApiAbstract {
+class beGateway_Authorization extends beGateway_ApiAbstract {
   public $customer;
   public $card;
   public $money;
@@ -11,10 +9,10 @@ class Authorization extends ApiAbstract {
   protected $_return_url;
 
   public function __construct() {
-    $this->customer = new Customer();
-    $this->money = new Money();
-    $this->card = new Card();
-    $this->_language = Language::getDefaultLanguage();
+    $this->customer = new beGateway_Customer();
+    $this->money = new beGateway_Money();
+    $this->card = new beGateway_Card();
+    $this->_language = beGateway_Language::getDefaultLanguage();
   }
 
   public function setDescription($description) {
@@ -81,7 +79,7 @@ class Authorization extends ApiAbstract {
       )
     );
 
-    Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
+    beGateway_Logger::getInstance()->write($request, beGateway_Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
     return $request;
   }

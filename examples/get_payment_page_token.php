@@ -2,9 +2,9 @@
 require_once __DIR__ . '/../lib/beGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
-\beGateway\Logger::getInstance()->setLogLevel(\beGateway\Logger::DEBUG);
+beGateway_Logger::getInstance()->setLogLevel(beGateway_Logger::DEBUG);
 
-$transaction = new \beGateway\GetPaymentPageToken;
+$transaction = new beGateway_GetPaymentPageToken;
 
 $amount = rand(100, 10000);
 

@@ -1,15 +1,13 @@
 <?php
-namespace beGateway;
-
-class Credit extends ApiAbstract {
+class beGateway_Credit extends beGateway_ApiAbstract {
   public $card;
   public $money;
   protected $_description;
   protected $_tracking_id;
 
   public function __construct() {
-    $this->money = new Money();
-    $this->card = new Card();
+    $this->money = new beGateway_Money();
+    $this->card = new beGateway_Card();
   }
 
   public function setDescription($description) {
@@ -39,7 +37,7 @@ class Credit extends ApiAbstract {
       )
     );
 
-    Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
+    beGateway_Logger::getInstance()->write($request, beGateway_Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
     return $request;
   }

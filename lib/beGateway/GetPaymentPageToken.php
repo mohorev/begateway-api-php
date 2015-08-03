@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class GetPaymentPageToken extends ApiAbstract {
+class beGateway_GetPaymentPageToken extends beGateway_ApiAbstract {
   public $customer;
   public $money;
   protected $_description;
@@ -16,16 +14,16 @@ class GetPaymentPageToken extends ApiAbstract {
   protected $_hidden;
 
   public function __construct() {
-    $this->customer = new Customer();
-    $this->money = new Money();
+    $this->customer = new beGateway_Customer();
+    $this->money = new beGateway_Money();
     $this->setPaymentTransactionType();
-    $this->_language = Language::getDefaultLanguage();
+    $this->_language = beGateway_Language::getDefaultLanguage();
     $this->_readonly = array();
     $this->_hidden = array();
   }
 
   protected function _endpoint() {
-    return Settings::$checkoutBase . '/ctp/api/checkouts';
+    return beGateway_Settings::$checkoutBase . '/ctp/api/checkouts';
   }
 
   protected function _buildRequestMessage() {
@@ -64,13 +62,13 @@ class GetPaymentPageToken extends ApiAbstract {
       )
     );
 
-    Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
+    beGateway_Logger::getInstance()->write($request, beGateway_Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
     return $request;
   }
 
   public function submit() {
-    return new ResponseCheckout($this->_remoteRequest());
+    return new beGateway_ResponseCheckout($this->_remoteRequest());
   }
 
   public function getToken() {
@@ -138,10 +136,10 @@ class GetPaymentPageToken extends ApiAbstract {
   }
 
   public function setLanguage($language_code) {
-    if (in_array($language_code, Language::getSupportedLanguages())) {
+    if (in_array($language_code, beGateway_Language::getSupportedLanguages())) {
       $this->_language = $language_code;
     }else{
-      $this->_language = Language::getDefaultLanguage();
+      $this->_language = beGateway_Language::getDefaultLanguage();
     }
   }
 

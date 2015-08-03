@@ -1,7 +1,5 @@
 <?php
-namespace beGateway;
-
-class Refund extends ChildTransaction {
+class beGateway_Refund extends beGateway_ChildTransaction {
   protected $_reason;
 
   public function setReason($reason) {
