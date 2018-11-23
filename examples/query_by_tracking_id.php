@@ -33,12 +33,12 @@ $transaction->customer->setEmail('john@example.com');
 
 $response = $transaction->submit();
 
-print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus() . PHP_EOL);
+print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
+print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
 if ($response->isSuccess()) {
-    print("Transaction UID: " . $response->getUid() . PHP_EOL);
-    print("Trying to Query by tracking id " . $transaction->getTrackingId() . PHP_EOL);
+    print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
+    print 'Trying to Query by tracking id ' . $transaction->getTrackingId() . PHP_EOL;
 
     $query = new \BeGateway\QueryByTrackingId;
     $query->setTrackingId($transaction->getTrackingId());

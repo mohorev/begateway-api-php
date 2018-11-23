@@ -14,8 +14,8 @@ $token->card->setCardExpYear(2029);
 $response = $token->submit();
 
 if ($response->isSuccess()) {
-    print("Card token: " . $response->card->getCardToken() . PHP_EOL);
-    print("Trying to make a payment by the token and with CVC 123" . PHP_EOL);
+    print 'Card token: ' . $response->card->getCardToken() . PHP_EOL;
+    print 'Trying to make a payment by the token and with CVC 123' . PHP_EOL;
 
     $transaction = new \BeGateway\PaymentOperation;
 
@@ -43,10 +43,10 @@ if ($response->isSuccess()) {
 
     $response = $transaction->submit();
 
-    print("Transaction message: " . $response->getMessage() . PHP_EOL);
-    print("Transaction status: " . $response->getStatus() . PHP_EOL);
+    print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
+    print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
     if ($response->isSuccess()) {
-        print("Transaction UID: " . $response->getUid() . PHP_EOL);
+        print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     }
 }

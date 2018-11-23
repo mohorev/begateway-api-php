@@ -34,12 +34,12 @@ $transaction->customer->setBirthDate('1970-01-12');
 // set transaction type. Default - payment
 // $transaction->setPaymentTransactionType();
 // $transaction->setAuthorizationTransactionType();
-//$transaction->setTokenizationTransactionType();
+// $transaction->setTokenizationTransactionType();
 
 $response = $transaction->submit();
 
-print("Transaction message: " . $response->getMessage() . PHP_EOL);
+print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 
 if ($response->isSuccess()) {
-    print("Token: " . $response->getToken() . PHP_EOL);
+    print 'Token: ' . $response->getToken() . PHP_EOL;
 }

@@ -33,12 +33,12 @@ $transaction->customer->setEmail('john@example.com');
 
 $response = $transaction->submit();
 
-print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus() . PHP_EOL);
+print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
+print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
 if ($response->isSuccess()) {
-    print("Transaction UID: " . $response->getUid() . PHP_EOL);
-    print("Trying to Void transaction " . $response->getUid() . PHP_EOL);
+    print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
+    print 'Trying to Void transaction ' . $response->getUid() . PHP_EOL;
 
     $void = new \BeGateway\VoidOperation;
     $void->setParentUid($response->getUid());
@@ -47,9 +47,9 @@ if ($response->isSuccess()) {
     $response = $void->submit();
 
     if ($response->isSuccess()) {
-        print("Voided successfully. Void transaction UID " . $response->getUid() . PHP_EOL);
+        print 'Voided successfully. Void transaction UID ' . $response->getUid() . PHP_EOL;
     } else {
-        print("Problem to void" . PHP_EOL);
-        print("Void message: " . $response->getMessage() . PHP_EOL);
+        print 'Problem to void' . PHP_EOL;
+        print 'Void message: ' . $response->getMessage() . PHP_EOL;
     }
 }

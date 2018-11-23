@@ -33,12 +33,12 @@ $transaction->customer->setEmail('john@example.com');
 
 $response = $transaction->submit();
 
-print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus() . PHP_EOL);
+print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
+print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
 if ($response->isSuccess()) {
-    print("Transaction UID: " . $response->getUid() . PHP_EOL);
-    print("Trying to Refund transaction " . $response->getUid() . PHP_EOL);
+    print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
+    print 'Trying to Refund transaction ' . $response->getUid() . PHP_EOL;
 
     $refund = new \BeGateway\RefundOperation;
     $refund->setParentUid($response->getUid());
@@ -48,9 +48,9 @@ if ($response->isSuccess()) {
     $response = $refund->submit();
 
     if ($response->isSuccess()) {
-        print("Refund successfully. Refund transaction UID " . $response->getUid() . PHP_EOL);
+        print 'Refund successfully. Refund transaction UID ' . $response->getUid() . PHP_EOL;
     } else {
-        print("Problem to refund" . PHP_EOL);
-        print("Refund message: " . $response->getMessage() . PHP_EOL);
+        print 'Problem to refund' . PHP_EOL;
+        print 'Refund message: ' . $response->getMessage() . PHP_EOL;
     }
 }

@@ -31,8 +31,8 @@ $transaction->customer->setEmail('john@example.com');
 
 $response = $transaction->submit();
 
-print("Transaction message: " . $response->getMessage() . PHP_EOL);
+print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 
 if ($response->isSuccess()) {
-    print("Token: " . $response->getToken() . PHP_EOL);
+    print 'Token: ' . $response->getToken() . PHP_EOL;
 }

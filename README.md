@@ -128,15 +128,15 @@ $transaction->customer->setEmail('john@example.com');
 $response = $transaction->submit();
 
 if ($response->isSuccess()) {
-  print("Status: " . $response->getStatus() . PHP_EOL);
-  print("Transaction UID: " . $response->getUid() . PHP_EOL);
+  print 'Status: ' . $response->getStatus() . PHP_EOL;
+  print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
 } elseif ($response->isFailed()) {
-  print("Status: " . $response->getStatus() . PHP_EOL);
-  print("Transaction UID: " . $response->getUid() . PHP_EOL);
-  print("Reason: " . $response->getMessage() . PHP_EOL);
+  print 'Status: ' . $response->getStatus() . PHP_EOL;
+  print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
+  print 'Reason: ' . $response->getMessage() . PHP_EOL;
 } else {
-  print("Status: error" . PHP_EOL);
-  print("Reason: " . $response->getMessage() . PHP_EOL);
+  print 'Status: error' . PHP_EOL;
+  print 'Reason: ' . $response->getMessage() . PHP_EOL;
 }
 ```
 
