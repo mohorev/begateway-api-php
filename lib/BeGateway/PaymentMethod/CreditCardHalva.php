@@ -2,10 +2,23 @@
 
 namespace BeGateway\PaymentMethod;
 
-class CreditCardHalva extends Base
+use BeGateway\Contract\PaymentMethod;
+
+class CreditCardHalva implements PaymentMethod
 {
-    public function getName()
+    /**
+     * @inheritdoc
+     */
+    public function name()
     {
         return 'halva';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function parameters()
+    {
+        return [];
     }
 }

@@ -28,6 +28,9 @@ class GetPaymentToken extends BaseRequest
     private $transactionType;
     private $readonly = [];
     private $visible = [];
+    /**
+     * @var \BeGateway\Contract\PaymentMethod[]
+     */
     private $paymentMethods = [];
     private $expiredAt;
     private $testMode = false;
@@ -459,18 +462,18 @@ class GetPaymentToken extends BaseRequest
 
     private function getPaymentMethods()
     {
-        $arResult = [];
+        $result = [];
 
         if (!empty($this->paymentMethods)) {
-            $arResult['types'] = [];
+            $result['types'] = [];
             foreach ($this->paymentMethods as $pm) {
-                $arResult['types'][] = $pm->getName();
-                $arResult[$pm->getName()] = $pm->getParamsArray();
+                $result['types'][] = $pm->name();
+                $result[$pm->name()] = $pm->parameters();
             }
         } else {
-            $arResult = null;
+            $result = null;
         }
 
-        return $arResult;
+        return $result;
     }
 }

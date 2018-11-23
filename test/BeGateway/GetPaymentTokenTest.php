@@ -243,15 +243,15 @@ class GetPaymentTokenTest extends TestCase
         $this->assertEqual($arr, $request);
     }
 
-    public function test_buildRequestMessageWithEmexvoucher()
+    public function test_buildRequestMessageWithEmexVoucher()
     {
         $auth = $this->getTestObject();
         $auth->money->setAmount(100);
         $auth->money->setCurrency('USD');
-        $emexvoucher = new PaymentMethod\Emexvoucher();
+        $emexVoucher = new PaymentMethod\EmexVoucher();
         $cc = new PaymentMethod\CreditCard();
 
-        $auth->addPaymentMethod($emexvoucher);
+        $auth->addPaymentMethod($emexVoucher);
         $auth->addPaymentMethod($cc);
 
         $arr = [

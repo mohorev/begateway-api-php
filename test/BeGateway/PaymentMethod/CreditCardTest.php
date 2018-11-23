@@ -8,14 +8,14 @@ class CreditCardTest extends \BeGateway\TestCase
     {
         $cc = $this->getTestObject();
 
-        $this->assertEqual($cc->getName(), 'credit_card');
+        $this->assertEqual($cc->name(), 'credit_card');
     }
 
     public function test_getParamsArray()
     {
         $cc = $this->getTestObject();
 
-        $this->assertEqual($cc->getParamsArray(), []);
+        $this->assertEqual($cc->parameters(), []);
     }
 
     public function getTestObject()

@@ -24,11 +24,11 @@ if (!class_exists('\BeGateway\Settings')) {
 
     require_once (__DIR__ . '/BeGateway/Webhook.php');
 
-    require_once (__DIR__ . '/BeGateway/PaymentMethod/Base.php');
+    require_once (__DIR__ . '/BeGateway/Contract/PaymentMethod.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/Erip.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/CreditCard.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/CreditCardHalva.php');
-    require_once (__DIR__ . '/BeGateway/PaymentMethod/Emexvoucher.php');
+    require_once (__DIR__ . '/BeGateway/PaymentMethod/EmexVoucher.php');
     require_once (__DIR__ . '/BeGateway/Request/BaseRequest.php');
     require_once (__DIR__ . '/BeGateway/Request/AuthorizationOperation.php');
     require_once (__DIR__ . '/BeGateway/Request/CreditOperation.php');

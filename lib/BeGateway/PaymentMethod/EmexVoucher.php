@@ -4,14 +4,14 @@ namespace BeGateway\PaymentMethod;
 
 use BeGateway\Contract\PaymentMethod;
 
-class CreditCard implements PaymentMethod
+class EmexVoucher implements PaymentMethod
 {
     /**
      * @inheritdoc
      */
     public function name()
     {
-        return 'credit_card';
+        return 'emexvoucher';
     }
 
     /**

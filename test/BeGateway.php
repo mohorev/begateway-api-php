@@ -55,4 +55,4 @@ require_once(dirname(__FILE__) . '/BeGateway/CreditCardTokenizationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/CreditCardTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/CreditCardHalvaTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/EripTest.php');
-require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/EmexvoucherTest.php');
+require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/EmexVoucherTest.php');

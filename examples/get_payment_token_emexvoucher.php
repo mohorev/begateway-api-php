@@ -7,7 +7,7 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $transaction = new \BeGateway\Request\GetPaymentToken;
 
-$voucher = new \BeGateway\PaymentMethod\Emexvoucher;
+$voucher = new \BeGateway\PaymentMethod\EmexVoucher;
 
 $transaction->addPaymentMethod($voucher);
 

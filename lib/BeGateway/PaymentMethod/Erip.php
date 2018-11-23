@@ -2,7 +2,9 @@
 
 namespace BeGateway\PaymentMethod;
 
-class Erip extends Base
+use BeGateway\Contract\PaymentMethod;
+
+class Erip implements PaymentMethod
 {
     private $params;
 
@@ -18,7 +20,18 @@ class Erip extends Base
         $this->params = array_merge($defaults, $params);
     }
 
-    public function getParamsArray()
+    /**
+     * @inheritdoc
+     */
+    public function name()
+    {
+        return 'erip';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function parameters()
     {
         $params = [
             'order_id' => $this->params['order_id'],
