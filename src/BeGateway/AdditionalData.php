@@ -21,12 +21,10 @@ class AdditionalData
      */
     private $contract = [];
 
-    /**
-     * @param array $receipt the list of receipts.
-     */
-    public function setReceipt(array $receipt)
+    public function __construct(array $receipt = [], array $contract = [])
     {
         $this->receipt = $receipt;
+        $this->contract = $contract;
     }
 
     /**
@@ -35,15 +33,6 @@ class AdditionalData
     public function getReceipt()
     {
         return $this->receipt;
-    }
-
-    /**
-     * @param array $contract
-     * @see $contract
-     */
-    public function setContract(array $contract)
-    {
-        $this->contract = $contract;
     }
 
     /**
