@@ -8,6 +8,11 @@ if (!function_exists('json_decode')) {
 }
 
 if (!class_exists('\BeGateway\Settings')) {
+    require_once(dirname(__FILE__) . '/../vendor/psr/log/Psr/Log/LoggerAwareInterface.php');
+    require_once(dirname(__FILE__) . '/../vendor/psr/log/Psr/Log/LoggerAwareTrait.php');
+
+    require_once (__DIR__ . '/BeGateway/ApiClient.php');
+
     require_once (__DIR__ . '/BeGateway/Settings.php');
     require_once (__DIR__ . '/BeGateway/Logger.php');
     require_once (__DIR__ . '/BeGateway/Language.php');
@@ -47,4 +52,6 @@ if (!class_exists('\BeGateway\Settings')) {
     require_once (__DIR__ . '/BeGateway/Response/CheckoutResponse.php');
     require_once (__DIR__ . '/BeGateway/Response/TransactionResponse.php');
     require_once (__DIR__ . '/BeGateway/Response/WebhookResponse.php');
+
+    require_once (__DIR__ . '/BeGateway/Transport/CurlTransport.php');
 }

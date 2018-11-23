@@ -6,7 +6,10 @@ use BeGateway\Settings;
 
 class VoidOperation extends ChildTransaction
 {
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$gatewayBase . '/transactions/voids';
     }

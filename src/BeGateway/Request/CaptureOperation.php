@@ -6,7 +6,10 @@ use BeGateway\Settings;
 
 class CaptureOperation extends ChildTransaction
 {
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$gatewayBase . '/transactions/captures';
     }

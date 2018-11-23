@@ -3,7 +3,6 @@
 namespace BeGateway\Request;
 
 use BeGateway\Card;
-use BeGateway\Logger;
 use BeGateway\Money;
 use BeGateway\Settings;
 
@@ -41,9 +40,20 @@ class CreditOperation extends BaseRequest
         return $this->trackingId;
     }
 
-    protected function buildRequestMessage()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
-        $request = [
+        return Settings::$gatewayBase . '/transactions/credits';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function data()
+    {
+        return [
             'request' => [
                 'amount' => $this->money->getCents(),
                 'currency' => $this->money->getCurrency(),
@@ -54,14 +64,5 @@ class CreditOperation extends BaseRequest
                 ],
             ],
         ];
-
-        Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
-
-        return $request;
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/credits';
     }
 }

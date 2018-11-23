@@ -9,7 +9,7 @@ class CreditCardTokenizationTest extends TestCase
 {
     public function test_buildRequestMessage()
     {
-        $token = $this->getTestObject();
+        $request = $this->getTestObject();
         $arr = [
             'request' => [
                 'number' => '4200000000000000',
@@ -20,33 +20,22 @@ class CreditCardTokenizationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\CardToken');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($token, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_endpoint()
     {
-        $token = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Request\CardToken');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($token, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/credit_cards');
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/credit_cards');
     }
 
     public function test_successTokenCreationUpdateAndAuthorization()
     {
-        $token = $this->getTestObject();
+        $request = $this->getTestObject();
 
         # create token
-        $response = $token->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -59,13 +48,13 @@ class CreditCardTokenizationTest extends TestCase
         $this->assertNotNull($response->card->getCardToken());
 
         # update token
-        $token->card->setCardExpMonth(1);
-        $token->card->setCardHolder('John Doe');
+        $request->card->setCardExpMonth(1);
+        $request->card->setCardHolder('John Doe');
         $oldToken = $response->card->getCardToken();
-        $token->card->setCardToken($oldToken);
-        $token->card->setCardNumber(null);
+        $request->card->setCardToken($oldToken);
+        $request->card->setCardNumber(null);
 
-        $response2 = $token->submit();
+        $response2 = (new ApiClient)->send($request);
         $this->assertEqual($response2->card->getCardHolder(), 'John Doe');
         $this->assertEqual($response2->card->getBrand(), 'visa');
         $this->assertEqual($response2->card->getFirst1(), '4');
@@ -78,15 +67,15 @@ class CreditCardTokenizationTest extends TestCase
         # make authorization with token
         $amount = rand(0, 10000) / 100;
 
-        $auth = $this->getAuthorizationTestObject();
+        $request = $this->getAuthorizationTestObject();
 
-        $auth->money->setAmount($amount);
-        $cents = $auth->money->getCents();
+        $request->money->setAmount($amount);
+        $cents = $request->money->getCents();
 
-        $auth->card->setCardToken($response2->card->getCardToken());
-        $auth->card->setCardCvc('123');
+        $request->card->setCardToken($response2->card->getCardToken());
+        $request->card->setCardCvc('123');
 
-        $response3 = $auth->submit();
+        $response3 = (new ApiClient)->send($request);
         $this->assertTrue($response3->isValid());
         $this->assertTrue($response3->isSuccess());
         $this->assertEqual($response3->getMessage(), 'Successfully processed');
@@ -97,34 +86,34 @@ class CreditCardTokenizationTest extends TestCase
 
     protected function getTestObject($threed = false)
     {
-        $transaction = $this->getTestObjectInstance($threed);
+        $request = $this->getTestObjectInstance($threed);
 
-        $transaction->card->setCardNumber('4200000000000000');
-        $transaction->card->setCardHolder('John Smith');
-        $transaction->card->setCardExpMonth(2);
-        $transaction->card->setCardExpYear(2030);
+        $request->card->setCardNumber('4200000000000000');
+        $request->card->setCardHolder('John Smith');
+        $request->card->setCardExpMonth(2);
+        $request->card->setCardExpYear(2030);
 
-        return $transaction;
+        return $request;
     }
 
     protected function getAuthorizationTestObject($threed = false)
     {
-        $transaction = $this->getAuthorizationTestObjectInstance($threed);
+        $request = $this->getAuthorizationTestObjectInstance($threed);
 
-        $transaction->money->setCurrency('EUR');
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
+        $request->money->setCurrency('EUR');
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction;
+        return $request;
     }
 
     protected function getTestObjectInstance($threed = false)

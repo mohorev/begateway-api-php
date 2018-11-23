@@ -6,7 +6,10 @@ use BeGateway\Settings;
 
 class PaymentOperation extends AuthorizationOperation
 {
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$gatewayBase . '/transactions/payments';
     }

@@ -31,7 +31,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -44,7 +44,7 @@ if ($response->isSuccess()) {
     $void->setParentUid($response->getUid());
     $void->money->setAmount($transaction->money->getAmount());
 
-    $response = $void->submit();
+    $response = (new \BeGateway\ApiClient)->send($void);
 
     if ($response->isSuccess()) {
         print 'Voided successfully. Void transaction UID ' . $response->getUid() . PHP_EOL;

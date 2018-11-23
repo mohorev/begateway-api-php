@@ -9,25 +9,18 @@ class QueryByPaymentTokenTest extends TestCase
 {
     public function test_setToken()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setToken('123456');
-
-        $this->assertEqual($q->getToken(), '123456');
+        $request->setToken('123456');
+        $this->assertEqual($request->getToken(), '123456');
     }
 
     public function test_endpoint()
     {
-        $q = $this->getTestObjectInstance();
-        $q->setToken('1234');
+        $request = $this->getTestObjectInstance();
+        $request->setToken('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\Request\QueryByPaymentToken');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($q, 'endpoint');
-
-        $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts/1234');
-
+        $this->assertEqual($request->endpoint(), Settings::$checkoutBase . '/ctp/api/checkouts/1234');
     }
 
     public function test_queryRequest()
@@ -36,27 +29,25 @@ class QueryByPaymentTokenTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setToken($parent->getToken());
+        $request->setToken($parent->getToken());
 
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertNotNull($response->getToken(), $parent->getToken());
-
     }
 
     public function test_queryResponseForUnknownUid()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setToken('1234567890qwerty');
+        $request->setToken('1234567890qwerty');
 
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
-
         $this->assertEqual($response->getMessage(), 'Record not found');
     }
 
@@ -64,31 +55,31 @@ class QueryByPaymentTokenTest extends TestCase
     {
         self::authorizeFromEnv();
 
-        $transaction = new GetPaymentToken();
+        $request = new GetPaymentToken();
 
         $url = 'http://www.example.com';
 
-        $transaction->money->setAmount($amount);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setAuthorizationTransactionType();
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
-        $transaction->setNotificationUrl($url . '/n');
-        $transaction->setCancelUrl($url . '/c');
-        $transaction->setSuccessUrl($url . '/s');
-        $transaction->setDeclineUrl($url . '/d');
-        $transaction->setFailUrl($url . '/f');
+        $request->money->setAmount($amount);
+        $request->money->setCurrency('EUR');
+        $request->setAuthorizationTransactionType();
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
+        $request->setNotificationUrl($url . '/n');
+        $request->setCancelUrl($url . '/c');
+        $request->setSuccessUrl($url . '/s');
+        $request->setDeclineUrl($url . '/d');
+        $request->setFailUrl($url . '/f');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction->submit();
+        return (new ApiClient)->send($request);
     }
 
     protected function getTestObjectInstance()

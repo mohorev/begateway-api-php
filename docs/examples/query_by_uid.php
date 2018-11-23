@@ -32,7 +32,7 @@ $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -44,7 +44,7 @@ if ($response->isSuccess()) {
     $query = new \BeGateway\Request\QueryByUid;
     $query->setUid($response->getUid());
 
-    $response = $query->submit();
+    $response = (new \BeGateway\ApiClient)->send($query);
 
     print_r($response);
 }

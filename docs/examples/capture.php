@@ -32,7 +32,7 @@ $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -45,7 +45,7 @@ if ($response->isSuccess()) {
     $capture->setParentUid($response->getUid());
     $capture->money->setAmount($transaction->money->getAmount());
 
-    $response = $capture->submit();
+    $response = (new \BeGateway\ApiClient)->send($capture);
 
     if ($response->isSuccess()) {
         print 'Captured successfully. Captured transaction UID ' . $response->getUid() . PHP_EOL;

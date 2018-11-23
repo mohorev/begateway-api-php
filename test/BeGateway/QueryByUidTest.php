@@ -9,25 +9,18 @@ class QueryByUidTest extends TestCase
 {
     public function test_setUid()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+        $request->setUid('123456');
 
-        $q->setUid('123456');
-
-        $this->assertEqual($q->getUid(), '123456');
+        $this->assertEqual($request->getUid(), '123456');
     }
 
     public function test_endpoint()
     {
-        $q = $this->getTestObjectInstance();
-        $q->setUid('1234');
+        $request = $this->getTestObjectInstance();
+        $request->setUid('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\Request\QueryByUid');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($q, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/1234');
-
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/1234');
     }
 
     public function test_queryRequest()
@@ -36,11 +29,10 @@ class QueryByUidTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+        $request->setUid($parent->getUid());
 
-        $q->setUid($parent->getUid());
-
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -50,14 +42,12 @@ class QueryByUidTest extends TestCase
 
     public function test_queryResponseForUnknownUid()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+        $request->setUid('1234567890qwerty');
 
-        $q->setUid('1234567890qwerty');
-
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
-
         $this->assertEqual($response->getMessage(), 'Record not found');
     }
 
@@ -87,7 +77,7 @@ class QueryByUidTest extends TestCase
         $transaction->customer->setIp('127.0.0.1');
         $transaction->customer->setEmail('john@example.com');
 
-        return $transaction->submit();
+        return (new ApiClient)->send($transaction);
     }
 
     protected function getTestObjectInstance()

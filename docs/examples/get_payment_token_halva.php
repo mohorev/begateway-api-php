@@ -35,7 +35,7 @@ $transaction->setExpiryDate(date("Y-m-d", 3 * 24 * 3600 + time()) . "T00:00:00+0
 
 $transaction->customer->setEmail('john@example.com');
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 

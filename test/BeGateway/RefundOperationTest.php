@@ -9,25 +9,25 @@ class RefundOperationTest extends TestCase
 {
     public function test_setParentUid()
     {
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $uid = '1234567';
-
-        $transaction->setParentUid($uid);
-
-        $this->assertEqual($uid, $transaction->getParentUid());
+        $request->setParentUid($uid);
+        $this->assertEqual($uid, $request->getParentUid());
     }
 
     public function test_setReason()
     {
+        $request = $this->getTestObjectInstance();
+
         $reason = 'test reason';
-        $transaction = $this->getTestObjectInstance();
-        $transaction->setReason($reason);
-        $this->assertEqual($reason, $transaction->getReason());
+        $request->setReason($reason);
+        $this->assertEqual($reason, $request->getReason());
     }
 
     public function test_buildRequestMessage()
     {
-        $transaction = $this->getTestObject();
+        $request = $this->getTestObject();
         $arr = [
             'request' => [
                 'parent_uid' => '12345678',
@@ -36,26 +36,14 @@ class RefundOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\RefundOperation');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($transaction, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_endpoint()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Request\RefundOperation');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($auth, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/refunds');
-
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/refunds');
     }
 
     public function test_successRefundRequest()
@@ -64,13 +52,13 @@ class RefundOperationTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->money->setAmount($amount);
-        $transaction->setParentUid($parent->getUid());
-        $transaction->setReason('test reason');
+        $request->money->setAmount($amount);
+        $request->setParentUid($parent->getUid());
+        $request->setReason('test reason');
 
-        $response = $transaction->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -85,12 +73,12 @@ class RefundOperationTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->money->setAmount($amount + 1);
-        $transaction->setParentUid($parent->getUid());
+        $request->money->setAmount($amount + 1);
+        $request->setParentUid($parent->getUid());
 
-        $response = $transaction->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
@@ -101,41 +89,40 @@ class RefundOperationTest extends TestCase
     {
         self::authorizeFromEnv();
 
-        $transaction = new PaymentOperation();
+        $request = new PaymentOperation();
 
-        $transaction->money->setAmount($amount);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
+        $request->money->setAmount($amount);
+        $request->money->setCurrency('EUR');
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
 
-        $transaction->card->setCardNumber('4200000000000000');
-        $transaction->card->setCardHolder('John Doe');
-        $transaction->card->setCardExpMonth(1);
-        $transaction->card->setCardExpYear(2030);
-        $transaction->card->setCardCvc('123');
+        $request->card->setCardNumber('4200000000000000');
+        $request->card->setCardHolder('John Doe');
+        $request->card->setCardExpMonth(1);
+        $request->card->setCardExpYear(2030);
+        $request->card->setCardCvc('123');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction->submit();
+        return (new ApiClient)->send($request);
     }
 
     protected function getTestObject()
     {
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->setParentUid('12345678');
+        $request->setParentUid('12345678');
+        $request->money->setAmount(12.56);
+        $request->setReason('merchant request');
 
-        $transaction->money->setAmount(12.56);
-        $transaction->setReason('merchant request');
-
-        return $transaction;
+        return $request;
     }
 
     protected function getTestObjectInstance()

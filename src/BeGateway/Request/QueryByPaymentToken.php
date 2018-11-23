@@ -2,7 +2,6 @@
 
 namespace BeGateway\Request;
 
-use BeGateway\Response\CheckoutResponse;
 use BeGateway\Settings;
 
 class QueryByPaymentToken extends BaseRequest
@@ -19,18 +18,19 @@ class QueryByPaymentToken extends BaseRequest
         return $this->token;
     }
 
-    protected function buildRequestMessage()
-    {
-        return '';
-    }
-
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$checkoutBase . '/ctp/api/checkouts/' . $this->getToken();
     }
 
-    public function submit()
+    /**
+     * @inheritdoc
+     */
+    public function data()
     {
-        return new CheckoutResponse($this->remoteRequest());
+        return null;
     }
 }

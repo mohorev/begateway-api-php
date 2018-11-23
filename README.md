@@ -84,7 +84,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 if ($response->isSuccess()) {
   header("Location: " . $response->getRedirectUrl());
@@ -125,7 +125,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 if ($response->isSuccess()) {
   print 'Status: ' . $response->getStatus() . PHP_EOL;

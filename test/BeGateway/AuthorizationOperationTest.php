@@ -8,52 +8,54 @@ class AuthorizationOperationTest extends TestCase
 {
     public function test_setDescription()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
         $description = 'Test description';
-
-        $auth->setDescription($description);
-
-        $this->assertEqual($auth->getDescription(), $description);
+        $request->setDescription($description);
+        $this->assertEqual($request->getDescription(), $description);
     }
 
     public function test_setTrackingId()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $trackingId = 'Test tracking_id';
-        $auth->setTrackingId($trackingId);
-        $this->assertEqual($auth->getTrackingId(), $trackingId);
+        $request->setTrackingId($trackingId);
+        $this->assertEqual($request->getTrackingId(), $trackingId);
     }
 
     public function test_setNotificationUrl()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $url = 'http://www.example.com';
-        $auth->setNotificationUrl($url);
-        $this->assertEqual($auth->getNotificationUrl(), $url);
+        $request->setNotificationUrl($url);
+        $this->assertEqual($request->getNotificationUrl(), $url);
     }
 
     public function test_setReturnUrl()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $url = 'http://www.example.com';
-        $auth->setReturnUrl($url);
-        $this->assertEqual($auth->getReturnUrl(), $url);
+        $request->setReturnUrl($url);
+        $this->assertEqual($request->getReturnUrl(), $url);
     }
 
     public function test_setTestMode()
     {
-        $auth = $this->getTestObjectInstance();
-        $this->assertFalse($auth->getTestMode());
-        $auth->setTestMode(true);
-        $this->assertTrue($auth->getTestMode());
-        $auth->setTestMode(false);
-        $this->assertFalse($auth->getTestMode());
+        $request = $this->getTestObjectInstance();
+
+        $this->assertFalse($request->getTestMode());
+        $request->setTestMode(true);
+        $this->assertTrue($request->getTestMode());
+        $request->setTestMode(false);
+        $this->assertFalse($request->getTestMode());
     }
 
     public function test_buildRequestMessage()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
         $arr = [
             'request' => [
                 'amount' => 1233,
@@ -98,44 +100,31 @@ class AuthorizationOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\AuthorizationOperation');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($auth, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
 
         $arr['request']['test'] = false;
-        $auth->setTestMode(false);
-        $request = $method->invoke($auth, 'buildRequestMessage');
+        $request->setTestMode(false);
 
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_endpoint()
     {
+        $request = $this->getTestObjectInstance();
 
-        $auth = $this->getTestObjectInstance();
-
-        $reflection = new \ReflectionClass('BeGateway\Request\AuthorizationOperation');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($auth, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/authorizations');
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/authorizations');
     }
 
     public function test_successAuthorization()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
-        $cents = $auth->money->getCents();
+        $request->money->setAmount($amount);
+        $cents = $request->money->getCents();
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -150,15 +139,15 @@ class AuthorizationOperationTest extends TestCase
 
     public function test_incompleteAuthorization()
     {
-        $auth = $this->getTestObject(true);
+        $request = $this->getTestObject(true);
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
-        $auth->card->setCardNumber('4012001037141112');
-        $cents = $auth->money->getCents();
+        $request->money->setAmount($amount);
+        $request->card->setCardNumber('4012001037141112');
+        $cents = $request->money->getCents();
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isIncomplete());
@@ -175,16 +164,16 @@ class AuthorizationOperationTest extends TestCase
 
     public function test_failedAuthorization()
     {
-        $auth = $this->getTestObject();
-        $auth->card->setCardNumber('4005550000000019');
+        $request = $this->getTestObject();
+        $request->card->setCardNumber('4005550000000019');
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
-        $cents = $auth->money->getCents();
-        $auth->card->setCardExpMonth(10);
+        $request->money->setAmount($amount);
+        $cents = $request->money->getCents();
+        $request->card->setCardExpMonth(10);
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isFailed());
@@ -199,15 +188,15 @@ class AuthorizationOperationTest extends TestCase
 
     public function test_errorAuthorization()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
-        $cents = $auth->money->getCents();
-        $auth->card->setCardExpYear(10);
+        $request->money->setAmount($amount);
+        $cents = $request->money->getCents();
+        $request->card->setCardExpYear(10);
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
@@ -217,32 +206,32 @@ class AuthorizationOperationTest extends TestCase
 
     protected function getTestObject($threed = false)
     {
-        $transaction = $this->getTestObjectInstance($threed);
+        $request = $this->getTestObjectInstance($threed);
 
-        $transaction->money->setAmount(12.33);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
-        $transaction->setLanguage('de');
-        $transaction->setTestMode(true);
+        $request->money->setAmount(12.33);
+        $request->money->setCurrency('EUR');
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
+        $request->setLanguage('de');
+        $request->setTestMode(true);
 
-        $transaction->card->setCardNumber('4200000000000000');
-        $transaction->card->setCardHolder('BEGATEWAY');
-        $transaction->card->setCardExpMonth(1);
-        $transaction->card->setCardExpYear(2030);
-        $transaction->card->setCardCvc('123');
+        $request->card->setCardNumber('4200000000000000');
+        $request->card->setCardHolder('BEGATEWAY');
+        $request->card->setCardExpMonth(1);
+        $request->card->setCardExpYear(2030);
+        $request->card->setCardCvc('123');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
-        $transaction->customer->setBirthDate('1970-01-01');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
+        $request->customer->setBirthDate('1970-01-01');
 
-        return $transaction;
+        return $request;
     }
 
     protected function getTestObjectInstance($threeds = false)

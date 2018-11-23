@@ -8,108 +8,109 @@ class GetPaymentTokenTest extends TestCase
 {
     public function test_setDescription()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $description = 'Test description';
-        $auth->setDescription($description);
-        $this->assertEqual($auth->getDescription(), $description);
+        $request->setDescription($description);
+        $this->assertEqual($request->getDescription(), $description);
     }
 
     public function test_setTrackingId()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
         $trackingId = 'Test tracking_id';
-        $auth->setTrackingId($trackingId);
-        $this->assertEqual($auth->getTrackingId(), $trackingId);
+        $request->setTrackingId($trackingId);
+        $this->assertEqual($request->getTrackingId(), $trackingId);
     }
 
     public function test_setExpiryDate()
     {
-        $auth = $this->getTestObjectInstance();
-        $date = '2020-12-30 23:21:46';
-        $date_iso8601 = date(DATE_ISO8601, strtotime($date));
-        $auth->setExpiryDate($date);
-        $this->assertEqual($auth->getExpiryDate(), $date_iso8601);
+        $request = $this->getTestObjectInstance();
+
+        $date = date(DATE_ISO8601, strtotime('2020-12-30 23:21:46'));
+        $request->setExpiryDate($date);
+        $this->assertEqual($request->getExpiryDate(), $date);
 
         $date = null;
-        $auth->setExpiryDate($date);
-        $this->assertEqual($auth->getExpiryDate(), null);
+        $request->setExpiryDate($date);
+        $this->assertEqual($request->getExpiryDate(), null);
     }
 
     public function test_setUrls()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
         $url = 'http://www.example.com';
 
-        $auth->setNotificationUrl($url . '/n');
-        $auth->setCancelUrl($url . '/c');
-        $auth->setSuccessUrl($url . '/s');
-        $auth->setDeclineUrl($url . '/d');
-        $auth->setFailUrl($url . '/f');
+        $request->setNotificationUrl($url . '/n');
+        $request->setCancelUrl($url . '/c');
+        $request->setSuccessUrl($url . '/s');
+        $request->setDeclineUrl($url . '/d');
+        $request->setFailUrl($url . '/f');
 
-        $this->assertEqual($auth->getNotificationUrl(), $url . '/n');
-        $this->assertEqual($auth->getCancelUrl(), $url . '/c');
-        $this->assertEqual($auth->getSuccessUrl(), $url . '/s');
-        $this->assertEqual($auth->getDeclineUrl(), $url . '/d');
-        $this->assertEqual($auth->getFailUrl(), $url . '/f');
-
+        $this->assertEqual($request->getNotificationUrl(), $url . '/n');
+        $this->assertEqual($request->getCancelUrl(), $url . '/c');
+        $this->assertEqual($request->getSuccessUrl(), $url . '/s');
+        $this->assertEqual($request->getDeclineUrl(), $url . '/d');
+        $this->assertEqual($request->getFailUrl(), $url . '/f');
     }
 
     public function test_readonly()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $auth->setFirstNameReadonly();
-        $auth->setLastNameReadonly();
-        $auth->setEmailReadonly();
-        $auth->setCityReadonly();
+        $request->setFirstNameReadonly();
+        $request->setLastNameReadonly();
+        $request->setEmailReadonly();
+        $request->setCityReadonly();
 
-        $this->assertEqual(array_diff($auth->getReadOnlyFields(), ['first_name', 'last_name', 'email', 'city']), []);
+        $this->assertEqual(array_diff($request->getReadOnlyFields(), ['first_name', 'last_name', 'email', 'city']), []);
 
-        $auth->unsetFirstNameReadonly();
+        $request->unsetFirstNameReadonly();
 
-        $this->assertEqual(array_diff($auth->getReadOnlyFields(), ['last_name', 'email', 'city']), []);
+        $this->assertEqual(array_diff($request->getReadOnlyFields(), ['last_name', 'email', 'city']), []);
 
     }
 
     public function test_visible()
     {
-        $auth = $this->getTestObjectInstance();
-        $auth->setPhoneVisible();
-        $auth->setAddressVisible();
+        $request = $this->getTestObjectInstance();
+        $request->setPhoneVisible();
+        $request->setAddressVisible();
 
-        $this->assertEqual(array_diff($auth->getVisibleFields(), ['phone', 'address']), []);
+        $this->assertEqual(array_diff($request->getVisibleFields(), ['phone', 'address']), []);
 
-        $auth->unsetAddressVisible();
+        $request->unsetAddressVisible();
 
-        $this->assertEqual(array_diff($auth->getVisibleFields(), ['phone']), []);
+        $this->assertEqual(array_diff($request->getVisibleFields(), ['phone']), []);
     }
 
     public function test_transaction_type()
     {
-        $auth = $this->getTestObjectInstance();
-        $auth->setAuthorizationTransactionType();
+        $request = $this->getTestObjectInstance();
+        $request->setAuthorizationTransactionType();
 
-        $this->assertEqual($auth->getTransactionType(), 'authorization');
+        $this->assertEqual($request->getTransactionType(), 'authorization');
     }
 
     public function test_setTestMode()
     {
-        $auth = $this->getTestObjectInstance();
-        $this->assertFalse($auth->getTestMode());
-        $auth->setTestMode(true);
-        $this->assertTrue($auth->getTestMode());
-        $auth->setTestMode(false);
-        $this->assertFalse($auth->getTestMode());
+        $request = $this->getTestObjectInstance();
+        $this->assertFalse($request->getTestMode());
+        $request->setTestMode(true);
+        $this->assertTrue($request->getTestMode());
+        $request->setTestMode(false);
+        $this->assertFalse($request->getTestMode());
     }
 
     public function test_buildRequestMessage()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
+
         $arr = [
             'checkout' => [
-                'version' => "2.1",
+                'version' => '2.1',
                 'transaction_type' => 'payment',
                 'test' => true,
                 'order' => [
@@ -150,26 +151,20 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($auth, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
 
         $arr['checkout']['test'] = false;
-        $auth->setTestMode(false);
-        $request = $method->invoke($auth, 'buildRequestMessage');
+        $request->setTestMode(false);
 
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_buildRequestMessageWithErip()
     {
-        $auth = $this->getTestObject();
-        $auth->money->setAmount(100);
-        $auth->money->setCurrency('BYN');
+        $request = $this->getTestObject();
+        $request->money->setAmount(100);
+        $request->money->setCurrency('BYN');
+
         $erip = new PaymentMethod\Erip([
             'account_number' => '1234',
             'service_no' => '99999999',
@@ -178,8 +173,8 @@ class GetPaymentTokenTest extends TestCase
         ]);
         $cc = new PaymentMethod\CreditCard();
 
-        $auth->addPaymentMethod($erip);
-        $auth->addPaymentMethod($cc);
+        $request->addPaymentMethod($erip);
+        $request->addPaymentMethod($cc);
 
         $arr = [
             'checkout' => [
@@ -234,25 +229,20 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($auth, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_buildRequestMessageWithEmexVoucher()
     {
-        $auth = $this->getTestObject();
-        $auth->money->setAmount(100);
-        $auth->money->setCurrency('USD');
+        $request = $this->getTestObject();
+        $request->money->setAmount(100);
+        $request->money->setCurrency('USD');
+
         $emexVoucher = new PaymentMethod\EmexVoucher();
         $cc = new PaymentMethod\CreditCard();
 
-        $auth->addPaymentMethod($emexVoucher);
-        $auth->addPaymentMethod($cc);
+        $request->addPaymentMethod($emexVoucher);
+        $request->addPaymentMethod($cc);
 
         $arr = [
             'checkout' => [
@@ -302,111 +292,98 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($auth, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_endpoint()
     {
+        $request = $this->getTestObjectInstance();
 
-        $auth = $this->getTestObjectInstance();
-
-        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($auth, 'endpoint');
-
-        $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts');
-
+        $this->assertEqual($request->endpoint(), Settings::$checkoutBase . '/ctp/api/checkouts');
     }
 
     public function test_successTokenRequest()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
+        $request->money->setAmount($amount);
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getToken());
-
     }
 
     public function test_redirectUrl()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
 
         $amount = rand(0, 10000) / 100;
 
-        $auth->money->setAmount($amount);
+        $request->money->setAmount($amount);
 
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getToken());
         $this->assertNotNull($response->getRedirectUrl());
-        $this->assertEqual(\BeGateway\Settings::$checkoutBase . '/v2/checkout?token=' . $response->getToken(),
-            $response->getRedirectUrl());
-        $this->assertEqual(\BeGateway\Settings::$checkoutBase . '/v2/checkout',
-            $response->getRedirectUrlScriptName());
+        $this->assertEqual(
+            \BeGateway\Settings::$checkoutBase . '/v2/checkout?token=' . $response->getToken(),
+            $response->getRedirectUrl()
+        );
+        $this->assertEqual(
+            \BeGateway\Settings::$checkoutBase . '/v2/checkout',
+            $response->getRedirectUrlScriptName()
+        );
     }
 
     public function test_errorTokenRequest()
     {
-        $auth = $this->getTestObject();
+        $request = $this->getTestObject();
 
-        $amount = rand(0, 10000) / 100;
+        $request->money->setAmount(0);
+        $request->setDescription('');
 
-        $auth->money->setAmount(0);
-        $auth->setDescription('');
-
-        $response = $auth->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
-
     }
 
     protected function getTestObject()
     {
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
         $url = 'http://www.example.com';
 
-        $transaction->money->setAmount(12.33);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setPaymentTransactionType();
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
-        $transaction->setNotificationUrl($url . '/n');
-        $transaction->setCancelUrl($url . '/c');
-        $transaction->setSuccessUrl($url . '/s');
-        $transaction->setDeclineUrl($url . '/d');
-        $transaction->setFailUrl($url . '/f');
-        $transaction->setLanguage('zh');
-        $transaction->setExpiryDate('2030-12-31T00:21:46+0300');
-        $transaction->setTestMode(true);
+        $request->money->setAmount(12.33);
+        $request->money->setCurrency('EUR');
+        $request->setPaymentTransactionType();
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
+        $request->setNotificationUrl($url . '/n');
+        $request->setCancelUrl($url . '/c');
+        $request->setSuccessUrl($url . '/s');
+        $request->setDeclineUrl($url . '/d');
+        $request->setFailUrl($url . '/f');
+        $request->setLanguage('zh');
+        $request->setExpiryDate('2030-12-31T00:21:46+0300');
+        $request->setTestMode(true);
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction;
+        return $request;
     }
 
     protected function getTestObjectInstance()

@@ -5,7 +5,6 @@ namespace BeGateway\Request;
 use BeGateway\AdditionalData;
 use BeGateway\Customer;
 use BeGateway\Language;
-use BeGateway\Logger;
 use BeGateway\Money;
 use BeGateway\Response\CheckoutResponse;
 use BeGateway\Settings;
@@ -49,7 +48,18 @@ class GetPaymentToken extends BaseRequest
         $this->language = Language::getDefaultLanguage();
     }
 
-    protected function buildRequestMessage()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
+    {
+        return Settings::$checkoutBase . '/ctp/api/checkouts';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function data()
     {
         $request = [
             'checkout' => [
@@ -100,19 +110,7 @@ class GetPaymentToken extends BaseRequest
             $request['checkout']['payment_method'] = $paymentMethods;
         }
 
-        Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
-
         return $request;
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$checkoutBase . '/ctp/api/checkouts';
-    }
-
-    public function submit()
-    {
-        return new CheckoutResponse($this->remoteRequest());
     }
 
     public function setDescription($description)

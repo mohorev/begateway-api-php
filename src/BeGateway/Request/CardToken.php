@@ -3,8 +3,6 @@
 namespace BeGateway\Request;
 
 use BeGateway\Card;
-use BeGateway\Logger;
-use BeGateway\Response\CardTokenResponse;
 use BeGateway\Settings;
 
 class CardToken extends BaseRequest
@@ -16,14 +14,20 @@ class CardToken extends BaseRequest
         $this->card = new Card;
     }
 
-    public function submit()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
-        return new CardTokenResponse($this->remoteRequest());
+        return Settings::$gatewayBase . '/credit_cards';
     }
 
-    protected function buildRequestMessage()
+    /**
+     * @inheritdoc
+     */
+    public function data()
     {
-        $request = [
+        return [
             'request' => [
                 'holder' => $this->card->getCardHolder(),
                 'number' => $this->card->getCardNumber(),
@@ -32,14 +36,5 @@ class CardToken extends BaseRequest
                 'token' => $this->card->getCardToken(),
             ],
         ];
-
-        Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
-
-        return $request;
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/credit_cards';
     }
 }

@@ -36,7 +36,7 @@ $transaction->customer->setBirthDate('1970-01-12');
 // $transaction->setAuthorizationTransactionType();
 // $transaction->setTokenizationTransactionType();
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 

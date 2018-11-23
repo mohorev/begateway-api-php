@@ -32,7 +32,7 @@ $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
 
-$response = $transaction->submit();
+$response = (new \BeGateway\ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -50,7 +50,7 @@ if ($response->isSuccess()) {
     $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
     $credit->setDescription('Test credit');
 
-    $response = $credit->submit();
+    $response = (new \BeGateway\ApiClient)->send($credit);
 
     if ($response->isSuccess()) {
         print 'Credited successfully. Credit transaction UID ' . $response->getUid() . PHP_EOL;

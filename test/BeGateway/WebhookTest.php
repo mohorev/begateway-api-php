@@ -6,55 +6,54 @@ use BeGateway\Response\WebhookResponse;
 
 class WebhookTest extends TestCase
 {
-
     public function test_WebhookIsSentWithCorrectCredentials()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
         $s = Settings::$shopId;
         $k = Settings::$shopKey;
 
         $_SERVER['PHP_AUTH_USER'] = $s;
         $_SERVER['PHP_AUTH_PW'] = $k;
 
-        $this->assertTrue($w->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
 
     public function test_WebhookIsSentWithIncorrectCredentials()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
         $_SERVER['PHP_AUTH_USER'] = '123';
         $_SERVER['PHP_AUTH_PW'] = '321';
 
-        $this->assertFalse($w->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
 
     public function test_WebhookIsSentWithCorrectCredentialsWhenHttpAuthorization()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
         $s = Settings::$shopId;
         $k = Settings::$shopKey;
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($s . ':' . $k);
 
-        $this->assertTrue($w->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
 
     public function test_WebhookIsSentWithCorrectCredentialsWhenRedirectHttpAuthorization()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
         $s = Settings::$shopId;
         $k = Settings::$shopKey;
 
         $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . base64_encode($s . ':' . $k);;
 
-        $this->assertTrue($w->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
@@ -63,9 +62,9 @@ class WebhookTest extends TestCase
     {
         $_SERVER['HTTP_AUTHORIZATION'] = 'Basic QWxhZGRpbjpPcGVuU2VzYW1l';
 
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
-        $this->assertFalse($w->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
@@ -74,73 +73,72 @@ class WebhookTest extends TestCase
     {
         $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic QWxhZGRpbjpPcGVuU2VzYW1l';
 
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
-        $this->assertFalse($w->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized());
 
         $this->_clearAuthData();
     }
 
     public function test_RequestIsValidAndItIsSuccess()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
-        $property->setValue($w, json_decode($this->webhookMessage()));
+        $property->setValue($webhook, json_decode($this->webhookMessage()));
 
-        $this->assertTrue($w->isValid());
-        $this->assertTrue($w->isSuccess());
-        $this->assertEqual($w->getMessage(), 'Successfully processed');
-        $this->assertNotNull($w->getUid());
-        $this->assertEqual($w->getPaymentMethod(), 'credit_card');
+        $this->assertTrue($webhook->isValid());
+        $this->assertTrue($webhook->isSuccess());
+        $this->assertEqual($webhook->getMessage(), 'Successfully processed');
+        $this->assertNotNull($webhook->getUid());
+        $this->assertEqual($webhook->getPaymentMethod(), 'credit_card');
     }
 
     public function test_RequestIsValidAndItIsFailed()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
-        $property->setValue($w, json_decode($this->webhookMessage('failed')));
+        $property->setValue($webhook, json_decode($this->webhookMessage('failed')));
 
-        $this->assertTrue($w->isValid());
-        $this->assertTrue($w->isFailed());
-        $this->assertEqual($w->getMessage(), 'Payment was declined');
-        $this->assertNotNull($w->getUid());
-        $this->assertEqual($w->getStatus(), 'failed');
+        $this->assertTrue($webhook->isValid());
+        $this->assertTrue($webhook->isFailed());
+        $this->assertEqual($webhook->getMessage(), 'Payment was declined');
+        $this->assertNotNull($webhook->getUid());
+        $this->assertEqual($webhook->getStatus(), 'failed');
     }
 
     public function test_RequestIsValidAndItIsTest()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
-        $property->setValue($w, json_decode($this->webhookMessage('failed', true)));
+        $property->setValue($webhook, json_decode($this->webhookMessage('failed', true)));
 
-        $this->assertTrue($w->isValid());
-        $this->assertTrue($w->isFailed());
-        $this->assertTrue($w->isTest());
-        $this->assertEqual($w->getMessage(), 'Payment was declined');
-        $this->assertNotNull($w->getUid());
-        $this->assertEqual($w->getStatus(), 'failed');
-
+        $this->assertTrue($webhook->isValid());
+        $this->assertTrue($webhook->isFailed());
+        $this->assertTrue($webhook->isTest());
+        $this->assertEqual($webhook->getMessage(), 'Payment was declined');
+        $this->assertNotNull($webhook->getUid());
+        $this->assertEqual($webhook->getStatus(), 'failed');
     }
 
     public function test_NotValidRequestReceived()
     {
-        $w = $this->getTestObjectInstance();
+        $webhook = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
-        $property->setValue($w, json_decode(''));
+        $property->setValue($webhook, json_decode(''));
 
-        $this->assertFalse($w->isValid());
+        $this->assertFalse($webhook->isValid());
     }
 
     protected function getTestObjectInstance()

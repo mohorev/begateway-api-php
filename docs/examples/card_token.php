@@ -11,7 +11,7 @@ $token->card->setCardHolder('John Doe');
 $token->card->setCardExpMonth(1);
 $token->card->setCardExpYear(2029);
 
-$response = $token->submit();
+$response = (new \BeGateway\ApiClient)->send($token);
 
 if ($response->isSuccess()) {
     print 'Card token: ' . $response->card->getCardToken() . PHP_EOL;
@@ -41,7 +41,7 @@ if ($response->isSuccess()) {
     $transaction->customer->setEmail('john@example.com');
 
 
-    $response = $transaction->submit();
+    $response = (new \BeGateway\ApiClient)->send($transaction);
 
     print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
     print 'Transaction status: ' . $response->getStatus() . PHP_EOL;

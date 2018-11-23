@@ -18,13 +18,19 @@ class QueryByUid extends BaseRequest
         return $this->uid;
     }
 
-    protected function buildRequestMessage()
-    {
-        return '';
-    }
-
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$gatewayBase . '/transactions/' . $this->getUid();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function data()
+    {
+        return null;
     }
 }

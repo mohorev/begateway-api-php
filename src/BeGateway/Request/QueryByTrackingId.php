@@ -18,13 +18,19 @@ class QueryByTrackingId extends BaseRequest
         return $this->trackingId;
     }
 
-    protected function buildRequestMessage()
-    {
-        return '';
-    }
-
-    protected function endpoint()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
         return Settings::$gatewayBase . '/v2/transactions/tracking_id/' . $this->getTrackingId();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function data()
+    {
+        return null;
     }
 }

@@ -6,7 +6,6 @@ use BeGateway\AdditionalData;
 use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Language;
-use BeGateway\Logger;
 use BeGateway\Money;
 use BeGateway\Settings;
 
@@ -82,9 +81,20 @@ class AuthorizationOperation extends BaseRequest
         return $this->testMode;
     }
 
-    protected function buildRequestMessage()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
-        $request = [
+        return Settings::$gatewayBase . '/transactions/authorizations';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function data()
+    {
+        return [
             'request' => [
                 'amount' => $this->money->getCents(),
                 'currency' => $this->money->getCurrency(),
@@ -124,14 +134,5 @@ class AuthorizationOperation extends BaseRequest
                 ],
             ],
         ];
-
-        Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
-
-        return $request;
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/authorizations';
     }
 }

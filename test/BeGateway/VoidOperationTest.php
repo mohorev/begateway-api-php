@@ -9,17 +9,16 @@ class VoidOperationTest extends TestCase
 {
     public function test_setParentUid()
     {
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
+
         $uid = '1234567';
-
-        $transaction->setParentUid($uid);
-
-        $this->assertEqual($uid, $transaction->getParentUid());
+        $request->setParentUid($uid);
+        $this->assertEqual($uid, $request->getParentUid());
     }
 
     public function test_buildRequestMessage()
     {
-        $transaction = $this->getTestObject();
+        $request = $this->getTestObject();
         $arr = [
             'request' => [
                 'parent_uid' => '12345678',
@@ -27,25 +26,14 @@ class VoidOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\Request\VoidOperation');
-        $method = $reflection->getMethod('buildRequestMessage');
-        $method->setAccessible(true);
-
-        $request = $method->invoke($transaction, 'buildRequestMessage');
-
-        $this->assertEqual($arr, $request);
+        $this->assertEqual($arr, $request->data());
     }
 
     public function test_endpoint()
     {
-        $auth = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Request\VoidOperation');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($auth, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/voids');
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/voids');
     }
 
     public function test_successVoidRequest()
@@ -54,12 +42,12 @@ class VoidOperationTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->money->setAmount($amount);
-        $transaction->setParentUid($parent->getUid());
+        $request->money->setAmount($amount);
+        $request->setParentUid($parent->getUid());
 
-        $response = $transaction->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -74,57 +62,55 @@ class VoidOperationTest extends TestCase
 
         $parent = $this->runParentTransaction($amount);
 
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->money->setAmount($amount + 1);
-        $transaction->setParentUid($parent->getUid());
+        $request->money->setAmount($amount + 1);
+        $request->setParentUid($parent->getUid());
 
-        $response = $transaction->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
         $this->assertTrue(preg_match('/Amount can\'t be greater than/', $response->getMessage()));
-
     }
 
     protected function runParentTransaction($amount = 10.00)
     {
         self::authorizeFromEnv();
 
-        $transaction = new AuthorizationOperation();
+        $request = new AuthorizationOperation();
 
-        $transaction->money->setAmount($amount);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
+        $request->money->setAmount($amount);
+        $request->money->setCurrency('EUR');
+        $request->setDescription('test');
+        $request->setTrackingId('my_custom_variable');
 
-        $transaction->card->setCardNumber('4200000000000000');
-        $transaction->card->setCardHolder('John Doe');
-        $transaction->card->setCardExpMonth(1);
-        $transaction->card->setCardExpYear(2030);
-        $transaction->card->setCardCvc('123');
+        $request->card->setCardNumber('4200000000000000');
+        $request->card->setCardHolder('John Doe');
+        $request->card->setCardExpMonth(1);
+        $request->card->setCardExpYear(2030);
+        $request->card->setCardCvc('123');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction->submit();
+        return (new ApiClient)->send($request);
     }
 
     protected function getTestObject()
     {
-        $transaction = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $transaction->setParentUid('12345678');
+        $request->setParentUid('12345678');
+        $request->money->setAmount(12.56);
 
-        $transaction->money->setAmount(12.56);
-
-        return $transaction;
+        return $request;
     }
 
     protected function getTestObjectInstance()

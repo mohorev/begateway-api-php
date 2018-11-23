@@ -2,9 +2,7 @@
 
 namespace BeGateway\Request;
 
-use BeGateway\Logger;
 use BeGateway\Money;
-use BeGateway\Settings;
 
 abstract class ChildTransaction extends BaseRequest
 {
@@ -27,17 +25,13 @@ abstract class ChildTransaction extends BaseRequest
         return $this->parentUid;
     }
 
-    protected function buildRequestMessage()
+    public function data()
     {
-        $request = [
+        return [
             'request' => [
                 'parent_uid' => $this->getParentUid(),
                 'amount' => $this->money->getCents(),
             ],
         ];
-
-        Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
-
-        return $request;
     }
 }

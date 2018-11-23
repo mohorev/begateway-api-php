@@ -9,24 +9,18 @@ class QueryByTrackingIdTest extends TestCase
 {
     public function test_trackingId()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setTrackingId('123456');
-
-        $this->assertEqual($q->getTrackingId(), '123456');
+        $request->setTrackingId('123456');
+        $this->assertEqual($request->getTrackingId(), '123456');
     }
 
     public function test_endpoint()
     {
-        $q = $this->getTestObjectInstance();
-        $q->setTrackingId('1234');
+        $request = $this->getTestObjectInstance();
+        $request->setTrackingId('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\Request\QueryByTrackingId');
-        $method = $reflection->getMethod('endpoint');
-        $method->setAccessible(true);
-        $url = $method->invoke($q, 'endpoint');
-
-        $this->assertEqual($url, Settings::$gatewayBase . '/v2/transactions/tracking_id/1234');
+        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/v2/transactions/tracking_id/1234');
     }
 
     public function test_queryRequest()
@@ -37,11 +31,11 @@ class QueryByTrackingIdTest extends TestCase
 
         $parent = $this->runParentTransaction($amount, $trackingId);
 
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setTrackingId($trackingId);
+        $request->setTrackingId($trackingId);
 
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
 
@@ -56,11 +50,11 @@ class QueryByTrackingIdTest extends TestCase
 
     public function test_queryResponseForUnknownUid()
     {
-        $q = $this->getTestObjectInstance();
+        $request = $this->getTestObjectInstance();
 
-        $q->setTrackingId('1234567890qwerty');
+        $request->setTrackingId('1234567890qwerty');
 
-        $response = $q->submit();
+        $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
 
@@ -72,30 +66,30 @@ class QueryByTrackingIdTest extends TestCase
     {
         self::authorizeFromEnv();
 
-        $transaction = new PaymentOperation();
+        $request = new PaymentOperation();
 
-        $transaction->money->setAmount($amount);
-        $transaction->money->setCurrency('EUR');
-        $transaction->setDescription('test');
-        $transaction->setTrackingId($trackingId);
-        $transaction->setTestMode(true);
+        $request->money->setAmount($amount);
+        $request->money->setCurrency('EUR');
+        $request->setDescription('test');
+        $request->setTrackingId($trackingId);
+        $request->setTestMode(true);
 
-        $transaction->card->setCardNumber('4200000000000000');
-        $transaction->card->setCardHolder('John Doe');
-        $transaction->card->setCardExpMonth(1);
-        $transaction->card->setCardExpYear(2030);
-        $transaction->card->setCardCvc('123');
+        $request->card->setCardNumber('4200000000000000');
+        $request->card->setCardHolder('John Doe');
+        $request->card->setCardExpMonth(1);
+        $request->card->setCardExpYear(2030);
+        $request->card->setCardCvc('123');
 
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
+        $request->customer->setFirstName('John');
+        $request->customer->setLastName('Doe');
+        $request->customer->setCountry('LV');
+        $request->customer->setAddress('Demo str 12');
+        $request->customer->setCity('Riga');
+        $request->customer->setZip('LV-1082');
+        $request->customer->setIp('127.0.0.1');
+        $request->customer->setEmail('john@example.com');
 
-        return $transaction->submit();
+        return (new ApiClient)->send($request);
     }
 
     protected function getTestObjectInstance()

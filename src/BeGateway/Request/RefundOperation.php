@@ -18,17 +18,22 @@ class RefundOperation extends ChildTransaction
         return $this->reason;
     }
 
-    protected function buildRequestMessage()
+    /**
+     * @inheritdoc
+     */
+    public function endpoint()
     {
-        $request = parent::buildRequestMessage();
+        return Settings::$gatewayBase . '/transactions/refunds';
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function data()
+    {
+        $request = parent::data();
         $request['request']['reason'] = $this->getReason();
 
         return $request;
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/refunds';
     }
 }
