@@ -1,41 +1,51 @@
 <?php
+
 namespace BeGateway;
 
-abstract class ResponseBase {
+abstract class ResponseBase
+{
 
-  protected $_response;
-  protected $_responseArray;
+    protected $_response;
+    protected $_responseArray;
 
-  public function __construct($message){
-    $this->_response = json_decode($message);
-    $this->_responseArray = json_decode($message, true);
-  }
-  public abstract function isSuccess();
+    public function __construct($message)
+    {
+        $this->_response = json_decode($message);
+        $this->_responseArray = json_decode($message, true);
+    }
 
-  public function isError() {
-    if (!is_object($this->getResponse()))
-      return true;
+    public abstract function isSuccess();
 
-    if (isset($this->getResponse()->errors))
-      return true;
+    public function isError()
+    {
+        if (!is_object($this->getResponse())) {
+            return true;
+        }
 
-    if (isset($this->getResponse()->response))
-      return true;
+        if (isset($this->getResponse()->errors)) {
+            return true;
+        }
 
-    return false;
-  }
+        if (isset($this->getResponse()->response)) {
+            return true;
+        }
 
-  public function isValid() {
-    return !($this->_response === false || $this->_response == null);
-  }
+        return false;
+    }
 
-  public function getResponse() {
-    return $this->_response;
-  }
+    public function isValid()
+    {
+        return !($this->_response === false || $this->_response == null);
+    }
 
-  public function getResponseArray() {
-    return $this->_responseArray;
-  }
+    public function getResponse()
+    {
+        return $this->_response;
+    }
+
+    public function getResponseArray()
+    {
+        return $this->_responseArray;
+    }
 
 }
-?>

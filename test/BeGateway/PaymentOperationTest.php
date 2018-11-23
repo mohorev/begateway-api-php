@@ -1,231 +1,231 @@
 <?php
+
 namespace BeGateway;
 
-class PaymentOperationTest extends TestCase {
+class PaymentOperationTest extends TestCase
+{
+    public function test_setDescription()
+    {
+        $auth = $this->getTestObjectInstance();
 
-  public function test_setDescription() {
+        $description = 'Test description';
 
-    $auth = $this->getTestObjectInstance();
+        $auth->setDescription($description);
 
-    $description = 'Test description';
+        $this->assertEqual($auth->getDescription(), $description);
+    }
 
-    $auth->setDescription($description);
+    public function test_setTrackingId()
+    {
+        $auth = $this->getTestObjectInstance();
 
-    $this->assertEqual($auth->getDescription(), $description);
-  }
+        $tracking_id = 'Test tracking_id';
 
-  public function test_setTrackingId() {
+        $auth->setTrackingId($tracking_id);
+        $this->assertEqual($auth->getTrackingId(), $tracking_id);
+    }
 
-    $auth = $this->getTestObjectInstance();
+    public function test_setNotificationUrl()
+    {
+        $auth = $this->getTestObjectInstance();
 
-    $tracking_id = 'Test tracking_id';
+        $url = 'http://www.example.com';
 
-    $auth->setTrackingId($tracking_id);
-    $this->assertEqual($auth->getTrackingId(), $tracking_id);
-  }
+        $auth->setNotificationUrl($url);
 
-  public function test_setNotificationUrl() {
+        $this->assertEqual($auth->getNotificationUrl(), $url);
+    }
 
-    $auth = $this->getTestObjectInstance();
+    public function test_setReturnUrl()
+    {
+        $auth = $this->getTestObjectInstance();
 
-    $url = 'http://www.example.com';
+        $url = 'http://www.example.com';
 
-    $auth->setNotificationUrl($url);
+        $auth->setReturnUrl($url);
 
-    $this->assertEqual($auth->getNotificationUrl(), $url);
-  }
+        $this->assertEqual($auth->getReturnUrl(), $url);
+    }
 
-  public function test_setReturnUrl() {
+    public function test_endpoint()
+    {
+        $auth = $this->getTestObjectInstance();
 
-    $auth = $this->getTestObjectInstance();
+        $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
+        $method = $reflection->getMethod('_endpoint');
+        $method->setAccessible(true);
+        $url = $method->invoke($auth, '_endpoint');
 
-    $url = 'http://www.example.com';
+        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/payments');
+    }
 
-    $auth->setReturnUrl($url);
+    public function test_setTestMode()
+    {
+        $auth = $this->getTestObjectInstance();
+        $this->assertFalse($auth->getTestMode());
+        $auth->setTestMode(true);
+        $this->assertTrue($auth->getTestMode());
+        $auth->setTestMode(false);
+        $this->assertFalse($auth->getTestMode());
+    }
 
-    $this->assertEqual($auth->getReturnUrl(), $url);
+    public function test_buildRequestMessage()
+    {
+        $auth = $this->getTestObject();
+        $arr = [
+            'request' => [
+                'amount' => 1233,
+                'currency' => 'EUR',
+                'description' => 'test',
+                'tracking_id' => 'my_custom_variable',
+                'notification_url' => '',
+                'return_url' => '',
+                'language' => 'en',
+                'test' => true,
+                'credit_card' => [
+                    'number' => '4200000000000000',
+                    'verification_value' => '123',
+                    'holder' => 'BEGATEWAY',
+                    'exp_month' => '01',
+                    'exp_year' => '2030',
+                    'token' => '',
+                    'skip_three_d_secure_verification' => '',
+                ],
 
-  }
+                'customer' => [
+                    'ip' => '127.0.0.1',
+                    'email' => 'john@example.com',
+                    'birth_date' => '1970-01-01',
+                ],
 
-  public function test_endpoint() {
+                'billing_address' => [
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
+                    'country' => 'LV',
+                    'city' => 'Riga',
+                    'state' => '',
+                    'zip' => 'LV-1082',
+                    'address' => 'Demo str 12',
+                    'phone' => '',
+                ],
 
-    $auth = $this->getTestObjectInstance();
+                'additional_data' => [
+                    'receipt_text' => [],
+                    'contract' => [],
+                ],
+            ],
+        ];
 
-    $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
-    $method = $reflection->getMethod('_endpoint');
-    $method->setAccessible(true);
-    $url = $method->invoke($auth, '_endpoint');
+        $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
+        $method = $reflection->getMethod('_buildRequestMessage');
+        $method->setAccessible(true);
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/payments');
+        $request = $method->invoke($auth, '_buildRequestMessage');
 
-  }
+        $this->assertEqual($arr, $request);
 
-  public function test_setTestMode() {
-    $auth = $this->getTestObjectInstance();
-    $this->assertFalse($auth->getTestMode());
-    $auth->setTestMode(true);
-    $this->assertTrue($auth->getTestMode());
-    $auth->setTestMode(false);
-    $this->assertFalse($auth->getTestMode());
-  }
+        $arr['request']['test'] = false;
+        $auth->setTestMode(false);
+        $request = $method->invoke($auth, '_buildRequestMessage');
 
-  public function test_buildRequestMessage() {
-    $auth = $this->getTestObject();
-    $arr = array(
-      'request' => array(
-        'amount' => 1233,
-        'currency' => 'EUR',
-        'description' => 'test',
-        'tracking_id' => 'my_custom_variable',
-        'notification_url' => '',
-        'return_url' => '',
-        'language' => 'en',
-        'test' => true,
-        'credit_card' => array(
-          'number' => '4200000000000000',
-          'verification_value' => '123',
-          'holder' => 'BEGATEWAY',
-          'exp_month' => '01',
-          'exp_year' => '2030',
-          'token' => '',
-          'skip_three_d_secure_verification' => '',
-        ),
+        $this->assertEqual($arr, $request);
+    }
 
-        'customer' => array(
-          'ip' => '127.0.0.1',
-          'email' => 'john@example.com',
-          'birth_date' => '1970-01-01'
-        ),
+    public function test_successPayment()
+    {
+        $auth = $this->getTestObject();
 
-        'billing_address' => array(
-          'first_name' => 'John',
-          'last_name' => 'Doe',
-          'country' => 'LV',
-          'city' => 'Riga',
-          'state' => '',
-          'zip' => 'LV-1082',
-          'address' => 'Demo str 12',
-          'phone' => ''
-        ),
-        
-        'additional_data' => array(
-            'receipt_text' => array(),
-            'contract' => array(),
-        )
-      )
-    );
+        $amount = rand(0, 10000) / 100;
 
-    $reflection = new \ReflectionClass( 'BeGateway\PaymentOperation');
-    $method = $reflection->getMethod('_buildRequestMessage');
-    $method->setAccessible(true);
+        $auth->money->setAmount($amount);
+        $cents = $auth->money->getCents();
 
-    $request = $method->invoke($auth, '_buildRequestMessage');
+        $response = $auth->submit();
 
-    $this->assertEqual($arr, $request);
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($response->getStatus(), 'successful');
+        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+    }
 
-    $arr['request']['test'] = false;
-    $auth->setTestMode(false);
-    $request = $method->invoke($auth, '_buildRequestMessage');
+    public function test_incompletePayment()
+    {
+        $auth = $this->getTestObject(true);
 
-    $this->assertEqual($arr, $request);
-  }
+        $amount = rand(0, 10000) / 100;
 
+        $auth->money->setAmount($amount);
+        $auth->card->setCardNumber('4012001037141112');
+        $cents = $auth->money->getCents();
 
-  public function test_successPayment() {
-    $auth = $this->getTestObject();
+        $response = $auth->submit();
 
-    $amount = rand(0,10000) / 100;
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isIncomplete());
+        $this->assertFalse($response->getMessage());
+        $this->assertNotNull($response->getUid());
+        $this->assertNotNull($response->getResponse()->transaction->redirect_url);
+        $this->assertTrue(preg_match('/process/', $response->getResponse()->transaction->redirect_url));
+        $this->assertEqual($response->getStatus(), 'incomplete');
+        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+    }
 
-    $auth->money->setAmount($amount);
-    $cents = $auth->money->getCents();
+    public function test_failedPayment()
+    {
+        $auth = $this->getTestObject();
+        $auth->card->setCardNumber('4005550000000019');
 
-    $response = $auth->submit();
+        $amount = rand(0, 10000) / 100;
 
-    $this->assertTrue($response->isValid());
-    $this->assertTrue($response->isSuccess());
-    $this->assertEqual($response->getMessage(), 'Successfully processed');
-    $this->assertNotNull($response->getUid());
-    $this->assertEqual($response->getStatus(), 'successful');
-    $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+        $auth->money->setAmount($amount);
+        $cents = $auth->money->getCents();
+        $auth->card->setCardExpMonth(10);
 
-  }
+        $response = $auth->submit();
 
-  public function test_incompletePayment() {
-    $auth = $this->getTestObject(true);
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isFailed());
+        $this->assertEqual($response->getMessage(), 'Payment was declined');
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($response->getStatus(), 'failed');
+        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+    }
 
-    $amount = rand(0,10000) / 100;
+    protected function getTestObject($threed = false)
+    {
+        $transaction = $this->getTestObjectInstance($threed);
 
-    $auth->money->setAmount($amount);
-    $auth->card->setCardNumber('4012001037141112');
-    $cents = $auth->money->getCents();
+        $transaction->money->setAmount(12.33);
+        $transaction->money->setCurrency('EUR');
+        $transaction->setDescription('test');
+        $transaction->setTrackingId('my_custom_variable');
+        $transaction->setTestMode(true);
 
-    $response = $auth->submit();
+        $transaction->card->setCardNumber('4200000000000000');
+        $transaction->card->setCardHolder('BEGATEWAY');
+        $transaction->card->setCardExpMonth(1);
+        $transaction->card->setCardExpYear(2030);
+        $transaction->card->setCardCvc('123');
 
-    $this->assertTrue($response->isValid());
-    $this->assertTrue($response->isIncomplete());
-    $this->assertFalse($response->getMessage());
-    $this->assertNotNull($response->getUid());
-    $this->assertNotNull($response->getResponse()->transaction->redirect_url);
-    $this->assertTrue(preg_match('/process/', $response->getResponse()->transaction->redirect_url));
-    $this->assertEqual($response->getStatus(), 'incomplete');
-    $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+        $transaction->customer->setFirstName('John');
+        $transaction->customer->setLastName('Doe');
+        $transaction->customer->setCountry('LV');
+        $transaction->customer->setAddress('Demo str 12');
+        $transaction->customer->setCity('Riga');
+        $transaction->customer->setZip('LV-1082');
+        $transaction->customer->setIp('127.0.0.1');
+        $transaction->customer->setEmail('john@example.com');
+        $transaction->customer->setBirthDate('1970-01-01');
 
-  }
+        return $transaction;
+    }
 
-  public function test_failedPayment() {
-    $auth = $this->getTestObject();
-    $auth->card->setCardNumber('4005550000000019');
+    protected function getTestObjectInstance($threed = false)
+    {
+        self::authorizeFromEnv($threed);
 
-    $amount = rand(0,10000) / 100;
-
-    $auth->money->setAmount($amount);
-    $cents = $auth->money->getCents();
-    $auth->card->setCardExpMonth(10);
-
-    $response = $auth->submit();
-
-    $this->assertTrue($response->isValid());
-    $this->assertTrue($response->isFailed());
-    $this->assertEqual($response->getMessage(), 'Payment was declined');
-    $this->assertNotNull($response->getUid());
-    $this->assertEqual($response->getStatus(), 'failed');
-    $this->assertEqual($cents, $response->getResponse()->transaction->amount);
-
-  }
-
-  protected function getTestObject($threed = false) {
-
-    $transaction = $this->getTestObjectInstance($threed);
-
-    $transaction->money->setAmount(12.33);
-    $transaction->money->setCurrency('EUR');
-    $transaction->setDescription('test');
-    $transaction->setTrackingId('my_custom_variable');
-    $transaction->setTestMode(true);
-
-    $transaction->card->setCardNumber('4200000000000000');
-    $transaction->card->setCardHolder('BEGATEWAY');
-    $transaction->card->setCardExpMonth(1);
-    $transaction->card->setCardExpYear(2030);
-    $transaction->card->setCardCvc('123');
-
-    $transaction->customer->setFirstName('John');
-    $transaction->customer->setLastName('Doe');
-    $transaction->customer->setCountry('LV');
-    $transaction->customer->setAddress('Demo str 12');
-    $transaction->customer->setCity('Riga');
-    $transaction->customer->setZip('LV-1082');
-    $transaction->customer->setIp('127.0.0.1');
-    $transaction->customer->setEmail('john@example.com');
-    $transaction->customer->setBirthDate('1970-01-01');
-
-    return $transaction;
-  }
-
-  protected function getTestObjectInstance($threed = false) {
-    self::authorizeFromEnv($threed);
-
-    return new PaymentOperation();
-  }
+        return new PaymentOperation();
+    }
 }
-?>

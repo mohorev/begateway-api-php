@@ -1,6 +1,7 @@
 <?php
+
 namespace BeGateway;
 
-class PaymentOperation extends AuthorizationOperation {
+class PaymentOperation extends AuthorizationOperation
+{
 }
-?>

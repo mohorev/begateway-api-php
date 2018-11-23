@@ -1,6 +1,7 @@
 <?php
+
 namespace BeGateway\PaymentMethod;
 
-class Emexvoucher extends Base {
+class Emexvoucher extends Base
+{
 }
-?>

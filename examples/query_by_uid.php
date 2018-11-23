@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../lib/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -34,17 +35,16 @@ $transaction->customer->setEmail('john@example.com');
 $response = $transaction->submit();
 
 print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus(). PHP_EOL);
+print("Transaction status: " . $response->getStatus() . PHP_EOL);
 
-if ($response->isSuccess() ) {
-  print("Transaction UID: " . $response->getUid() . PHP_EOL);
-  print("Trying to Query by UID " . $response->getUid() . PHP_EOL);
+if ($response->isSuccess()) {
+    print("Transaction UID: " . $response->getUid() . PHP_EOL);
+    print("Trying to Query by UID " . $response->getUid() . PHP_EOL);
 
-  $query = new \BeGateway\QueryByUid;
-  $query->setUid($response->getUid());
+    $query = new \BeGateway\QueryByUid;
+    $query->setUid($response->getUid());
 
-  $query_response = $query->submit();
+    $query_response = $query->submit();
 
-  print_r($query_response);
+    print_r($query_response);
 }
-?>

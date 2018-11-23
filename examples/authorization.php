@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../lib/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -35,9 +36,8 @@ $transaction->customer->setEmail('john@example.com');
 $response = $transaction->submit();
 
 print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus(). PHP_EOL);
+print("Transaction status: " . $response->getStatus() . PHP_EOL);
 
-if ($response->isSuccess() || $response->isFailed() ) {
-  print("Transaction UID: " . $response->getUid() . PHP_EOL);
+if ($response->isSuccess() || $response->isFailed()) {
+    print("Transaction UID: " . $response->getUid() . PHP_EOL);
 }
-?>

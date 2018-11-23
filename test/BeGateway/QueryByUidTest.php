@@ -1,91 +1,96 @@
 <?php
+
 namespace BeGateway;
 
-class QueryByUidTest extends TestCase {
+class QueryByUidTest extends TestCase
+{
+    public function test_setUid()
+    {
+        $q = $this->getTestObjectInstance();
 
-  public function test_setUid() {
-    $q = $this->getTestObjectInstance();
+        $q->setUid('123456');
 
-    $q->setUid('123456');
+        $this->assertEqual($q->getUid(), '123456');
+    }
 
-    $this->assertEqual($q->getUid(), '123456');
-  }
+    public function test_endpoint()
+    {
+        $q = $this->getTestObjectInstance();
+        $q->setUid('1234');
 
-  public function test_endpoint() {
+        $reflection = new \ReflectionClass('BeGateway\QueryByUid');
+        $method = $reflection->getMethod('_endpoint');
+        $method->setAccessible(true);
+        $url = $method->invoke($q, '_endpoint');
 
-    $q = $this->getTestObjectInstance();
-    $q->setUid('1234');
+        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/1234');
 
-    $reflection = new \ReflectionClass('BeGateway\QueryByUid');
-    $method = $reflection->getMethod('_endpoint');
-    $method->setAccessible(true);
-    $url = $method->invoke($q, '_endpoint');
+    }
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/1234');
+    public function test_queryRequest()
+    {
+        $amount = rand(0, 10000);
 
-  }
+        $parent = $this->runParentTransaction($amount);
 
-  public function test_queryRequest() {
-    $amount = rand(0,10000);
+        $q = $this->getTestObjectInstance();
 
-    $parent = $this->runParentTransaction($amount);
+        $q->setUid($parent->getUid());
 
-    $q = $this->getTestObjectInstance();
+        $response = $q->submit();
 
-    $q->setUid($parent->getUid());
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($parent->getUid(), $response->getUid());
+    }
 
-    $response = $q->submit();
+    public function test_queryResponseForUnknownUid()
+    {
+        $q = $this->getTestObjectInstance();
 
-    $this->assertTrue($response->isValid());
-    $this->assertTrue($response->isSuccess());
-    $this->assertNotNull($response->getUid());
-    $this->assertEqual($parent->getUid(), $response->getUid());
-  }
+        $q->setUid('1234567890qwerty');
 
-  public function test_queryResponseForUnknownUid() {
-    $q = $this->getTestObjectInstance();
+        $response = $q->submit();
 
-    $q->setUid('1234567890qwerty');
+        $this->assertTrue($response->isValid());
 
-    $response = $q->submit();
+        $this->assertEqual($response->getMessage(), 'Record not found');
+    }
 
-    $this->assertTrue($response->isValid());
+    protected function runParentTransaction($amount = 10.00)
+    {
+        self::authorizeFromEnv();
 
-    $this->assertEqual($response->getMessage(), 'Record not found');
-  }
+        $transaction = new PaymentOperation();
 
-  protected function runParentTransaction($amount = 10.00 ) {
-    self::authorizeFromEnv();
+        $transaction->money->setAmount($amount);
+        $transaction->money->setCurrency('EUR');
+        $transaction->setDescription('test');
+        $transaction->setTrackingId('my_custom_variable');
 
-    $transaction = new PaymentOperation();
+        $transaction->card->setCardNumber('4200000000000000');
+        $transaction->card->setCardHolder('John Doe');
+        $transaction->card->setCardExpMonth(1);
+        $transaction->card->setCardExpYear(2030);
+        $transaction->card->setCardCvc('123');
 
-    $transaction->money->setAmount($amount);
-    $transaction->money->setCurrency('EUR');
-    $transaction->setDescription('test');
-    $transaction->setTrackingId('my_custom_variable');
+        $transaction->customer->setFirstName('John');
+        $transaction->customer->setLastName('Doe');
+        $transaction->customer->setCountry('LV');
+        $transaction->customer->setAddress('Demo str 12');
+        $transaction->customer->setCity('Riga');
+        $transaction->customer->setZip('LV-1082');
+        $transaction->customer->setIp('127.0.0.1');
+        $transaction->customer->setEmail('john@example.com');
 
-    $transaction->card->setCardNumber('4200000000000000');
-    $transaction->card->setCardHolder('John Doe');
-    $transaction->card->setCardExpMonth(1);
-    $transaction->card->setCardExpYear(2030);
-    $transaction->card->setCardCvc('123');
+        return $transaction->submit();
+    }
 
-    $transaction->customer->setFirstName('John');
-    $transaction->customer->setLastName('Doe');
-    $transaction->customer->setCountry('LV');
-    $transaction->customer->setAddress('Demo str 12');
-    $transaction->customer->setCity('Riga');
-    $transaction->customer->setZip('LV-1082');
-    $transaction->customer->setIp('127.0.0.1');
-    $transaction->customer->setEmail('john@example.com');
+    protected function getTestObjectInstance()
+    {
+        self::authorizeFromEnv();
 
-    return $transaction->submit();
-  }
-
-  protected function getTestObjectInstance() {
-    self::authorizeFromEnv();
-
-    return new QueryByUid();
-  }
+        return new QueryByUid();
+    }
 }
-?>

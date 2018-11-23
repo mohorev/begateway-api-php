@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../lib/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -39,7 +40,6 @@ $response = $transaction->submit();
 
 print("Transaction message: " . $response->getMessage() . PHP_EOL);
 
-if ($response->isSuccess() ) {
-  print("Token: " . $response->getToken() . PHP_EOL);
+if ($response->isSuccess()) {
+    print("Token: " . $response->getToken() . PHP_EOL);
 }
-?>

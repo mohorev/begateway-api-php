@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../lib/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -34,28 +35,27 @@ $transaction->customer->setEmail('john@example.com');
 $response = $transaction->submit();
 
 print("Transaction message: " . $response->getMessage() . PHP_EOL);
-print("Transaction status: " . $response->getStatus(). PHP_EOL);
+print("Transaction status: " . $response->getStatus() . PHP_EOL);
 
-if ($response->isSuccess() ) {
-  print("Transaction UID: " . $response->getUid() . PHP_EOL);
-  print("Trying to Credit to card " . $transaction->card->getCardNumber() . PHP_EOL);
+if ($response->isSuccess()) {
+    print("Transaction UID: " . $response->getUid() . PHP_EOL);
+    print("Trying to Credit to card " . $transaction->card->getCardNumber() . PHP_EOL);
 
-  $credit = new \BeGateway\CreditOperation;
+    $credit = new \BeGateway\CreditOperation;
 
-  $amount = rand(100, 10000);
+    $amount = rand(100, 10000);
 
-  $credit->money->setAmount($amount);
-  $credit->money->setCurrency('USD');
-  $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
-  $credit->setDescription('Test credit');
+    $credit->money->setAmount($amount);
+    $credit->money->setCurrency('USD');
+    $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
+    $credit->setDescription('Test credit');
 
-  $credit_response = $credit->submit();
+    $credit_response = $credit->submit();
 
-  if ($credit_response->isSuccess()) {
-    print("Credited successfuly. Credit transaction UID " . $credit_response->getUid() . PHP_EOL);
-  }else{
-    print("Problem to credit" . PHP_EOL);
-    print("Credit message: " . $credit_response->getMessage() . PHP_EOL);
-  }
+    if ($credit_response->isSuccess()) {
+        print("Credited successfuly. Credit transaction UID " . $credit_response->getUid() . PHP_EOL);
+    } else {
+        print("Problem to credit" . PHP_EOL);
+        print("Credit message: " . $credit_response->getMessage() . PHP_EOL);
+    }
 }
-?>

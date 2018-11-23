@@ -1,130 +1,135 @@
 <?php
+
 namespace BeGateway;
 
-class CaptureOperationTest extends TestCase {
+class CaptureOperationTest extends TestCase
+{
+    public function test_setParentUid()
+    {
+        $transaction = $this->getTestObjectInstance();
+        $uid = '1234567';
 
-  public function test_setParentUid() {
-    $transaction = $this->getTestObjectInstance();
-    $uid = '1234567';
+        $transaction->setParentUid($uid);
 
-    $transaction->setParentUid($uid);
+        $this->assertEqual($uid, $transaction->getParentUid());
+    }
 
-    $this->assertEqual($uid, $transaction->getParentUid());
-  }
+    public function test_buildRequestMessage()
+    {
+        $transaction = $this->getTestObject();
+        $arr = [
+            'request' => [
+                'parent_uid' => '12345678',
+                'amount' => 1256,
+            ],
+        ];
 
-  public function test_buildRequestMessage() {
-    $transaction = $this->getTestObject();
-    $arr = array(
-      'request' => array(
-        'parent_uid' => '12345678',
-        'amount' => 1256
-      )
-    );
+        $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
+        $method = $reflection->getMethod('_buildRequestMessage');
+        $method->setAccessible(true);
 
-    $reflection = new \ReflectionClass( 'BeGateway\CaptureOperation' );
-    $method = $reflection->getMethod('_buildRequestMessage');
-    $method->setAccessible(true);
+        $request = $method->invoke($transaction, '_buildRequestMessage');
 
-    $request = $method->invoke($transaction, '_buildRequestMessage');
+        $this->assertEqual($arr, $request);
+    }
 
-    $this->assertEqual($arr, $request);
-  }
+    public function test_endpoint()
+    {
+        $auth = $this->getTestObjectInstance();
 
-  public function test_endpoint() {
+        $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
+        $method = $reflection->getMethod('_endpoint');
+        $method->setAccessible(true);
+        $url = $method->invoke($auth, '_endpoint');
 
-    $auth = $this->getTestObjectInstance();
+        $this->assertEqual($url, Settings::$gatewayBase . '/transactions/captures');
 
-    $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
-    $method = $reflection->getMethod('_endpoint');
-    $method->setAccessible(true);
-    $url = $method->invoke($auth, '_endpoint');
+    }
 
-    $this->assertEqual($url, Settings::$gatewayBase . '/transactions/captures');
+    public function test_successCapture()
+    {
+        $amount = rand(0, 10000);
 
-  }
+        $parent = $this->runParentTransaction($amount);
 
-  public function test_successCapture() {
+        $transaction = $this->getTestObjectInstance();
 
-    $amount = rand(0,10000);
+        $transaction->money->setAmount($amount);
+        $transaction->setParentUid($parent->getUid());
 
-    $parent = $this->runParentTransaction($amount);
+        $t_response = $transaction->submit();
 
-    $transaction = $this->getTestObjectInstance();
+        $this->assertTrue($t_response->isValid());
+        $this->assertTrue($t_response->isSuccess());
+        $this->assertNotNull($t_response->getUid());
+        $this->assertEqual($t_response->getMessage(), 'Successfully processed');
+        $this->assertEqual($t_response->getResponse()->transaction->parent_uid, $parent->getUid());
 
-    $transaction->money->setAmount($amount);
-    $transaction->setParentUid($parent->getUid());
+    }
 
-    $t_response = $transaction->submit();
+    public function test_errorCapture()
+    {
+        $amount = rand(0, 10000);
 
-    $this->assertTrue($t_response->isValid());
-    $this->assertTrue($t_response->isSuccess());
-    $this->assertNotNull($t_response->getUid());
-    $this->assertEqual($t_response->getMessage(),'Successfully processed');
-    $this->assertEqual($t_response->getResponse()->transaction->parent_uid,$parent->getUid());
+        $parent = $this->runParentTransaction($amount);
 
-  }
+        $transaction = $this->getTestObjectInstance();
 
-  public function test_errorCapture() {
-    $amount = rand(0,10000);
+        $transaction->money->setAmount($amount + 1);
+        $transaction->setParentUid($parent->getUid());
 
-    $parent = $this->runParentTransaction($amount);
+        $t_response = $transaction->submit();
 
-    $transaction = $this->getTestObjectInstance();
+        $this->assertTrue($t_response->isValid());
+        $this->assertTrue($t_response->isError());
+        $this->assertTrue(preg_match('/Amount can\'t be greater than/', $t_response->getMessage()));
 
-    $transaction->money->setAmount($amount + 1);
-    $transaction->setParentUid($parent->getUid());
+    }
 
-    $t_response = $transaction->submit();
+    protected function runParentTransaction($amount = 10.00)
+    {
+        self::authorizeFromEnv();
 
-    $this->assertTrue($t_response->isValid());
-    $this->assertTrue($t_response->isError());
-    $this->assertTrue(preg_match('/Amount can\'t be greater than/', $t_response->getMessage()));
+        $transaction = new AuthorizationOperation();
 
-  }
+        $transaction->money->setAmount($amount);
+        $transaction->money->setCurrency('EUR');
+        $transaction->setDescription('test');
+        $transaction->setTrackingId('my_custom_variable');
 
-  protected function runParentTransaction($amount = 10.00 ) {
-    self::authorizeFromEnv();
+        $transaction->card->setCardNumber('4200000000000000');
+        $transaction->card->setCardHolder('John Doe');
+        $transaction->card->setCardExpMonth(1);
+        $transaction->card->setCardExpYear(2030);
+        $transaction->card->setCardCvc('123');
 
-    $transaction = new AuthorizationOperation();
+        $transaction->customer->setFirstName('John');
+        $transaction->customer->setLastName('Doe');
+        $transaction->customer->setCountry('LV');
+        $transaction->customer->setAddress('Demo str 12');
+        $transaction->customer->setCity('Riga');
+        $transaction->customer->setZip('LV-1082');
+        $transaction->customer->setIp('127.0.0.1');
+        $transaction->customer->setEmail('john@example.com');
 
-    $transaction->money->setAmount($amount);
-    $transaction->money->setCurrency('EUR');
-    $transaction->setDescription('test');
-    $transaction->setTrackingId('my_custom_variable');
+        return $transaction->submit();
+    }
 
-    $transaction->card->setCardNumber('4200000000000000');
-    $transaction->card->setCardHolder('John Doe');
-    $transaction->card->setCardExpMonth(1);
-    $transaction->card->setCardExpYear(2030);
-    $transaction->card->setCardCvc('123');
+    protected function getTestObject()
+    {
+        $transaction = $this->getTestObjectInstance();
 
-    $transaction->customer->setFirstName('John');
-    $transaction->customer->setLastName('Doe');
-    $transaction->customer->setCountry('LV');
-    $transaction->customer->setAddress('Demo str 12');
-    $transaction->customer->setCity('Riga');
-    $transaction->customer->setZip('LV-1082');
-    $transaction->customer->setIp('127.0.0.1');
-    $transaction->customer->setEmail('john@example.com');
+        $transaction->setParentUid('12345678');
 
-    return $transaction->submit();
-  }
+        $transaction->money->setAmount(12.56);
 
-  protected function getTestObject() {
-    $transaction = $this->getTestObjectInstance();
+        return $transaction;
+    }
 
-    $transaction->setParentUid('12345678');
+    protected function getTestObjectInstance()
+    {
+        self::authorizeFromEnv();
 
-    $transaction->money->setAmount(12.56);
-
-    return $transaction;
-
-  }
-
-  protected function getTestObjectInstance() {
-    self::authorizeFromEnv();
-
-    return new CaptureOperation();
-  }
+        return new CaptureOperation();
+    }
 }
-?>

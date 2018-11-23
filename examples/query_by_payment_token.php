@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../lib/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -12,4 +13,3 @@ $query->setToken($token);
 $query_response = $query->submit();
 
 print_r($query_response);
-?>
