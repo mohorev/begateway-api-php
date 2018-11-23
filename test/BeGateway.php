@@ -30,11 +30,11 @@ require_once(dirname(__FILE__) . '/../src/BeGateway.php');
 
 $log_level = getenv('LOG_LEVEL');
 
-if ($log_level == 'DEBUG') {
-    \BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
-} else {
-    \BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::INFO);
-}
+//if ($log_level == 'DEBUG') {
+//    \BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
+//} else {
+//    \BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::INFO);
+//}
 
 require_once(dirname(__FILE__) . '/BeGateway/TestCase.php');
 require_once(dirname(__FILE__) . '/BeGateway/MoneyTest.php');
