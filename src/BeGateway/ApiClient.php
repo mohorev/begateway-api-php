@@ -3,9 +3,13 @@
 namespace BeGateway;
 
 use BeGateway\Contract\Request;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class ApiClient
+class ApiClient implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var \BeGateway\Contract\GatewayTransport
      */
