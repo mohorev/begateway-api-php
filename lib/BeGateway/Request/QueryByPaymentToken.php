@@ -2,7 +2,7 @@
 
 namespace BeGateway\Request;
 
-use BeGateway\ResponseCheckout;
+use BeGateway\Response\CheckoutResponse;
 use BeGateway\Settings;
 
 class QueryByPaymentToken extends BaseRequest
@@ -31,6 +31,6 @@ class QueryByPaymentToken extends BaseRequest
 
     public function submit()
     {
-        return new ResponseCheckout($this->remoteRequest());
+        return new CheckoutResponse($this->remoteRequest());
     }
 }

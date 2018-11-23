@@ -1,8 +1,8 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Response;
 
-class ResponseCheckout extends ResponseBase
+class CheckoutResponse extends BaseResponse
 {
     public function isSuccess()
     {

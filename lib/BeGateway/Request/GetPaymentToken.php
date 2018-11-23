@@ -7,7 +7,7 @@ use BeGateway\Customer;
 use BeGateway\Language;
 use BeGateway\Logger;
 use BeGateway\Money;
-use BeGateway\ResponseCheckout;
+use BeGateway\Response\CheckoutResponse;
 use BeGateway\Settings;
 
 class GetPaymentToken extends BaseRequest
@@ -112,7 +112,7 @@ class GetPaymentToken extends BaseRequest
 
     public function submit()
     {
-        return new ResponseCheckout($this->remoteRequest());
+        return new CheckoutResponse($this->remoteRequest());
     }
 
     public function setDescription($description)

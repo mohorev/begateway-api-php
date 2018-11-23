@@ -2,6 +2,8 @@
 
 namespace BeGateway;
 
+use BeGateway\Response\WebhookResponse;
+
 class WebhookTest extends TestCase
 {
 
@@ -83,7 +85,7 @@ class WebhookTest extends TestCase
     {
         $w = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Webhook');
+        $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage()));
@@ -99,7 +101,7 @@ class WebhookTest extends TestCase
     {
         $w = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Webhook');
+        $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage('failed')));
@@ -115,7 +117,7 @@ class WebhookTest extends TestCase
     {
         $w = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Webhook');
+        $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage('failed', true)));
@@ -133,7 +135,7 @@ class WebhookTest extends TestCase
     {
         $w = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\Webhook');
+        $reflection = new \ReflectionClass('BeGateway\Response\WebhookResponse');
         $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode(''));
@@ -145,7 +147,7 @@ class WebhookTest extends TestCase
     {
         self::authorizeFromEnv();
 
-        return new Webhook();
+        return new WebhookResponse();
     }
 
     private function _clearAuthData()

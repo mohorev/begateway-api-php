@@ -15,20 +15,19 @@ if (!class_exists('\BeGateway\Settings')) {
     require_once (__DIR__ . '/BeGateway/AdditionalData.php');
     require_once (__DIR__ . '/BeGateway/Card.php');
     require_once (__DIR__ . '/BeGateway/Money.php');
-    require_once (__DIR__ . '/BeGateway/ResponseBase.php');
-    require_once (__DIR__ . '/BeGateway/Response.php');
-    require_once (__DIR__ . '/BeGateway/ResponseCheckout.php');
-    require_once (__DIR__ . '/BeGateway/ResponseCardToken.php');
     require_once (__DIR__ . '/BeGateway/GatewayTransport.php');
     require_once (__DIR__ . '/BeGateway/AdditionalData.php');
 
-    require_once (__DIR__ . '/BeGateway/Webhook.php');
-
+    require_once (__DIR__ . '/BeGateway/Contract/Request.php');
+    require_once (__DIR__ . '/BeGateway/Contract/Response.php');
+    require_once (__DIR__ . '/BeGateway/Contract/GatewayTransport.php');
     require_once (__DIR__ . '/BeGateway/Contract/PaymentMethod.php');
+
     require_once (__DIR__ . '/BeGateway/PaymentMethod/Erip.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/CreditCard.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/CreditCardHalva.php');
     require_once (__DIR__ . '/BeGateway/PaymentMethod/EmexVoucher.php');
+
     require_once (__DIR__ . '/BeGateway/Request/BaseRequest.php');
     require_once (__DIR__ . '/BeGateway/Request/AuthorizationOperation.php');
     require_once (__DIR__ . '/BeGateway/Request/CreditOperation.php');
@@ -42,4 +41,10 @@ if (!class_exists('\BeGateway\Settings')) {
     require_once (__DIR__ . '/BeGateway/Request/CaptureOperation.php');
     require_once (__DIR__ . '/BeGateway/Request/VoidOperation.php');
     require_once (__DIR__ . '/BeGateway/Request/RefundOperation.php');
+
+    require_once (__DIR__ . '/BeGateway/Response/BaseResponse.php');
+    require_once (__DIR__ . '/BeGateway/Response/CardTokenResponse.php');
+    require_once (__DIR__ . '/BeGateway/Response/CheckoutResponse.php');
+    require_once (__DIR__ . '/BeGateway/Response/TransactionResponse.php');
+    require_once (__DIR__ . '/BeGateway/Response/WebhookResponse.php');
 }

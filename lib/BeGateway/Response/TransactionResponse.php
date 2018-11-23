@@ -1,8 +1,8 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Response;
 
-class Response extends ResponseBase
+class TransactionResponse extends BaseResponse
 {
     const
         STATUS_FAILED = 'failed',

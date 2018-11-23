@@ -1,8 +1,10 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Response;
 
-class ResponseCardToken extends ResponseBase
+use BeGateway\Card;
+
+class CardTokenResponse extends BaseResponse
 {
     public $card;
 

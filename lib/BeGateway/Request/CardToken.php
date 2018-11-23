@@ -4,7 +4,7 @@ namespace BeGateway\Request;
 
 use BeGateway\Card;
 use BeGateway\Logger;
-use BeGateway\ResponseCardToken;
+use BeGateway\Response\CardTokenResponse;
 use BeGateway\Settings;
 
 class CardToken extends BaseRequest
@@ -18,7 +18,7 @@ class CardToken extends BaseRequest
 
     public function submit()
     {
-        return new ResponseCardToken($this->remoteRequest());
+        return new CardTokenResponse($this->remoteRequest());
     }
 
     protected function buildRequestMessage()

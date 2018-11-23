@@ -1,8 +1,10 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Response;
 
-abstract class ResponseBase
+use BeGateway\Contract\Response;
+
+abstract class BaseResponse implements Response
 {
     protected $response;
     protected $responseArray;

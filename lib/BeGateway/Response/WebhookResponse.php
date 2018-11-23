@@ -1,8 +1,10 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Response;
 
-class Webhook extends Response
+use BeGateway\Settings;
+
+class WebhookResponse extends TransactionResponse
 {
     protected $id;
     protected $key;

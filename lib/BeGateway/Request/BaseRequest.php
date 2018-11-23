@@ -4,7 +4,7 @@ namespace BeGateway\Request;
 
 use BeGateway\GatewayTransport;
 use BeGateway\Language;
-use BeGateway\Response;
+use BeGateway\Response\TransactionResponse;
 use BeGateway\Settings;
 
 abstract class BaseRequest
@@ -24,7 +24,7 @@ abstract class BaseRequest
             $response = '{ "errors":"' . $msg . '", "message":"' . $msg . '" }';
         }
 
-        return new Response($response);
+        return new TransactionResponse($response);
     }
 
     /**
