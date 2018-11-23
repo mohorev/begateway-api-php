@@ -2,18 +2,58 @@
 
 namespace BeGateway;
 
+/**
+ * Customer is the class for data of customer making a purchase at shop.
+ *
+ * @package BeGateway
+ */
 class Customer
 {
+    /**
+     * @var string the IP address of customer.
+     */
     private $ip;
+    /**
+     * @var string the email of customer.
+     */
     private $email;
+    /**
+     * @var string the first name. Max length: 30 chars.
+     */
     private $firstName;
+    /**
+     * @var string the last name. Max length: 30 chars.
+     */
     private $lastName;
-    private $address;
-    private $city;
+    /**
+     * @var string the billing country in ISO 3166-1 Alpha-2 format.
+     */
     private $country;
+    /**
+     * @var string the billing city. Max length: 60 chars.
+     */
+    private $city;
+    /**
+     * @var string the two-letter billing state only if the billing
+     * address country is US or CA.
+     */
     private $state;
+    /**
+     * @var string the billing ZIP or postal code. If country=US,
+     * zip format must be NNNNN or NNNNN-NNNN. Optional.
+     */
     private $zip;
+    /**
+     * @var string the billing address. Max length: 255 chars
+     */
+    private $address;
+    /**
+     * @var string the phone number. Max length: 100 chars
+     */
     private $phone;
+    /**
+     * @var string the birth date in ISO 8601 format YYYY-MM-DD. Optional.
+     */
     private $birthDate;
 
     public function setIP($ip)
