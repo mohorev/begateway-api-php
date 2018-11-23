@@ -1,0 +1,1 @@
+- Logger should filter sensitive data
