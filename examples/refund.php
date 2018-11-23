@@ -48,7 +48,7 @@ if ($response->isSuccess()) {
     $refund_response = $refund->submit();
 
     if ($refund_response->isSuccess()) {
-        print("Refund successfuly. Refund transaction UID " . $refund_response->getUid() . PHP_EOL);
+        print("Refund successfully. Refund transaction UID " . $refund_response->getUid() . PHP_EOL);
     } else {
         print("Problem to refund" . PHP_EOL);
         print("Refund message: " . $refund_response->getMessage() . PHP_EOL);

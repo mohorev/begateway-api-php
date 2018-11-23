@@ -53,7 +53,7 @@ if ($response->isSuccess()) {
     $credit_response = $credit->submit();
 
     if ($credit_response->isSuccess()) {
-        print("Credited successfuly. Credit transaction UID " . $credit_response->getUid() . PHP_EOL);
+        print("Credited successfully. Credit transaction UID " . $credit_response->getUid() . PHP_EOL);
     } else {
         print("Problem to credit" . PHP_EOL);
         print("Credit message: " . $credit_response->getMessage() . PHP_EOL);

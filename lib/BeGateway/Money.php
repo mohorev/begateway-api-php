@@ -16,7 +16,8 @@ class Money
 
     public function getCents()
     {
-        $cents = ($this->_cents) ? $this->_cents : intval(strval($this->_amount * $this->_currency_multiplyer()));
+        $cents = ($this->_cents) ? $this->_cents : intval(strval($this->_amount * $this->_currency_multiplier()));
+
         return $cents;
     }
 
@@ -37,8 +38,9 @@ class Money
         if ($this->_amount) {
             $amount = $this->_amount;
         } else {
-            $amount = $this->_cents / $this->_currency_multiplyer();
+            $amount = $this->_cents / $this->_currency_multiplier();
         }
+
         return floatval(strval($amount));
     }
 
@@ -54,8 +56,7 @@ class Money
 
     private function _currency_power()
     {
-
-        //array currency code => mutiplyer
+        //array currency code => multiplier
         $exceptions = [
             'BIF' => 0,
             'BYR' => 0,
@@ -94,17 +95,18 @@ class Money
             'TND' => 3,
         ];
 
-        $power = 2; //default value
+        $power = 2; // default value
         foreach ($exceptions as $key => $value) {
             if (($this->_currency == $key)) {
                 $power = $value;
                 break;
             }
         }
+
         return $power;
     }
 
-    private function _currency_multiplyer()
+    private function _currency_multiplier()
     {
         return pow(10, $this->_currency_power());
     }

@@ -47,7 +47,7 @@ if ($response->isSuccess()) {
     $void_response = $void->submit();
 
     if ($void_response->isSuccess()) {
-        print("Voided successfuly. Void transaction UID " . $void_response->getUid() . PHP_EOL);
+        print("Voided successfully. Void transaction UID " . $void_response->getUid() . PHP_EOL);
     } else {
         print("Problem to void" . PHP_EOL);
         print("Void message: " . $void_response->getMessage() . PHP_EOL);

@@ -117,9 +117,9 @@ class Customer
         return $this->_customer_phone;
     }
 
-    public function setBirthDate($birthdate)
+    public function setBirthDate($birthDate)
     {
-        $this->_customer_birth_date = $this->_setNullIfEmpty($birthdate);
+        $this->_customer_birth_date = $this->_setNullIfEmpty($birthDate);
     }
 
     public function getBirthDate()

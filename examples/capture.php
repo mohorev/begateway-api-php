@@ -48,7 +48,7 @@ if ($response->isSuccess()) {
     $capture_response = $capture->submit();
 
     if ($capture_response->isSuccess()) {
-        print("Captured successfuly. Captured transaction UID " . $capture_response->getUid() . PHP_EOL);
+        print("Captured successfully. Captured transaction UID " . $capture_response->getUid() . PHP_EOL);
     } else {
         print("Problem to capture" . PHP_EOL);
         print("Capture message: " . $capture_response->getMessage() . PHP_EOL);
