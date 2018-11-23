@@ -2,6 +2,7 @@
 
 namespace BeGateway;
 
+use BeGateway\Contract\GatewayTransport;
 use BeGateway\Contract\Request;
 use BeGateway\Request\CardToken;
 use BeGateway\Request\GetPaymentToken;
@@ -37,7 +38,7 @@ class ApiClient implements LoggerAwareInterface
     /**
      * Initialize a new Api Client.
      *
-     * @param GatewayTransport $transport
+     * @param \BeGateway\Contract\GatewayTransport $transport
      */
     public function __construct(GatewayTransport $transport = null)
     {
