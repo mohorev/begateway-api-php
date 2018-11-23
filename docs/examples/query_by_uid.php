@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '/../lib/BeGateway.php';
+require_once __DIR__ . '/../../src/BeGateway.php';
 require_once __DIR__ . '/test_shop_data.php';
 
 \BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
 
-$transaction = new \BeGateway\Request\AuthorizationOperation;
+$transaction = new \BeGateway\Request\PaymentOperation;
 
 $amount = rand(1, 100);
 
@@ -39,18 +39,12 @@ print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
 if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
-    print 'Trying to Capture transaction ' . $response->getUid() . PHP_EOL;
+    print 'Trying to Query by UID ' . $response->getUid() . PHP_EOL;
 
-    $capture = new \BeGateway\Request\CaptureOperation;
-    $capture->setParentUid($response->getUid());
-    $capture->money->setAmount($transaction->money->getAmount());
+    $query = new \BeGateway\Request\QueryByUid;
+    $query->setUid($response->getUid());
 
-    $response = $capture->submit();
+    $response = $query->submit();
 
-    if ($response->isSuccess()) {
-        print 'Captured successfully. Captured transaction UID ' . $response->getUid() . PHP_EOL;
-    } else {
-        print 'Problem to capture' . PHP_EOL;
-        print 'Capture message: ' . $response->getMessage() . PHP_EOL;
-    }
+    print_r($response);
 }

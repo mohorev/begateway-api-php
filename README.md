@@ -55,7 +55,7 @@ This data you will receive from your payment processor.
 Simple usage looks like:
 
 ```php
-require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/lib/BeGateway.php';
+require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/src/BeGateway.php';
 
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
@@ -96,7 +96,7 @@ if ($response->isSuccess()) {
 Simple usage looks like:
 
 ```php
-require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/lib/BeGateway.php';
+require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/src/BeGateway.php';
 
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
@@ -142,7 +142,7 @@ if ($response->isSuccess()) {
 
 ## Examples
 
-See the [examples](examples) directory for integration examples of different
+See the [examples](docs/examples) directory for integration examples of different
 transactions.
 
 ## Documentation
