@@ -6,11 +6,6 @@ class QueryByUid extends ApiAbstract
 {
     private $uid;
 
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/' . $this->getUid();
-    }
-
     public function setUid($uid)
     {
         $this->uid = $uid;
@@ -24,5 +19,10 @@ class QueryByUid extends ApiAbstract
     protected function buildRequestMessage()
     {
         return '';
+    }
+
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/transactions/' . $this->getUid();
     }
 }

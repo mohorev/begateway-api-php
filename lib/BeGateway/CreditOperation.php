@@ -55,4 +55,8 @@ class CreditOperation extends ApiAbstract
         return $request;
     }
 
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
+    }
 }

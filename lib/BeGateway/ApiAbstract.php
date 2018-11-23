@@ -8,6 +8,8 @@ abstract class ApiAbstract
 
     abstract protected function buildRequestMessage();
 
+    abstract protected function endpoint();
+
     public function submit()
     {
         try {
@@ -26,13 +28,12 @@ abstract class ApiAbstract
      */
     protected function remoteRequest()
     {
-        return GatewayTransport::submit(Settings::$shopId, Settings::$shopKey, $this->endpoint(),
-            $this->buildRequestMessage());
-    }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
+        return GatewayTransport::submit(
+            Settings::$shopId,
+            Settings::$shopKey,
+            $this->endpoint(),
+            $this->buildRequestMessage()
+        );
     }
 
     protected function getTransactionType()

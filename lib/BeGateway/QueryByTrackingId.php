@@ -6,11 +6,6 @@ class QueryByTrackingId extends ApiAbstract
 {
     private $trackingId;
 
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/v2/transactions/tracking_id/' . $this->getTrackingId();
-    }
-
     public function setTrackingId($trackingId)
     {
         $this->trackingId = $trackingId;
@@ -24,5 +19,10 @@ class QueryByTrackingId extends ApiAbstract
     protected function buildRequestMessage()
     {
         return '';
+    }
+
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/v2/transactions/tracking_id/' . $this->getTrackingId();
     }
 }

@@ -33,11 +33,6 @@ class GetPaymentToken extends ApiAbstract
         $this->language = Language::getDefaultLanguage();
     }
 
-    protected function endpoint()
-    {
-        return Settings::$checkoutBase . '/ctp/api/checkouts';
-    }
-
     protected function buildRequestMessage()
     {
         $request = [
@@ -84,6 +79,7 @@ class GetPaymentToken extends ApiAbstract
         ];
 
         $paymentMethods = $this->getPaymentMethods();
+
         if ($paymentMethods != null) {
             $request['checkout']['payment_method'] = $paymentMethods;
         }
@@ -91,6 +87,11 @@ class GetPaymentToken extends ApiAbstract
         Logger::getInstance()->write($request, Logger::DEBUG, get_class() . '::' . __FUNCTION__);
 
         return $request;
+    }
+
+    protected function endpoint()
+    {
+        return Settings::$checkoutBase . '/ctp/api/checkouts';
     }
 
     public function submit()

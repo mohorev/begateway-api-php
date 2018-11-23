@@ -17,9 +17,9 @@ class AuthorizationOperation extends ApiAbstract
 
     public function __construct()
     {
-        $this->customer = new Customer;
-        $this->money = new Money;
         $this->card = new Card;
+        $this->money = new Money;
+        $this->customer = new Customer;
         $this->additionalData = new AdditionalData;
         $this->language = Language::getDefaultLanguage();
     }
@@ -122,4 +122,8 @@ class AuthorizationOperation extends ApiAbstract
         return $request;
     }
 
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
+    }
 }

@@ -16,11 +16,6 @@ class CardToken extends ApiAbstract
         return new ResponseCardToken($this->remoteRequest());
     }
 
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/credit_cards';
-    }
-
     protected function buildRequestMessage()
     {
         $request = [
@@ -38,4 +33,8 @@ class CardToken extends ApiAbstract
         return $request;
     }
 
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/credit_cards';
+    }
 }
