@@ -132,6 +132,6 @@ class AuthorizationOperation extends BaseRequest
 
     protected function endpoint()
     {
-        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
+        return Settings::$gatewayBase . '/transactions/authorizations';
     }
 }

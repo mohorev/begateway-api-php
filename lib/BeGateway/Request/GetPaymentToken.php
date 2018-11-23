@@ -12,6 +12,12 @@ use BeGateway\Settings;
 
 class GetPaymentToken extends BaseRequest
 {
+    const
+        TRANSACTION_TYPE_AUTHORIZATION = 'authorization',
+        TRANSACTION_TYPE_PAYMENT = 'payment',
+        TRANSACTION_TYPE_TOKENIZATION = 'tokenization'
+    ;
+
     public static $version = '2.1';
 
     public $money;
@@ -25,7 +31,7 @@ class GetPaymentToken extends BaseRequest
     private $failUrl;
     private $cancelUrl;
     private $notificationUrl;
-    private $transactionType;
+    private $transactionType = self::TRANSACTION_TYPE_PAYMENT;
     private $readonly = [];
     private $visible = [];
     /**
@@ -40,7 +46,6 @@ class GetPaymentToken extends BaseRequest
         $this->customer = new Customer;
         $this->money = new Money;
         $this->additionalData = new AdditionalData;
-        $this->setPaymentTransactionType();
         $this->language = Language::getDefaultLanguage();
     }
 
@@ -49,7 +54,7 @@ class GetPaymentToken extends BaseRequest
         $request = [
             'checkout' => [
                 'version' => self::$version,
-                'transaction_type' => $this->getTransactionType(),
+                'transaction_type' => $this->transactionType,
                 'test' => $this->getTestMode(),
                 'order' => [
                     'amount' => $this->money->getCents(),
@@ -182,17 +187,17 @@ class GetPaymentToken extends BaseRequest
 
     public function setAuthorizationTransactionType()
     {
-        $this->transactionType = 'authorization';
+        $this->transactionType = self::TRANSACTION_TYPE_AUTHORIZATION;
     }
 
     public function setPaymentTransactionType()
     {
-        $this->transactionType = 'payment';
+        $this->transactionType = self::TRANSACTION_TYPE_PAYMENT;
     }
 
     public function setTokenizationTransactionType()
     {
-        $this->transactionType = 'tokenization';
+        $this->transactionType = self::TRANSACTION_TYPE_TOKENIZATION;
     }
 
     public function getTransactionType()

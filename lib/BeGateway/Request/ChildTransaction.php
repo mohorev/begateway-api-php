@@ -40,9 +40,4 @@ abstract class ChildTransaction extends BaseRequest
 
         return $request;
     }
-
-    protected function endpoint()
-    {
-        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
-    }
 }

@@ -41,15 +41,6 @@ abstract class BaseRequest
         );
     }
 
-    protected function getTransactionType()
-    {
-        $class = substr(strrchr(get_class($this), '\\'), 1);
-        $class = str_replace('Operation', '', $class);
-        $class = strtolower($class) . 's';
-
-        return $class;
-    }
-
     public function setLanguage($code)
     {
         if (in_array($code, Language::getSupportedLanguages())) {

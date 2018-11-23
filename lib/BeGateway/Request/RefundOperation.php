@@ -2,6 +2,8 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Settings;
+
 class RefundOperation extends ChildTransaction
 {
     private $reason;
@@ -23,5 +25,10 @@ class RefundOperation extends ChildTransaction
         $request['request']['reason'] = $this->getReason();
 
         return $request;
+    }
+
+    protected function endpoint()
+    {
+        return Settings::$gatewayBase . '/transactions/refunds';
     }
 }
