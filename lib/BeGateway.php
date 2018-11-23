@@ -1,18 +1,5 @@
 <?php
 
-// Tested on PHP 5.3
-
-// This snippet (and some of the curl code) due to the Facebook SDK.
-if (!function_exists('curl_init')) {
-  throw new Exception('BeGateway needs the CURL PHP extension.');
-}
-if (!function_exists('json_decode')) {
-  throw new Exception('BeGateway needs the JSON PHP extension.');
-}
-if (!function_exists('mb_detect_encoding')) {
-  throw new Exception('BeGateway needs the Multibyte String PHP extension.');
-}
-
 if (!class_exists('\BeGateway\Settings')) {
   require_once (__DIR__ . '/BeGateway/Settings.php');
   require_once (__DIR__ . '/BeGateway/Logger.php');
