@@ -1,8 +1,10 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class QueryByUid extends ApiAbstract
+use BeGateway\Settings;
+
+class QueryByUid extends BaseRequest
 {
     private $uid;
 

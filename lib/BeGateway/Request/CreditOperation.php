@@ -1,8 +1,13 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class CreditOperation extends ApiAbstract
+use BeGateway\Card;
+use BeGateway\Logger;
+use BeGateway\Money;
+use BeGateway\Settings;
+
+class CreditOperation extends BaseRequest
 {
     public $card;
     public $money;

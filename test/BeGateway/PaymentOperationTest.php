@@ -2,6 +2,8 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\PaymentOperation;
+
 class PaymentOperationTest extends TestCase
 {
     public function test_setDescription()
@@ -51,7 +53,7 @@ class PaymentOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\PaymentOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');
@@ -113,7 +115,7 @@ class PaymentOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\PaymentOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 

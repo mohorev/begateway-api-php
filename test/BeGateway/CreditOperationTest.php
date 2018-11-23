@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\CreditOperation;
+use BeGateway\Request\PaymentOperation;
+
 class CreditOperationTest extends TestCase
 {
     public function test_setDescription()
@@ -39,7 +42,7 @@ class CreditOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\CreditOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\CreditOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -52,7 +55,7 @@ class CreditOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\CreditOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\CreditOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

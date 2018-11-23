@@ -1,8 +1,13 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class CardToken extends ApiAbstract
+use BeGateway\Card;
+use BeGateway\Logger;
+use BeGateway\ResponseCardToken;
+use BeGateway\Settings;
+
+class CardToken extends BaseRequest
 {
     public $card;
 

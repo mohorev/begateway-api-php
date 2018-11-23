@@ -1,8 +1,10 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class QueryByTrackingId extends ApiAbstract
+use BeGateway\Settings;
+
+class QueryByTrackingId extends BaseRequest
 {
     private $trackingId;
 

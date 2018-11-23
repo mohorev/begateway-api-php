@@ -2,6 +2,8 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\AuthorizationOperation;
+
 class AuthorizationOperationTest extends TestCase
 {
     public function test_setDescription()
@@ -96,7 +98,7 @@ class AuthorizationOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\AuthorizationOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\AuthorizationOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -116,7 +118,7 @@ class AuthorizationOperationTest extends TestCase
 
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\AuthorizationOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\AuthorizationOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

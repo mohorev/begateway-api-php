@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\PaymentOperation;
+use BeGateway\Request\QueryByTrackingId;
+
 class QueryByTrackingIdTest extends TestCase
 {
     public function test_trackingId()
@@ -18,7 +21,7 @@ class QueryByTrackingIdTest extends TestCase
         $q = $this->getTestObjectInstance();
         $q->setTrackingId('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\QueryByTrackingId');
+        $reflection = new \ReflectionClass('BeGateway\Request\QueryByTrackingId');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($q, 'endpoint');

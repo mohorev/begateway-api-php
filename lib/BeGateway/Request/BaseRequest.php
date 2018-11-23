@@ -1,8 +1,13 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-abstract class ApiAbstract
+use BeGateway\GatewayTransport;
+use BeGateway\Language;
+use BeGateway\Response;
+use BeGateway\Settings;
+
+abstract class BaseRequest
 {
     protected $language;
 
@@ -38,7 +43,7 @@ abstract class ApiAbstract
 
     protected function getTransactionType()
     {
-        list($module, $class) = explode('\\', get_class($this));
+        $class = substr(strrchr(get_class($this), '\\'), 1);
         $class = str_replace('Operation', '', $class);
         $class = strtolower($class) . 's';
 

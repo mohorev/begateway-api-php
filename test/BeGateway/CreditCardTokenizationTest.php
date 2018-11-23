@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\AuthorizationOperation;
+use BeGateway\Request\CardToken;
+
 class CreditCardTokenizationTest extends TestCase
 {
     public function test_buildRequestMessage()
@@ -17,7 +20,7 @@ class CreditCardTokenizationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\CardToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\CardToken');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -30,7 +33,7 @@ class CreditCardTokenizationTest extends TestCase
     {
         $token = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\CardToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\CardToken');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($token, 'endpoint');

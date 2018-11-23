@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\GetPaymentToken;
+use BeGateway\Request\QueryByPaymentToken;
+
 class QueryByPaymentTokenTest extends TestCase
 {
     public function test_setToken()
@@ -18,7 +21,7 @@ class QueryByPaymentTokenTest extends TestCase
         $q = $this->getTestObjectInstance();
         $q->setToken('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\QueryByPaymentToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\QueryByPaymentToken');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($q, 'endpoint');

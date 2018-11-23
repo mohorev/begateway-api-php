@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\PaymentOperation;
+use BeGateway\Request\QueryByUid;
+
 class QueryByUidTest extends TestCase
 {
     public function test_setUid()
@@ -18,7 +21,7 @@ class QueryByUidTest extends TestCase
         $q = $this->getTestObjectInstance();
         $q->setUid('1234');
 
-        $reflection = new \ReflectionClass('BeGateway\QueryByUid');
+        $reflection = new \ReflectionClass('BeGateway\Request\QueryByUid');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($q, 'endpoint');

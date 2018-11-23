@@ -1,8 +1,16 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class GetPaymentToken extends ApiAbstract
+use BeGateway\AdditionalData;
+use BeGateway\Customer;
+use BeGateway\Language;
+use BeGateway\Logger;
+use BeGateway\Money;
+use BeGateway\ResponseCheckout;
+use BeGateway\Settings;
+
+class GetPaymentToken extends BaseRequest
 {
     public static $version = '2.1';
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
 class PaymentOperation extends AuthorizationOperation
 {

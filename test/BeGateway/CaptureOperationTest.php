@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\AuthorizationOperation;
+use BeGateway\Request\CaptureOperation;
+
 class CaptureOperationTest extends TestCase
 {
     public function test_setParentUid()
@@ -24,7 +27,7 @@ class CaptureOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\CaptureOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -37,7 +40,7 @@ class CaptureOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\CaptureOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

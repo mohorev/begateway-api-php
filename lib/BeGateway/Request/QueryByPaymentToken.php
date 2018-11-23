@@ -1,8 +1,11 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class QueryByPaymentToken extends ApiAbstract
+use BeGateway\ResponseCheckout;
+use BeGateway\Settings;
+
+class QueryByPaymentToken extends BaseRequest
 {
     private $token;
 

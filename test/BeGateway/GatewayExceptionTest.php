@@ -2,6 +2,8 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\AuthorizationOperation;
+
 class GatewayTransportExceptionTest extends TestCase
 {
     function setUp()

@@ -1,8 +1,12 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-abstract class ChildTransaction extends ApiAbstract
+use BeGateway\Logger;
+use BeGateway\Money;
+use BeGateway\Settings;
+
+abstract class ChildTransaction extends BaseRequest
 {
     public $money;
 
@@ -10,7 +14,7 @@ abstract class ChildTransaction extends ApiAbstract
 
     public function __construct()
     {
-        $this->money = new Money();
+        $this->money = new Money;
     }
 
     public function setParentUid($uid)

@@ -1,8 +1,16 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
-class AuthorizationOperation extends ApiAbstract
+use BeGateway\AdditionalData;
+use BeGateway\Card;
+use BeGateway\Customer;
+use BeGateway\Language;
+use BeGateway\Logger;
+use BeGateway\Money;
+use BeGateway\Settings;
+
+class AuthorizationOperation extends BaseRequest
 {
     public $card;
     public $money;

@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\AuthorizationOperation;
+use BeGateway\Request\VoidOperation;
+
 class VoidOperationTest extends TestCase
 {
     public function test_setParentUid()
@@ -24,7 +27,7 @@ class VoidOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\VoidOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\VoidOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -37,7 +40,7 @@ class VoidOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\VoidOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\VoidOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

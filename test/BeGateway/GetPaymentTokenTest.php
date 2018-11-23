@@ -2,6 +2,8 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\GetPaymentToken;
+
 class GetPaymentTokenTest extends TestCase
 {
     public function test_setDescription()
@@ -148,7 +150,7 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -232,7 +234,7 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -300,7 +302,7 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -314,7 +316,7 @@ class GetPaymentTokenTest extends TestCase
 
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
+        $reflection = new \ReflectionClass('BeGateway\Request\GetPaymentToken');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

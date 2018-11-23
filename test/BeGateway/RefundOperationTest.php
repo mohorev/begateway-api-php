@@ -2,6 +2,9 @@
 
 namespace BeGateway;
 
+use BeGateway\Request\PaymentOperation;
+use BeGateway\Request\RefundOperation;
+
 class RefundOperationTest extends TestCase
 {
     public function test_setParentUid()
@@ -33,7 +36,7 @@ class RefundOperationTest extends TestCase
             ],
         ];
 
-        $reflection = new \ReflectionClass('BeGateway\RefundOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\RefundOperation');
         $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
@@ -46,7 +49,7 @@ class RefundOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $reflection = new \ReflectionClass('BeGateway\RefundOperation');
+        $reflection = new \ReflectionClass('BeGateway\Request\RefundOperation');
         $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
         $url = $method->invoke($auth, 'endpoint');

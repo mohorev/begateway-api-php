@@ -1,6 +1,6 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Request;
 
 class RefundOperation extends ChildTransaction
 {
