@@ -44,7 +44,7 @@ if ($response->isSuccess()) {
     $query = new \BeGateway\QueryByUid;
     $query->setUid($response->getUid());
 
-    $query_response = $query->submit();
+    $response = $query->submit();
 
-    print_r($query_response);
+    print_r($response);
 }

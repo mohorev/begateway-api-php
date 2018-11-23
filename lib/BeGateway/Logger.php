@@ -9,59 +9,67 @@ class Logger
     const ERROR = 2;
     const DEBUG = 4;
 
-    private $_level;
+    private $level;
     private static $instance;
-    private $_output = 'php://stderr';
+    private $output = 'php://stderr';
     /**
      * @var callable|false
      */
-    private $_message_callback = false;
-    private $_mask = true;
+    private $callback = false;
+    private $mask = true;
 
     private function __construct()
     {
-        $this->_level = self::INFO;
+        $this->level = self::INFO;
+    }
+
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new static;
+        }
+
+        return self::$instance;
     }
 
     public function write($msg, $level = self::INFO, $place = '')
     {
-
         $p = '';
         if (!empty($place)) {
             $p = "( $place )";
         }
 
-        if ($this->_level >= $level) {
+        if ($this->level >= $level) {
             $message = "[" . self::getLevelName($level) . " $p] => ";
             $message .= print_r($this->filter(var_export($msg, true)), true);
             $message .= PHP_EOL;
-            if ($this->_output) {
+            if ($this->output) {
                 $this->sendToFile($message);
             }
-            if ($this->_message_callback != false) {
-                call_user_func($this->_message_callback, $message);
+            if ($this->callback != false) {
+                call_user_func($this->callback, $message);
             }
         }
     }
 
     public function setLogLevel($level)
     {
-        $this->_level = $level;
+        $this->level = $level;
     }
 
     public function setPANfitering($option)
     {
-        $this->_mask = $option;
+        $this->mask = $option;
     }
 
     public function setOutputCallback($callback)
     {
-        $this->_message_callback = $callback;
+        $this->callback = $callback;
     }
 
     public function setOutputFile($path)
     {
-        $this->_output = $path;
+        $this->output = $path;
     }
 
     /**
@@ -86,32 +94,23 @@ class Logger
         }
     }
 
-    public static function getInstance()
-    {
-        if (!self::$instance) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
     private function sendToFile($message)
     {
-        $fh = fopen($this->_output, 'w+');
+        $fh = fopen($this->output, 'w+');
         fwrite($fh, $message);
         fclose($fh);
     }
 
     private function filter($message)
     {
-        $card_filter = '/("number":")(\d{1})\d{8,13}(\d{4})(")/';
-        $cvc_filter = '/("verification_value":")(\d{3,4})(")/';
-        $modified = $message;
-        if ($this->_mask) {
-            $modified = preg_replace($card_filter, '$1$2 xxxx $3$4', $modified);
-            $modified = preg_replace($cvc_filter, '$1xxx$3', $modified);
+        $cardFilter = '/("number":")(\d{1})\d{8,13}(\d{4})(")/';
+        $cvcFilter = '/("verification_value":")(\d{3,4})(")/';
+
+        if ($this->mask) {
+            $message = preg_replace($cardFilter, '$1$2 xxxx $3$4', $message);
+            $message = preg_replace($cvcFilter, '$1xxx$3', $message);
         }
 
-        return $modified;
+        return $message;
     }
 }

@@ -8,7 +8,7 @@ class ResponseCardToken extends ResponseBase
 
     public function __construct($message)
     {
-        $this->card = new Card();
+        $this->card = new Card;
 
         parent::__construct($message);
 
@@ -23,12 +23,15 @@ class ResponseCardToken extends ResponseBase
         }
     }
 
+    /**
+     * @return bool whether the response is valid and response token exist
+     */
     public function isSuccess()
     {
-        return is_object($this->getResponse()) &&
-            isset($this->getResponse()->token) &&
-            is_string($this->getResponse()->token) &&
-            strlen($this->getResponse()->token) > 0;
-    }
+        if (!is_object($this->getResponse())) {
+            return false;
+        }
 
+        return isset($this->getResponse()->token) && $this->getResponse()->token !== '';
+    }
 }

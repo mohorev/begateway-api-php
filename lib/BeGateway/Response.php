@@ -4,24 +4,31 @@ namespace BeGateway;
 
 class Response extends ResponseBase
 {
+    const
+        STATUS_FAILED = 'failed',
+        STATUS_PENDING = 'pending',
+        STATUS_SUCCESS = 'successful',
+        STATUS_INCOMPLETE = 'incomplete'
+    ;
+
     public function isSuccess()
     {
-        return $this->getStatus() == 'successful';
+        return $this->getStatus() === self::STATUS_SUCCESS;
     }
 
     public function isFailed()
     {
-        return $this->getStatus() == 'failed';
-    }
-
-    public function isIncomplete()
-    {
-        return $this->getStatus() == 'incomplete';
+        return $this->getStatus() === self::STATUS_FAILED;
     }
 
     public function isPending()
     {
-        return $this->getStatus() == 'pending';
+        return $this->getStatus() === self::STATUS_PENDING;
+    }
+
+    public function isIncomplete()
+    {
+        return $this->getStatus() === self::STATUS_INCOMPLETE;
     }
 
     public function isTest()

@@ -4,17 +4,16 @@ namespace BeGateway;
 
 abstract class ResponseBase
 {
-
-    protected $_response;
-    protected $_responseArray;
+    protected $response;
+    protected $responseArray;
 
     public function __construct($message)
     {
-        $this->_response = json_decode($message);
-        $this->_responseArray = json_decode($message, true);
+        $this->response = json_decode($message);
+        $this->responseArray = json_decode($message, true);
     }
 
-    public abstract function isSuccess();
+    abstract public function isSuccess();
 
     public function isError()
     {
@@ -35,17 +34,16 @@ abstract class ResponseBase
 
     public function isValid()
     {
-        return !($this->_response === false || $this->_response == null);
+        return !($this->response === false || $this->response == null);
     }
 
     public function getResponse()
     {
-        return $this->_response;
+        return $this->response;
     }
 
     public function getResponseArray()
     {
-        return $this->_responseArray;
+        return $this->responseArray;
     }
-
 }

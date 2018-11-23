@@ -4,77 +4,77 @@ namespace BeGateway;
 
 class AuthorizationOperation extends ApiAbstract
 {
-    public $customer;
     public $card;
     public $money;
-    public $additional_data;
-    protected $_description;
-    protected $_tracking_id;
-    protected $_notification_url;
-    protected $_return_url;
-    protected $_test_mode;
+    public $customer;
+    public $additionalData;
+
+    private $description;
+    private $trackingId;
+    private $notificationUrl;
+    private $returnUrl;
+    private $testMode = false;
 
     public function __construct()
     {
-        $this->customer = new Customer();
-        $this->money = new Money();
-        $this->card = new Card();
-        $this->additional_data = new AdditionalData();
-        $this->_language = Language::getDefaultLanguage();
-        $this->_test_mode = false;
+        $this->customer = new Customer;
+        $this->money = new Money;
+        $this->card = new Card;
+        $this->additionalData = new AdditionalData;
+        $this->language = Language::getDefaultLanguage();
     }
 
     public function setDescription($description)
     {
-        $this->_description = $description;
+        $this->description = $description;
     }
 
     public function getDescription()
     {
-        return $this->_description;
+        return $this->description;
     }
 
-    public function setTrackingId($tracking_id)
+    public function setTrackingId($trackingId)
     {
-        $this->_tracking_id = $tracking_id;
+        $this->trackingId = $trackingId;
     }
 
     public function getTrackingId()
     {
-        return $this->_tracking_id;
+        return $this->trackingId;
     }
 
-    public function setNotificationUrl($notification_url)
+    public function setNotificationUrl($url)
     {
-        $this->_notification_url = $notification_url;
+        $this->notificationUrl = $url;
     }
 
     public function getNotificationUrl()
     {
-        return $this->_notification_url;
+        return $this->notificationUrl;
     }
 
-    public function setReturnUrl($return_url)
+    public function setReturnUrl($url)
     {
-        $this->_return_url = $return_url;
+        $this->returnUrl = $url;
     }
 
     public function getReturnUrl()
     {
-        return $this->_return_url;
+        return $this->returnUrl;
     }
 
     public function setTestMode($mode = true)
     {
-        $this->_test_mode = $mode;
+        $this->testMode = $mode;
     }
 
     public function getTestMode()
     {
-        return $this->_test_mode;
+        return $this->testMode;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         $request = [
             'request' => [
@@ -111,8 +111,8 @@ class AuthorizationOperation extends ApiAbstract
                     'phone' => $this->customer->getPhone(),
                 ],
                 'additional_data' => [
-                    'receipt_text' => $this->additional_data->getReceipt(),
-                    'contract' => $this->additional_data->getContract(),
+                    'receipt_text' => $this->additionalData->getReceipt(),
+                    'contract' => $this->additionalData->getContract(),
                 ],
             ],
         ];

@@ -45,12 +45,12 @@ if ($response->isSuccess()) {
     $capture->setParentUid($response->getUid());
     $capture->money->setAmount($transaction->money->getAmount());
 
-    $capture_response = $capture->submit();
+    $response = $capture->submit();
 
-    if ($capture_response->isSuccess()) {
-        print("Captured successfully. Captured transaction UID " . $capture_response->getUid() . PHP_EOL);
+    if ($response->isSuccess()) {
+        print("Captured successfully. Captured transaction UID " . $response->getUid() . PHP_EOL);
     } else {
         print("Problem to capture" . PHP_EOL);
-        print("Capture message: " . $capture_response->getMessage() . PHP_EOL);
+        print("Capture message: " . $response->getMessage() . PHP_EOL);
     }
 }

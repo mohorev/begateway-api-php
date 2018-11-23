@@ -4,30 +4,30 @@ namespace BeGateway;
 
 class QueryByPaymentToken extends ApiAbstract
 {
-    protected $_token;
+    private $token;
 
-    protected function _endpoint()
+    protected function endpoint()
     {
         return Settings::$checkoutBase . '/ctp/api/checkouts/' . $this->getToken();
     }
 
     public function setToken($token)
     {
-        $this->_token = $token;
+        $this->token = $token;
     }
 
     public function getToken()
     {
-        return $this->_token;
+        return $this->token;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         return '';
     }
 
     public function submit()
     {
-        return new ResponseCheckout($this->_remoteRequest());
+        return new ResponseCheckout($this->remoteRequest());
     }
 }

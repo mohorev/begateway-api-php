@@ -34,10 +34,10 @@ class RefundOperationTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\RefundOperation');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($transaction, '_buildRequestMessage');
+        $request = $method->invoke($transaction, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -47,9 +47,9 @@ class RefundOperationTest extends TestCase
         $auth = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\RefundOperation');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($auth, '_endpoint');
+        $url = $method->invoke($auth, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/transactions/refunds');
 
@@ -67,13 +67,13 @@ class RefundOperationTest extends TestCase
         $transaction->setParentUid($parent->getUid());
         $transaction->setReason('test reason');
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isSuccess());
-        $this->assertNotNull($t_response->getUid());
-        $this->assertEqual($t_response->getMessage(), 'Successfully processed');
-        $this->assertEqual($t_response->getResponse()->transaction->parent_uid, $parent->getUid());
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertEqual($response->getResponse()->transaction->parent_uid, $parent->getUid());
     }
 
     public function test_errorRefundRequest()
@@ -87,11 +87,11 @@ class RefundOperationTest extends TestCase
         $transaction->money->setAmount($amount + 1);
         $transaction->setParentUid($parent->getUid());
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isError());
-        $this->assertTrue(preg_match('/Reason can\'t be blank./', $t_response->getMessage()));
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isError());
+        $this->assertTrue(preg_match('/Reason can\'t be blank./', $response->getMessage()));
     }
 
     protected function runParentTransaction($amount = 10.00)

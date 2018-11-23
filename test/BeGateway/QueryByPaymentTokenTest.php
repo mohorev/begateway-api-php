@@ -19,9 +19,9 @@ class QueryByPaymentTokenTest extends TestCase
         $q->setToken('1234');
 
         $reflection = new \ReflectionClass('BeGateway\QueryByPaymentToken');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($q, '_endpoint');
+        $url = $method->invoke($q, 'endpoint');
 
         $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts/1234');
 

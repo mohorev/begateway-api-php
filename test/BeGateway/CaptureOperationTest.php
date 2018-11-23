@@ -25,10 +25,10 @@ class CaptureOperationTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($transaction, '_buildRequestMessage');
+        $request = $method->invoke($transaction, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -38,9 +38,9 @@ class CaptureOperationTest extends TestCase
         $auth = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\CaptureOperation');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($auth, '_endpoint');
+        $url = $method->invoke($auth, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/transactions/captures');
 
@@ -57,13 +57,13 @@ class CaptureOperationTest extends TestCase
         $transaction->money->setAmount($amount);
         $transaction->setParentUid($parent->getUid());
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isSuccess());
-        $this->assertNotNull($t_response->getUid());
-        $this->assertEqual($t_response->getMessage(), 'Successfully processed');
-        $this->assertEqual($t_response->getResponse()->transaction->parent_uid, $parent->getUid());
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertEqual($response->getResponse()->transaction->parent_uid, $parent->getUid());
 
     }
 
@@ -78,11 +78,11 @@ class CaptureOperationTest extends TestCase
         $transaction->money->setAmount($amount + 1);
         $transaction->setParentUid($parent->getUid());
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isError());
-        $this->assertTrue(preg_match('/Amount can\'t be greater than/', $t_response->getMessage()));
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isError());
+        $this->assertTrue(preg_match('/Amount can\'t be greater than/', $response->getMessage()));
 
     }
 

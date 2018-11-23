@@ -4,41 +4,45 @@ namespace BeGateway;
 
 class Money
 {
-    protected $_amount;
-    protected $_currency;
-    protected $_cents;
+    const DEFAULT_MULTIPLIER = 2;
+
+    private $amount;
+    private $currency;
+    private $cents;
 
     public function __construct($amount = 0, $currency = 'USD')
     {
-        $this->_currency = $currency;
+        $this->currency = $currency;
         $this->setAmount($amount);
     }
 
     public function getCents()
     {
-        $cents = ($this->_cents) ? $this->_cents : intval(strval($this->_amount * $this->_currency_multiplier()));
+        if ($this->cents) {
+            return $this->cents;
+        }
 
-        return $cents;
+        return intval(strval($this->amount * $this->currencyMultiplier()));
     }
 
     public function setCents($cents)
     {
-        $this->_cents = intval($cents);
-        $this->_amount = null;
+        $this->cents = intval($cents);
+        $this->amount = null;
     }
 
     public function setAmount($amount)
     {
-        $this->_amount = $amount;
-        $this->_cents = null;
+        $this->amount = $amount;
+        $this->cents = null;
     }
 
     public function getAmount()
     {
-        if ($this->_amount) {
-            $amount = $this->_amount;
+        if ($this->amount) {
+            $amount = $this->amount;
         } else {
-            $amount = $this->_cents / $this->_currency_multiplier();
+            $amount = $this->cents / $this->currencyMultiplier();
         }
 
         return floatval(strval($amount));
@@ -46,18 +50,23 @@ class Money
 
     public function setCurrency($currency)
     {
-        $this->_currency = $currency;
+        $this->currency = $currency;
     }
 
     public function getCurrency()
     {
-        return $this->_currency;
+        return $this->currency;
     }
 
-    private function _currency_power()
+    private function currencyMultiplier()
     {
-        //array currency code => multiplier
-        $exceptions = [
+        return pow(10, $this->getMultiplier());
+    }
+
+    private function getMultiplier()
+    {
+        // array currency code => multiplier
+        $multipliers = [
             'BIF' => 0,
             'BYR' => 0,
             'CLF' => 0,
@@ -95,19 +104,12 @@ class Money
             'TND' => 3,
         ];
 
-        $power = 2; // default value
-        foreach ($exceptions as $key => $value) {
-            if (($this->_currency == $key)) {
-                $power = $value;
-                break;
+        foreach ($multipliers as $currency => $multiplier) {
+            if (($this->currency == $currency)) {
+                return $multiplier;
             }
         }
 
-        return $power;
-    }
-
-    private function _currency_multiplier()
-    {
-        return pow(10, $this->_currency_power());
+        return self::DEFAULT_MULTIPLIER;
     }
 }

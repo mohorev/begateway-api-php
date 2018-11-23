@@ -19,9 +19,9 @@ class QueryByTrackingIdTest extends TestCase
         $q->setTrackingId('1234');
 
         $reflection = new \ReflectionClass('BeGateway\QueryByTrackingId');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($q, '_endpoint');
+        $url = $method->invoke($q, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/v2/transactions/tracking_id/1234');
     }
@@ -29,13 +29,14 @@ class QueryByTrackingIdTest extends TestCase
     public function test_queryRequest()
     {
         $amount = rand(0, 10000);
-        $tracking_id = bin2hex(openssl_random_pseudo_bytes(32));
 
-        $parent = $this->runParentTransaction($amount, $tracking_id);
+        $trackingId = bin2hex(openssl_random_pseudo_bytes(32));
+
+        $parent = $this->runParentTransaction($amount, $trackingId);
 
         $q = $this->getTestObjectInstance();
 
-        $q->setTrackingId($tracking_id);
+        $q->setTrackingId($trackingId);
 
         $response = $q->submit();
 
@@ -46,7 +47,7 @@ class QueryByTrackingIdTest extends TestCase
         $this->assertEqual(sizeof($arTrx), 1);
         $this->assertNotNull($arTrx[0]->uid);
         $this->assertEqual($arTrx[0]->amount, $amount * 100);
-        $this->assertEqual($arTrx[0]->tracking_id, $tracking_id);
+        $this->assertEqual($arTrx[0]->tracking_id, $trackingId);
         $this->assertEqual($parent->getUid(), $arTrx[0]->uid);
     }
 
@@ -64,7 +65,7 @@ class QueryByTrackingIdTest extends TestCase
         $this->assertEqual(sizeof($arTrx), 0);
     }
 
-    protected function runParentTransaction($amount = 10.00, $tracking_id = '12345')
+    protected function runParentTransaction($amount = 10.00, $trackingId = '12345')
     {
         self::authorizeFromEnv();
 
@@ -73,7 +74,7 @@ class QueryByTrackingIdTest extends TestCase
         $transaction->money->setAmount($amount);
         $transaction->money->setCurrency('EUR');
         $transaction->setDescription('test');
-        $transaction->setTrackingId($tracking_id);
+        $transaction->setTrackingId($trackingId);
         $transaction->setTestMode(true);
 
         $transaction->card->setCardNumber('4200000000000000');

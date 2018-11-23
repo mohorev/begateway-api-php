@@ -10,6 +10,6 @@ print("Trying to Query by Payment token " . $token . PHP_EOL);
 $query = new \BeGateway\QueryByPaymentToken;
 $query->setToken($token);
 
-$query_response = $query->submit();
+$response = $query->submit();
 
-print_r($query_response);
+print_r($response);

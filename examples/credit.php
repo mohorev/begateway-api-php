@@ -50,12 +50,12 @@ if ($response->isSuccess()) {
     $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
     $credit->setDescription('Test credit');
 
-    $credit_response = $credit->submit();
+    $response = $credit->submit();
 
-    if ($credit_response->isSuccess()) {
-        print("Credited successfully. Credit transaction UID " . $credit_response->getUid() . PHP_EOL);
+    if ($response->isSuccess()) {
+        print("Credited successfully. Credit transaction UID " . $response->getUid() . PHP_EOL);
     } else {
         print("Problem to credit" . PHP_EOL);
-        print("Credit message: " . $credit_response->getMessage() . PHP_EOL);
+        print("Credit message: " . $response->getMessage() . PHP_EOL);
     }
 }

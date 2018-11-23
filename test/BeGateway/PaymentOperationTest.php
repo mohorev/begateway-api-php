@@ -19,10 +19,10 @@ class PaymentOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $tracking_id = 'Test tracking_id';
+        $trackingId = 'Test tracking_id';
 
-        $auth->setTrackingId($tracking_id);
-        $this->assertEqual($auth->getTrackingId(), $tracking_id);
+        $auth->setTrackingId($trackingId);
+        $this->assertEqual($auth->getTrackingId(), $trackingId);
     }
 
     public function test_setNotificationUrl()
@@ -52,9 +52,9 @@ class PaymentOperationTest extends TestCase
         $auth = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($auth, '_endpoint');
+        $url = $method->invoke($auth, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/transactions/payments');
     }
@@ -91,13 +91,11 @@ class PaymentOperationTest extends TestCase
                     'token' => '',
                     'skip_three_d_secure_verification' => '',
                 ],
-
                 'customer' => [
                     'ip' => '127.0.0.1',
                     'email' => 'john@example.com',
                     'birth_date' => '1970-01-01',
                 ],
-
                 'billing_address' => [
                     'first_name' => 'John',
                     'last_name' => 'Doe',
@@ -108,7 +106,6 @@ class PaymentOperationTest extends TestCase
                     'address' => 'Demo str 12',
                     'phone' => '',
                 ],
-
                 'additional_data' => [
                     'receipt_text' => [],
                     'contract' => [],
@@ -117,16 +114,16 @@ class PaymentOperationTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\PaymentOperation');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
 
         $arr['request']['test'] = false;
         $auth->setTestMode(false);
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }

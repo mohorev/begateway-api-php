@@ -15,9 +15,10 @@ class GetPaymentTokenTest extends TestCase
     public function test_setTrackingId()
     {
         $auth = $this->getTestObjectInstance();
-        $tracking_id = 'Test tracking_id';
-        $auth->setTrackingId($tracking_id);
-        $this->assertEqual($auth->getTrackingId(), $tracking_id);
+
+        $trackingId = 'Test tracking_id';
+        $auth->setTrackingId($trackingId);
+        $this->assertEqual($auth->getTrackingId(), $trackingId);
     }
 
     public function test_setExpiryDate()
@@ -148,16 +149,16 @@ class GetPaymentTokenTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
 
         $arr['checkout']['test'] = false;
         $auth->setTestMode(false);
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -232,10 +233,10 @@ class GetPaymentTokenTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -253,7 +254,7 @@ class GetPaymentTokenTest extends TestCase
 
         $arr = [
             'checkout' => [
-                'version' => "2.1",
+                'version' => '2.1',
                 'transaction_type' => 'payment',
                 'test' => true,
                 'order' => [
@@ -300,10 +301,10 @@ class GetPaymentTokenTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($auth, '_buildRequestMessage');
+        $request = $method->invoke($auth, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -314,9 +315,9 @@ class GetPaymentTokenTest extends TestCase
         $auth = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\GetPaymentToken');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($auth, '_endpoint');
+        $url = $method->invoke($auth, 'endpoint');
 
         $this->assertEqual($url, Settings::$checkoutBase . '/ctp/api/checkouts');
 

@@ -1,5 +1,7 @@
 <?php
 
+date_default_timezone_set('UTC');
+
 echo "Running the BeGateway PHP bindings test suite.\n" .
     "If you're trying to use the PHP bindings you'll probably want " .
     "to require('lib/BeGateway.php'); instead of this file\n\n" .

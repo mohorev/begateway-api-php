@@ -17,12 +17,11 @@ class CreditCardTokenizationTest extends TestCase
             ],
         ];
 
-
         $reflection = new \ReflectionClass('BeGateway\CardToken');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($token, '_buildRequestMessage');
+        $request = $method->invoke($token, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -32,12 +31,11 @@ class CreditCardTokenizationTest extends TestCase
         $token = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\CardToken');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($token, '_endpoint');
+        $url = $method->invoke($token, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/credit_cards');
-
     }
 
     public function test_successTokenCreationUpdateAndAuthorization()
@@ -51,8 +49,8 @@ class CreditCardTokenizationTest extends TestCase
         $this->assertTrue($response->isSuccess());
         $this->assertEqual($response->card->getCardHolder(), 'John Smith');
         $this->assertEqual($response->card->getBrand(), 'visa');
-        $this->assertEqual($response->card->getFirst_1(), '4');
-        $this->assertEqual($response->card->getLast_4(), '0000');
+        $this->assertEqual($response->card->getFirst1(), '4');
+        $this->assertEqual($response->card->getLast4(), '0000');
         $this->assertEqual($response->card->getCardExpMonth(), '2');
         $this->assertEqual($response->card->getCardExpYear(), '2030');
         $this->assertNotNull($response->card->getCardToken());
@@ -60,19 +58,19 @@ class CreditCardTokenizationTest extends TestCase
         # update token
         $token->card->setCardExpMonth(1);
         $token->card->setCardHolder('John Doe');
-        $old_token = $response->card->getCardToken();
-        $token->card->setCardToken($old_token);
+        $oldToken = $response->card->getCardToken();
+        $token->card->setCardToken($oldToken);
         $token->card->setCardNumber(null);
 
         $response2 = $token->submit();
         $this->assertEqual($response2->card->getCardHolder(), 'John Doe');
         $this->assertEqual($response2->card->getBrand(), 'visa');
-        $this->assertEqual($response2->card->getFirst_1(), '4');
-        $this->assertEqual($response2->card->getLast_4(), '0000');
+        $this->assertEqual($response2->card->getFirst1(), '4');
+        $this->assertEqual($response2->card->getLast4(), '0000');
         $this->assertEqual($response2->card->getCardExpMonth(), '1');
         $this->assertEqual($response2->card->getCardExpYear(), '2030');
         $this->assertNotNull($response2->card->getCardToken());
-        $this->assertEqual($response2->card->getCardToken(), $old_token);
+        $this->assertEqual($response2->card->getCardToken(), $oldToken);
 
         # make authorization with token
         $amount = rand(0, 10000) / 100;
@@ -92,7 +90,6 @@ class CreditCardTokenizationTest extends TestCase
         $this->assertNotNull($response3->getUid());
         $this->assertEqual($response3->getStatus(), 'successful');
         $this->assertEqual($cents, $response3->getResponse()->transaction->amount);
-
     }
 
     protected function getTestObject($threed = false)
@@ -114,7 +111,6 @@ class CreditCardTokenizationTest extends TestCase
         $transaction->money->setCurrency('EUR');
         $transaction->setDescription('test');
         $transaction->setTrackingId('my_custom_variable');
-
 
         $transaction->customer->setFirstName('John');
         $transaction->customer->setLastName('Doe');

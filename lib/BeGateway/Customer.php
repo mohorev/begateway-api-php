@@ -4,130 +4,129 @@ namespace BeGateway;
 
 class Customer
 {
-    protected $_customer_ip;
-    protected $_customer_email;
-
-    protected $_customer_first_name;
-    protected $_customer_last_name;
-    protected $_customer_address;
-    protected $_customer_city;
-    protected $_customer_country;
-    protected $_customer_state;
-    protected $_customer_zip;
-    protected $_customer_phone;
-    protected $_customer_birth_date = null;
+    private $ip;
+    private $email;
+    private $firstName;
+    private $lastName;
+    private $address;
+    private $city;
+    private $country;
+    private $state;
+    private $zip;
+    private $phone;
+    private $birthDate;
 
     public function setIP($ip)
     {
-        $this->_customer_ip = $this->_setNullIfEmpty($ip);
+        $this->ip = $this->setNullIfEmpty($ip);
     }
 
     public function getIP()
     {
-        return $this->_customer_ip;
+        return $this->ip;
     }
 
     public function setEmail($email)
     {
-        $this->_customer_email = $this->_setNullIfEmpty($email);
+        $this->email = $this->setNullIfEmpty($email);
     }
 
     public function getEmail()
     {
-        return $this->_customer_email;
+        return $this->email;
     }
 
-    public function setFirstName($first_name)
+    public function setFirstName($firstName)
     {
-        $this->_customer_first_name = $this->_setNullIfEmpty($first_name);
+        $this->firstName = $this->setNullIfEmpty($firstName);
     }
 
     public function getFirstName()
     {
-        return $this->_customer_first_name;
+        return $this->firstName;
     }
 
-    public function setLastName($last_name)
+    public function setLastName($lastName)
     {
-        $this->_customer_last_name = $this->_setNullIfEmpty($last_name);
+        $this->lastName = $this->setNullIfEmpty($lastName);
     }
 
     public function getLastName()
     {
-        return $this->_customer_last_name;
+        return $this->lastName;
     }
 
     public function setAddress($address)
     {
-        $this->_customer_address = $this->_setNullIfEmpty($address);
+        $this->address = $this->setNullIfEmpty($address);
     }
 
     public function getAddress()
     {
-        return $this->_customer_address;
+        return $this->address;
     }
 
     public function setCity($city)
     {
-        $this->_customer_city = $this->_setNullIfEmpty($city);
+        $this->city = $this->setNullIfEmpty($city);
     }
 
     public function getCity()
     {
-        return $this->_customer_city;
+        return $this->city;
     }
 
     public function setCountry($country)
     {
-        $this->_customer_country = $this->_setNullIfEmpty($country);
+        $this->country = $this->setNullIfEmpty($country);
     }
 
     public function getCountry()
     {
-        return $this->_customer_country;
+        return $this->country;
     }
 
     public function setState($state)
     {
-        $this->_customer_state = $this->_setNullIfEmpty($state);
+        $this->state = $this->setNullIfEmpty($state);
     }
 
     public function getState()
     {
-        return (in_array($this->_customer_country, ['US', 'CA'])) ? $this->_customer_state : null;
+        return (in_array($this->country, ['US', 'CA'])) ? $this->state : null;
     }
 
     public function setZip($zip)
     {
-        $this->_customer_zip = $this->_setNullIfEmpty($zip);
+        $this->zip = $this->setNullIfEmpty($zip);
     }
 
     public function getZip()
     {
-        return $this->_customer_zip;
+        return $this->zip;
     }
 
     public function setPhone($phone)
     {
-        $this->_customer_phone = $this->_setNullIfEmpty($phone);
+        $this->phone = $this->setNullIfEmpty($phone);
     }
 
     public function getPhone()
     {
-        return $this->_customer_phone;
+        return $this->phone;
     }
 
     public function setBirthDate($birthDate)
     {
-        $this->_customer_birth_date = $this->_setNullIfEmpty($birthDate);
+        $this->birthDate = $this->setNullIfEmpty($birthDate);
     }
 
     public function getBirthDate()
     {
-        return $this->_customer_birth_date;
+        return $this->birthDate;
     }
 
-    private function _setNullIfEmpty(&$resource)
+    private function setNullIfEmpty($resource)
     {
         return (strlen($resource) > 0) ? $resource : null;
     }

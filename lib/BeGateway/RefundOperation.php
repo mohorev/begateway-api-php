@@ -4,21 +4,21 @@ namespace BeGateway;
 
 class RefundOperation extends ChildTransaction
 {
-    protected $_reason;
+    private $reason;
 
     public function setReason($reason)
     {
-        $this->_reason = $reason;
+        $this->reason = $reason;
     }
 
     public function getReason()
     {
-        return $this->_reason;
+        return $this->reason;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
-        $request = parent::_buildRequestMessage();
+        $request = parent::buildRequestMessage();
 
         $request['request']['reason'] = $this->getReason();
 

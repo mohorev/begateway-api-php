@@ -6,36 +6,37 @@ class CreditOperation extends ApiAbstract
 {
     public $card;
     public $money;
-    protected $_description;
-    protected $_tracking_id;
+
+    private $description;
+    private $trackingId;
 
     public function __construct()
     {
-        $this->money = new Money();
-        $this->card = new Card();
+        $this->money = new Money;
+        $this->card = new Card;
     }
 
     public function setDescription($description)
     {
-        $this->_description = $description;
+        $this->description = $description;
     }
 
     public function getDescription()
     {
-        return $this->_description;
+        return $this->description;
     }
 
-    public function setTrackingId($tracking_id)
+    public function setTrackingId($trackingId)
     {
-        $this->_tracking_id = $tracking_id;
+        $this->trackingId = $trackingId;
     }
 
     public function getTrackingId()
     {
-        return $this->_tracking_id;
+        return $this->trackingId;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         $request = [
             'request' => [

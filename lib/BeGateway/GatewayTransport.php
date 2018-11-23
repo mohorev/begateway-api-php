@@ -4,11 +4,10 @@ namespace BeGateway;
 
 class GatewayTransport
 {
-    public static function submit($shopId, $shopKey, $host, $t_request)
+    public static function submit($shopId, $shopKey, $host, $request)
     {
-
         $process = curl_init($host);
-        $json = json_encode($t_request);
+        $json = json_encode($request);
 
         Logger::getInstance()->write("Request to $host", Logger::DEBUG, get_class());
         Logger::getInstance()->write("with Shop Id " . $shopId . " & Shop key " . $shopKey,
@@ -17,7 +16,7 @@ class GatewayTransport
             Logger::getInstance()->write("with message " . $json, Logger::DEBUG, get_class());
         }
 
-        if (!empty($t_request)) {
+        if (!empty($request)) {
             curl_setopt($process, CURLOPT_HTTPHEADER, ['Accept: application/json', 'Content-type: application/json']);
             curl_setopt($process, CURLOPT_POST, 1);
             curl_setopt($process, CURLOPT_POSTFIELDS, $json);
@@ -30,8 +29,10 @@ class GatewayTransport
         curl_setopt($process, CURLOPT_TIMEOUT, 30);
         curl_setopt($process, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($process, CURLOPT_SSL_VERIFYPEER, false);
+
         $response = curl_exec($process);
         $error = curl_error($process);
+
         curl_close($process);
 
         if ($response === false) {

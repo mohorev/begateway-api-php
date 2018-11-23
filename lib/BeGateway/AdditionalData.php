@@ -4,26 +4,26 @@ namespace BeGateway;
 
 class AdditionalData
 {
-    protected $_receipt_text = [];
-    protected $_contract = [];
+    private $receipt = [];
+    private $contract = [];
 
     public function setReceipt($receipt)
     {
-        $this->_receipt_text = $receipt;
+        $this->receipt = $receipt;
     }
 
     public function getReceipt()
     {
-        return $this->_receipt_text;
+        return $this->receipt;
     }
 
     public function setContract($contract)
     {
-        $this->_contract = $contract;
+        $this->contract = $contract;
     }
 
     public function getContract()
     {
-        return $this->_contract;
+        return $this->contract;
     }
 }

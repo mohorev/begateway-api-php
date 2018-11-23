@@ -4,14 +4,14 @@ namespace BeGateway;
 
 abstract class ApiAbstract
 {
-    protected abstract function _buildRequestMessage();
+    protected $language;
 
-    protected $_language;
+    abstract protected function buildRequestMessage();
 
     public function submit()
     {
         try {
-            $response = $this->_remoteRequest();
+            $response = $this->remoteRequest();
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $response = '{ "errors":"' . $msg . '", "message":"' . $msg . '" }';
@@ -24,18 +24,18 @@ abstract class ApiAbstract
      * @return string
      * @throws \Exception
      */
-    protected function _remoteRequest()
+    protected function remoteRequest()
     {
-        return GatewayTransport::submit(Settings::$shopId, Settings::$shopKey, $this->_endpoint(),
-            $this->_buildRequestMessage());
+        return GatewayTransport::submit(Settings::$shopId, Settings::$shopKey, $this->endpoint(),
+            $this->buildRequestMessage());
     }
 
-    protected function _endpoint()
+    protected function endpoint()
     {
-        return Settings::$gatewayBase . '/transactions/' . $this->_getTransactionType();
+        return Settings::$gatewayBase . '/transactions/' . $this->getTransactionType();
     }
 
-    protected function _getTransactionType()
+    protected function getTransactionType()
     {
         list($module, $class) = explode('\\', get_class($this));
         $class = str_replace('Operation', '', $class);
@@ -44,17 +44,17 @@ abstract class ApiAbstract
         return $class;
     }
 
-    public function setLanguage($language_code)
+    public function setLanguage($code)
     {
-        if (in_array($language_code, Language::getSupportedLanguages())) {
-            $this->_language = $language_code;
+        if (in_array($code, Language::getSupportedLanguages())) {
+            $this->language = $code;
         } else {
-            $this->_language = Language::getDefaultLanguage();
+            $this->language = Language::getDefaultLanguage();
         }
     }
 
     public function getLanguage()
     {
-        return $this->_language;
+        return $this->language;
     }
 }

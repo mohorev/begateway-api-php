@@ -44,12 +44,12 @@ if ($response->isSuccess()) {
     $void->setParentUid($response->getUid());
     $void->money->setAmount($transaction->money->getAmount());
 
-    $void_response = $void->submit();
+    $response = $void->submit();
 
-    if ($void_response->isSuccess()) {
-        print("Voided successfully. Void transaction UID " . $void_response->getUid() . PHP_EOL);
+    if ($response->isSuccess()) {
+        print("Voided successfully. Void transaction UID " . $response->getUid() . PHP_EOL);
     } else {
         print("Problem to void" . PHP_EOL);
-        print("Void message: " . $void_response->getMessage() . PHP_EOL);
+        print("Void message: " . $response->getMessage() . PHP_EOL);
     }
 }

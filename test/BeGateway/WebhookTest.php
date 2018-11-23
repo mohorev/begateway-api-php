@@ -84,7 +84,7 @@ class WebhookTest extends TestCase
         $w = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Webhook');
-        $property = $reflection->getProperty('_response');
+        $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage()));
 
@@ -100,7 +100,7 @@ class WebhookTest extends TestCase
         $w = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Webhook');
-        $property = $reflection->getProperty('_response');
+        $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage('failed')));
 
@@ -116,7 +116,7 @@ class WebhookTest extends TestCase
         $w = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Webhook');
-        $property = $reflection->getProperty('_response');
+        $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode($this->webhookMessage('failed', true)));
 
@@ -134,7 +134,7 @@ class WebhookTest extends TestCase
         $w = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\Webhook');
-        $property = $reflection->getProperty('_response');
+        $property = $reflection->getProperty('response');
         $property->setAccessible(true);
         $property->setValue($w, json_decode(''));
 

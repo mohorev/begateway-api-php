@@ -8,20 +8,20 @@ class CardToken extends ApiAbstract
 
     public function __construct()
     {
-        $this->card = new Card();
+        $this->card = new Card;
     }
 
     public function submit()
     {
-        return new ResponseCardToken($this->_remoteRequest());
+        return new ResponseCardToken($this->remoteRequest());
     }
 
-    protected function _endpoint()
+    protected function endpoint()
     {
         return Settings::$gatewayBase . '/credit_cards';
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         $request = [
             'request' => [

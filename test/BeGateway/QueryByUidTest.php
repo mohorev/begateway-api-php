@@ -19,9 +19,9 @@ class QueryByUidTest extends TestCase
         $q->setUid('1234');
 
         $reflection = new \ReflectionClass('BeGateway\QueryByUid');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($q, '_endpoint');
+        $url = $method->invoke($q, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/transactions/1234');
 

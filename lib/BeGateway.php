@@ -1,5 +1,12 @@
 <?php
 
+if (!function_exists('curl_init')) {
+    throw new Exception('BeGateway needs the CURL PHP extension.');
+}
+if (!function_exists('json_decode')) {
+    throw new Exception('BeGateway needs the JSON PHP extension.');
+}
+
 if (!class_exists('\BeGateway\Settings')) {
   require_once (__DIR__ . '/BeGateway/Settings.php');
   require_once (__DIR__ . '/BeGateway/Logger.php');

@@ -4,8 +4,9 @@ namespace BeGateway;
 
 abstract class ChildTransaction extends ApiAbstract
 {
-    protected $_parent_uid;
     public $money;
+
+    private $parentUid;
 
     public function __construct()
     {
@@ -14,15 +15,15 @@ abstract class ChildTransaction extends ApiAbstract
 
     public function setParentUid($uid)
     {
-        $this->_parent_uid = $uid;
+        $this->parentUid = $uid;
     }
 
     public function getParentUid()
     {
-        return $this->_parent_uid;
+        return $this->parentUid;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         $request = [
             'request' => [

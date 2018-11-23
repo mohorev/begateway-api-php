@@ -4,24 +4,24 @@ namespace BeGateway;
 
 class QueryByUid extends ApiAbstract
 {
-    protected $_uid;
+    private $uid;
 
-    protected function _endpoint()
+    protected function endpoint()
     {
         return Settings::$gatewayBase . '/transactions/' . $this->getUid();
     }
 
     public function setUid($uid)
     {
-        $this->_uid = $uid;
+        $this->uid = $uid;
     }
 
     public function getUid()
     {
-        return $this->_uid;
+        return $this->uid;
     }
 
-    protected function _buildRequestMessage()
+    protected function buildRequestMessage()
     {
         return '';
     }

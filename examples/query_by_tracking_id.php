@@ -43,7 +43,7 @@ if ($response->isSuccess()) {
     $query = new \BeGateway\QueryByTrackingId;
     $query->setTrackingId($transaction->getTrackingId());
 
-    $query_response = $query->submit();
+    $response = $query->submit();
 
-    print_r($query_response);
+    print_r($response);
 }

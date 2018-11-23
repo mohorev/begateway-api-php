@@ -4,7 +4,6 @@ namespace BeGateway;
 
 class ResponseCheckout extends ResponseBase
 {
-
     public function isSuccess()
     {
         return isset($this->getResponse()->checkout);
@@ -13,6 +12,7 @@ class ResponseCheckout extends ResponseBase
     public function isError()
     {
         $error = parent::isError();
+
         if (isset($this->getResponse()->checkout) && isset($this->getResponse()->checkout->status)) {
             $error = $error || $this->getResponse()->checkout->status == 'error';
         }
@@ -27,7 +27,7 @@ class ResponseCheckout extends ResponseBase
         } elseif (isset($this->getResponse()->response) && isset($this->getResponse()->response->message)) {
             return $this->getResponse()->response->message;
         } elseif ($this->isError()) {
-            return $this->_compileErrors();
+            return $this->compileErrors();
         } else {
             return '';
         }
@@ -48,12 +48,13 @@ class ResponseCheckout extends ResponseBase
         return preg_replace('/(.+)\?token=(.+)/', '$1', $this->getRedirectUrl());
     }
 
-    private function _compileErrors()
+    private function compileErrors()
     {
         $message = 'there are errors in request parameters.';
+
         if (isset($this->getResponse()->errors)) {
             foreach ($this->getResponse()->errors as $name => $desc) {
-                $message .= ' ' . print_r($name, true);
+                $message .= ' ' . $name;
                 foreach ($desc as $value) {
                     $message .= ' ' . $value . '.';
                 }

@@ -4,33 +4,34 @@ namespace BeGateway\PaymentMethod;
 
 class Erip extends Base
 {
-    protected $_params;
+    private $params;
 
     public function __construct($params)
     {
-        $arDefault = [
+        $defaults = [
             'order_id' => null,
             'account_number' => null,
             'service_no' => null,
             'service_info' => null,
         ];
 
-        $this->_params = array_merge($arDefault, $params);
+        $this->params = array_merge($defaults, $params);
     }
 
     public function getParamsArray()
     {
-        $arParams = [
-            'order_id' => $this->_params['order_id'],
-            'account_number' => $this->_params['account_number'],
-            'service_no' => $this->_params['service_no'],
+        $params = [
+            'order_id' => $this->params['order_id'],
+            'account_number' => $this->params['account_number'],
+            'service_no' => $this->params['service_no'],
         ];
 
-        $service_info = $this->_params['service_info'];
-        if (gettype($service_info) == 'array' && !empty($service_info)) {
-            $arParams['service_info'] = $service_info;
+        $serviceInfo = $this->params['service_info'];
+
+        if (is_array($serviceInfo) && !empty($serviceInfo)) {
+            $params['service_info'] = $serviceInfo;
         }
 
-        return $arParams;
+        return $params;
     }
 }

@@ -19,10 +19,9 @@ class CreditOperationTest extends TestCase
     {
         $auth = $this->getTestObjectInstance();
 
-        $tracking_id = 'Test tracking_id';
-
-        $auth->setTrackingId($tracking_id);
-        $this->assertEqual($auth->getTrackingId(), $tracking_id);
+        $trackingId = 'Test tracking_id';
+        $auth->setTrackingId($trackingId);
+        $this->assertEqual($auth->getTrackingId(), $trackingId);
     }
 
     public function test_buildRequestMessage()
@@ -41,10 +40,10 @@ class CreditOperationTest extends TestCase
         ];
 
         $reflection = new \ReflectionClass('BeGateway\CreditOperation');
-        $method = $reflection->getMethod('_buildRequestMessage');
+        $method = $reflection->getMethod('buildRequestMessage');
         $method->setAccessible(true);
 
-        $request = $method->invoke($transaction, '_buildRequestMessage');
+        $request = $method->invoke($transaction, 'buildRequestMessage');
 
         $this->assertEqual($arr, $request);
     }
@@ -54,9 +53,9 @@ class CreditOperationTest extends TestCase
         $auth = $this->getTestObjectInstance();
 
         $reflection = new \ReflectionClass('BeGateway\CreditOperation');
-        $method = $reflection->getMethod('_endpoint');
+        $method = $reflection->getMethod('endpoint');
         $method->setAccessible(true);
-        $url = $method->invoke($auth, '_endpoint');
+        $url = $method->invoke($auth, 'endpoint');
 
         $this->assertEqual($url, Settings::$gatewayBase . '/transactions/credits');
 
@@ -76,12 +75,12 @@ class CreditOperationTest extends TestCase
         $transaction->setTrackingId('tracking_id');
         $transaction->card->setCardToken($parent->getResponse()->transaction->credit_card->token);
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isSuccess());
-        $this->assertNotNull($t_response->getUid());
-        $this->assertEqual($t_response->getMessage(), 'Successfully processed');
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertNotNull($response->getUid());
+        $this->assertEqual($response->getMessage(), 'Successfully processed');
 
     }
 
@@ -99,11 +98,11 @@ class CreditOperationTest extends TestCase
         $transaction->setTrackingId('tracking_id');
         $transaction->card->setCardToken('12345');
 
-        $t_response = $transaction->submit();
+        $response = $transaction->submit();
 
-        $this->assertTrue($t_response->isValid());
-        $this->assertTrue($t_response->isError());
-        $this->assertPattern('|Token does not exist.|', $t_response->getMessage());
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isError());
+        $this->assertPattern('|Token does not exist.|', $response->getMessage());
     }
 
     protected function runParentTransaction($amount = 10.00)
