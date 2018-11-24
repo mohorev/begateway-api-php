@@ -1,35 +1,52 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class CreditOperationTest extends TestCase
 {
-    public function test_setDescription()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new CreditOperation;
+
+        $this->assertInstanceOf(CreditOperation::class, $request);
+    }
+
+    public function testGetSetDescription()
+    {
+        $request = $this->getTestRequest();
 
         $description = 'Test description';
         $request->setDescription($description);
-        $this->assertEqual($request->getDescription(), $description);
+        $this->assertSame($description, $request->getDescription());
     }
 
-    public function test_setTrackingId()
+    public function testGetSetTrackingId()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
-        $trackingId = 'Test tracking_id';
+        $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
-        $this->assertEqual($request->getTrackingId(), $trackingId);
+        $this->assertSame($trackingId, $request->getTrackingId());
     }
 
-    public function test_buildRequestMessage()
+    public function testEndpoint()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
-        $arr = [
+        $this->assertSame(Settings::$gatewayBase . '/transactions/credits', $request->endpoint());
+    }
+
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $expected = [
             'request' => [
                 'amount' => 1256,
                 'currency' => 'RUB',
@@ -41,23 +58,16 @@ class CreditOperationTest extends TestCase
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_endpoint()
-    {
-        $request = $this->getTestObjectInstance();
-
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/credits');
-    }
-
-    public function test_successCreditRequest()
+    public function testSuccessCreditRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount * 2);
         $request->money->setCurrency('EUR');
@@ -70,16 +80,16 @@ class CreditOperationTest extends TestCase
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertSame('Successfully processed', $response->getMessage());
     }
 
-    public function test_errorCreditRequest()
+    public function testErrorCreditRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount * 2);
         $request->money->setCurrency('EUR');
@@ -91,14 +101,14 @@ class CreditOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
-        $this->assertPattern('|Token does not exist.|', $response->getMessage());
+        $this->assertSame('Token does not exist.', $response->getMessage());
     }
 
-    protected function runParentTransaction($amount = 10.00)
+    private function runParentRequest($amount)
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $request = new PaymentOperation();
+        $request = new PaymentOperation;
 
         $request->money->setAmount($amount);
         $request->money->setCurrency('EUR');
@@ -123,9 +133,11 @@ class CreditOperationTest extends TestCase
         return (new ApiClient)->send($request);
     }
 
-    protected function getTestObject()
+    private function getTestRequest($secure3D = false)
     {
-        $request = $this->getTestObjectInstance();
+        $this->authorize($secure3D);
+
+        $request = new CreditOperation;
 
         $request->money->setAmount(12.56);
         $request->money->setCurrency('RUB');
@@ -134,12 +146,5 @@ class CreditOperationTest extends TestCase
         $request->setTrackingId('tracking');
 
         return $request;
-    }
-
-    protected function getTestObjectInstance()
-    {
-        self::authorizeFromEnv();
-
-        return new CreditOperation();
     }
 }

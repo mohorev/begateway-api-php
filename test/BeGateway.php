@@ -40,7 +40,6 @@ require_once(dirname(__FILE__) . '/BeGateway/TestCase.php');
 
 require_once(dirname(__FILE__) . '/BeGateway/VoidOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/RefundOperationTest.php');
-require_once(dirname(__FILE__) . '/BeGateway/CreditOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/GetPaymentTokenTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/QueryByUidTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/QueryByTrackingIdTest.php');
