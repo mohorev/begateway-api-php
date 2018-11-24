@@ -1,75 +1,90 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\PaymentOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class PaymentOperationTest extends TestCase
 {
-    public function test_setDescription()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new PaymentOperation;
+
+        $this->assertInstanceOf(PaymentOperation::class, $request);
+    }
+
+    public function testGetSetDescription()
+    {
+        $request = $this->getTestRequest();
 
         $description = 'Test description';
         $request->setDescription($description);
-        $this->assertEqual($request->getDescription(), $description);
+        $this->assertSame($description, $request->getDescription());
     }
 
-    public function test_setTrackingId()
+    public function testGetSetTrackingId()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
-        $trackingId = 'Test tracking_id';
+        $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
-        $this->assertEqual($request->getTrackingId(), $trackingId);
+        $this->assertSame($request->getTrackingId(), $trackingId);
     }
 
-    public function test_setNotificationUrl()
+
+    public function testGetSetNotificationUrl()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $url = 'http://www.example.com';
         $request->setNotificationUrl($url);
-        $this->assertEqual($request->getNotificationUrl(), $url);
+        $this->assertSame($url, $request->getNotificationUrl());
     }
 
-    public function test_setReturnUrl()
+    public function testGetSetReturnUrl()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $url = 'http://www.example.com';
         $request->setReturnUrl($url);
-        $this->assertEqual($request->getReturnUrl(), $url);
+        $this->assertSame($url, $request->getReturnUrl());
     }
 
-    public function test_endpoint()
+    public function testGetSetTestMode()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/payments');
+        $this->assertTrue($request->getTestMode());
+
+        $request->setTestMode(false);
+        $this->assertFalse($request->getTestMode());
+
+        $request->setTestMode(true);
+        $this->assertTrue($request->getTestMode());
     }
 
-    public function test_setTestMode()
+    public function testEndpoint()
     {
-        $auth = $this->getTestObjectInstance();
-        $this->assertFalse($auth->getTestMode());
-        $auth->setTestMode(true);
-        $this->assertTrue($auth->getTestMode());
-        $auth->setTestMode(false);
-        $this->assertFalse($auth->getTestMode());
+        $request = $this->getTestRequest();
+
+        $this->assertSame(Settings::$gatewayBase . '/transactions/payments', $request->endpoint());
     }
 
-    public function test_buildRequestMessage()
+    public function testData()
     {
-        $request = $this->getTestObject();
-        $arr = [
+        $request = $this->getTestRequest();
+
+        $expected = [
             'request' => [
                 'amount' => 1233,
                 'currency' => 'EUR',
                 'description' => 'test',
                 'tracking_id' => 'my_custom_variable',
-                'notification_url' => '',
-                'return_url' => '',
+                'notification_url' => null,
+                'return_url' => null,
                 'language' => 'en',
                 'test' => true,
                 'credit_card' => [
@@ -78,8 +93,8 @@ class PaymentOperationTest extends TestCase
                     'holder' => 'BEGATEWAY',
                     'exp_month' => '01',
                     'exp_year' => '2030',
-                    'token' => '',
-                    'skip_three_d_secure_verification' => '',
+                    'token' => null,
+                    'skip_three_d_secure_verification' => false,
                 ],
                 'customer' => [
                     'ip' => '127.0.0.1',
@@ -91,10 +106,10 @@ class PaymentOperationTest extends TestCase
                     'last_name' => 'Doe',
                     'country' => 'LV',
                     'city' => 'Riga',
-                    'state' => '',
+                    'state' => null,
                     'zip' => 'LV-1082',
                     'address' => 'Demo str 12',
-                    'phone' => '',
+                    'phone' => null,
                 ],
                 'additional_data' => [
                     'receipt_text' => [],
@@ -103,17 +118,17 @@ class PaymentOperationTest extends TestCase
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
 
-        $arr['request']['test'] = false;
         $request->setTestMode(false);
 
-        $this->assertEqual($arr, $request->data());
+        $expected['request']['test'] = false;
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_successPayment()
+    public function testSuccessPayment()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
         $amount = rand(0, 10000) / 100;
 
@@ -124,15 +139,15 @@ class PaymentOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
-        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertSame('Successfully processed', $response->getMessage());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getStatus(), 'successful');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame('successful', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
     }
 
-    public function test_incompletePayment()
+    public function testIncompletePayment()
     {
-        $request = $this->getTestObject(true);
+        $request = $this->getTestRequest(true);
 
         $amount = rand(0, 10000) / 100;
 
@@ -144,17 +159,17 @@ class PaymentOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isIncomplete());
-        $this->assertFalse($response->getMessage());
+        $this->assertNull($response->getMessage());
         $this->assertNotNull($response->getUid());
         $this->assertNotNull($response->getResponse()->transaction->redirect_url);
-        $this->assertTrue(preg_match('/process/', $response->getResponse()->transaction->redirect_url));
-        $this->assertEqual($response->getStatus(), 'incomplete');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+        $this->assertContains('process', $response->getResponse()->transaction->redirect_url);
+        $this->assertSame('incomplete', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
     }
 
-    public function test_failedPayment()
+    public function testFailedPayment()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
         $request->card->setCardNumber('4005550000000019');
 
         $amount = rand(0, 10000) / 100;
@@ -167,15 +182,17 @@ class PaymentOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isFailed());
-        $this->assertEqual($response->getMessage(), 'Payment was declined');
+        $this->assertSame('Payment was declined', $response->getMessage());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getStatus(), 'failed');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame('failed', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
     }
 
-    protected function getTestObject($threed = false)
+    private function getTestRequest($secure3D = false)
     {
-        $request = $this->getTestObjectInstance($threed);
+        $this->authorize($secure3D);
+
+        $request = new PaymentOperation;
 
         $request->money->setAmount(12.33);
         $request->money->setCurrency('EUR');
@@ -200,12 +217,5 @@ class PaymentOperationTest extends TestCase
         $request->customer->setBirthDate('1970-01-01');
 
         return $request;
-    }
-
-    protected function getTestObjectInstance($threed = false)
-    {
-        self::authorizeFromEnv($threed);
-
-        return new PaymentOperation();
     }
 }

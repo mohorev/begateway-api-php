@@ -29,7 +29,7 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = new AuthorizationOperation;
 
-        $trackingId = 'Test tracking_id';
+        $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
         $this->assertSame($trackingId, $request->getTrackingId());
     }
