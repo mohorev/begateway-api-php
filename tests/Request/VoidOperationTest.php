@@ -1,48 +1,59 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\VoidOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class VoidOperationTest extends TestCase
 {
-    public function test_setParentUid()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new VoidOperation;
+
+        $this->assertInstanceOf(VoidOperation::class, $request);
+    }
+
+    public function testGetSetParentUid()
+    {
+        $request = $this->getTestRequest();
 
         $uid = '1234567';
         $request->setParentUid($uid);
-        $this->assertEqual($uid, $request->getParentUid());
+        $this->assertSame($uid, $request->getParentUid());
     }
 
-    public function test_buildRequestMessage()
+    public function testEndpoint()
     {
-        $request = $this->getTestObject();
-        $arr = [
+        $request = $this->getTestRequest();
+
+        $this->assertSame(Settings::$gatewayBase . '/transactions/voids', $request->endpoint());
+    }
+
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $expected = [
             'request' => [
                 'parent_uid' => '12345678',
                 'amount' => 1256,
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_endpoint()
-    {
-        $request = $this->getTestObjectInstance();
-
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/voids');
-    }
-
-    public function test_successVoidRequest()
+    public function testSuccessVoidRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount);
         $request->setParentUid($parent->getUid());
@@ -52,17 +63,17 @@ class VoidOperationTest extends TestCase
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getMessage(), 'Successfully processed');
-        $this->assertEqual($response->getResponse()->transaction->parent_uid, $parent->getUid());
+        $this->assertSame('Successfully processed', $response->getMessage());
+        $this->assertSame($parent->getUid(), $response->getResponse()->transaction->parent_uid);
     }
 
-    public function test_errorVoidRequest()
+    public function testErrorVoidRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount + 1);
         $request->setParentUid($parent->getUid());
@@ -71,14 +82,14 @@ class VoidOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
-        $this->assertTrue(preg_match('/Amount can\'t be greater than/', $response->getMessage()));
+        $this->assertContains("Amount can't be greater than", $response->getMessage());
     }
 
-    protected function runParentTransaction($amount = 10.00)
+    private function runParentRequest($amount)
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $request = new AuthorizationOperation();
+        $request = new AuthorizationOperation;
 
         $request->money->setAmount($amount);
         $request->money->setCurrency('EUR');
@@ -103,20 +114,15 @@ class VoidOperationTest extends TestCase
         return (new ApiClient)->send($request);
     }
 
-    protected function getTestObject()
+    private function getTestRequest()
     {
-        $request = $this->getTestObjectInstance();
+        $this->authorize();
+
+        $request = new VoidOperation;
 
         $request->setParentUid('12345678');
         $request->money->setAmount(12.56);
 
         return $request;
-    }
-
-    protected function getTestObjectInstance()
-    {
-        self::authorizeFromEnv();
-
-        return new VoidOperation();
     }
 }
