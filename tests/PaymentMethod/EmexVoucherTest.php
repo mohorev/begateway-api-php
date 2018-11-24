@@ -3,7 +3,7 @@
 namespace BeGateway\Tests\PaymentMethod;
 
 use BeGateway\PaymentMethod\EmexVoucher;
-use PHPUnit\Framework\TestCase;
+use BeGateway\Tests\TestCase;
 
 class EmexVoucherTest extends TestCase
 {

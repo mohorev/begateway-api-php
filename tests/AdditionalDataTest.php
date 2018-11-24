@@ -3,7 +3,6 @@
 namespace BeGateway\Tests;
 
 use BeGateway\AdditionalData;
-use PHPUnit\Framework\TestCase;
 
 class AdditionalDataTest extends TestCase
 {

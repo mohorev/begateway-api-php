@@ -3,7 +3,7 @@
 namespace BeGateway\Tests\PaymentMethod;
 
 use BeGateway\PaymentMethod\CreditCardHalva;
-use PHPUnit\Framework\TestCase;
+use BeGateway\Tests\TestCase;
 
 class CreditCardHalvaTest extends TestCase
 {

@@ -3,7 +3,7 @@
 namespace BeGateway\Tests\PaymentMethod;
 
 use BeGateway\PaymentMethod\Erip;
-use PHPUnit\Framework\TestCase;
+use BeGateway\Tests\TestCase;
 
 class EripTest extends TestCase
 {

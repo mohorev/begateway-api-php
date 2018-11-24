@@ -17,7 +17,7 @@ class Card
 
     public function setCardNumber($number)
     {
-        $this->cardNumber = $number;
+        $this->cardNumber = (string) $number;
     }
 
     public function getCardNumber()
@@ -27,7 +27,7 @@ class Card
 
     public function setCardHolder($holder)
     {
-        $this->cardHolder = $holder;
+        $this->cardHolder = (string) $holder;
     }
 
     public function getCardHolder()
@@ -47,7 +47,7 @@ class Card
 
     public function setCardExpYear($expYear)
     {
-        $this->cardExpYear = $expYear;
+        $this->cardExpYear = (string) $expYear;
     }
 
     public function getCardExpYear()
@@ -57,7 +57,7 @@ class Card
 
     public function setCardCvc($cvc)
     {
-        $this->cardCvc = $cvc;
+        $this->cardCvc = (string) $cvc;
     }
 
     public function getCardCvc()
@@ -67,7 +67,7 @@ class Card
 
     public function setCardToken($token)
     {
-        $this->cardToken = $token;
+        $this->cardToken = (string) $token;
     }
 
     public function getCardToken()
@@ -77,7 +77,7 @@ class Card
 
     public function setSkip3D($skip = false)
     {
-        $this->skip3D = $skip;
+        $this->skip3D = (bool) $skip;
     }
 
     public function getSkip3D()
@@ -87,7 +87,7 @@ class Card
 
     public function setBrand($brand)
     {
-        $this->brand = $brand;
+        $this->brand = (string) $brand;
     }
 
     public function getBrand()
@@ -97,7 +97,7 @@ class Card
 
     public function setFirst_1($digit)
     {
-        $this->first1 = $digit;
+        $this->first1 = (string) $digit;
     }
 
     public function getFirst1()
@@ -107,7 +107,7 @@ class Card
 
     public function setLast_4($digits)
     {
-        $this->last4 = $digits;
+        $this->last4 = (string) $digits;
     }
 
     public function getLast4()

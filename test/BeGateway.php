@@ -38,7 +38,6 @@ $log_level = getenv('LOG_LEVEL');
 
 require_once(dirname(__FILE__) . '/BeGateway/TestCase.php');
 
-require_once(dirname(__FILE__) . '/BeGateway/AuthorizationOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/PaymentOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/CaptureOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/VoidOperationTest.php');

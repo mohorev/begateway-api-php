@@ -3,7 +3,7 @@
 namespace BeGateway\Tests\PaymentMethod;
 
 use BeGateway\PaymentMethod\CreditCard;
-use PHPUnit\Framework\TestCase;
+use BeGateway\Tests\TestCase;
 
 class CreditCardTest extends TestCase
 {

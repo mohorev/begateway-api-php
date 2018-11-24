@@ -3,7 +3,6 @@
 namespace BeGateway\Tests;
 
 use BeGateway\Money;
-use PHPUnit\Framework\TestCase;
 
 class MoneyTest extends TestCase
 {

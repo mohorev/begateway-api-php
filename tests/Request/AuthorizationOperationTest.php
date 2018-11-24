@@ -1,69 +1,89 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\AuthorizationOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class AuthorizationOperationTest extends TestCase
 {
-    public function test_setDescription()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new AuthorizationOperation;
+
+        $this->assertInstanceOf(AuthorizationOperation::class, $request);
+    }
+
+    public function testGetSetDescription()
+    {
+        $request = new AuthorizationOperation;
 
         $description = 'Test description';
         $request->setDescription($description);
-        $this->assertEqual($request->getDescription(), $description);
+        $this->assertSame($description, $request->getDescription());
     }
 
-    public function test_setTrackingId()
+    public function testGetSetTrackingId()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new AuthorizationOperation;
 
         $trackingId = 'Test tracking_id';
         $request->setTrackingId($trackingId);
-        $this->assertEqual($request->getTrackingId(), $trackingId);
+        $this->assertSame($trackingId, $request->getTrackingId());
     }
 
-    public function test_setNotificationUrl()
+    public function testGetSetNotificationUrl()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new AuthorizationOperation;
 
         $url = 'http://www.example.com';
         $request->setNotificationUrl($url);
-        $this->assertEqual($request->getNotificationUrl(), $url);
+        $this->assertSame($url, $request->getNotificationUrl());
     }
 
-    public function test_setReturnUrl()
+    public function testGetSetReturnUrl()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new AuthorizationOperation;
 
         $url = 'http://www.example.com';
         $request->setReturnUrl($url);
-        $this->assertEqual($request->getReturnUrl(), $url);
+        $this->assertSame($url, $request->getReturnUrl());
     }
 
-    public function test_setTestMode()
+    public function testGetSetTestMode()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new AuthorizationOperation;
 
         $this->assertFalse($request->getTestMode());
+
         $request->setTestMode(true);
         $this->assertTrue($request->getTestMode());
+
         $request->setTestMode(false);
         $this->assertFalse($request->getTestMode());
     }
 
-    public function test_buildRequestMessage()
+    public function testEndpoint()
     {
-        $request = $this->getTestObject();
-        $arr = [
+        $request = new AuthorizationOperation;
+
+        $this->assertSame(Settings::$gatewayBase . '/transactions/authorizations', $request->endpoint());
+    }
+
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $expected = [
             'request' => [
                 'amount' => 1233,
                 'currency' => 'EUR',
                 'description' => 'test',
                 'tracking_id' => 'my_custom_variable',
-                'notification_url' => '',
-                'return_url' => '',
+                'notification_url' => null,
+                'return_url' => null,
                 'language' => 'de',
                 'test' => true,
                 'credit_card' => [
@@ -72,27 +92,24 @@ class AuthorizationOperationTest extends TestCase
                     'holder' => 'BEGATEWAY',
                     'exp_month' => '01',
                     'exp_year' => '2030',
-                    'token' => '',
-                    'skip_three_d_secure_verification' => '',
+                    'token' => null,
+                    'skip_three_d_secure_verification' => false,
                 ],
-
                 'customer' => [
                     'ip' => '127.0.0.1',
                     'email' => 'john@example.com',
                     'birth_date' => '1970-01-01',
                 ],
-
                 'billing_address' => [
                     'first_name' => 'John',
                     'last_name' => 'Doe',
                     'country' => 'LV',
                     'city' => 'Riga',
-                    'state' => '',
+                    'state' => null,
                     'zip' => 'LV-1082',
                     'address' => 'Demo str 12',
-                    'phone' => '',
+                    'phone' => null,
                 ],
-
                 'additional_data' => [
                     'receipt_text' => [],
                     'contract' => [],
@@ -100,24 +117,17 @@ class AuthorizationOperationTest extends TestCase
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
 
-        $arr['request']['test'] = false;
         $request->setTestMode(false);
 
-        $this->assertEqual($arr, $request->data());
+        $expected['request']['test'] = false;
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_endpoint()
+    public function testSuccessAuthorization()
     {
-        $request = $this->getTestObjectInstance();
-
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/authorizations');
-    }
-
-    public function test_successAuthorization()
-    {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
         $amount = rand(0, 10000) / 100;
 
@@ -128,18 +138,16 @@ class AuthorizationOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
-        $this->assertEqual($response->getMessage(), 'Successfully processed');
+        $this->assertSame('Successfully processed', $response->getMessage());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getStatus(), 'successful');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
-
-        $arResponse = $response->getResponseArray();
-        $this->assertEqual($cents, $arResponse['transaction']['amount']);
+        $this->assertSame('successful', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
-    public function test_incompleteAuthorization()
+    public function testIncompleteAuthorization()
     {
-        $request = $this->getTestObject(true);
+        $request = $this->getTestRequest(true);
 
         $amount = rand(0, 10000) / 100;
 
@@ -151,20 +159,18 @@ class AuthorizationOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isIncomplete());
-        $this->assertFalse($response->getMessage());
+        $this->assertNull($response->getMessage());
         $this->assertNotNull($response->getUid());
         $this->assertNotNull($response->getResponse()->transaction->redirect_url);
-        $this->assertTrue(preg_match('/process/', $response->getResponse()->transaction->redirect_url));
-        $this->assertEqual($response->getStatus(), 'incomplete');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
-
-        $arResponse = $response->getResponseArray();
-        $this->assertEqual($cents, $arResponse['transaction']['amount']);
+        $this->assertContains('process', $response->getResponse()->transaction->redirect_url);
+        $this->assertSame('incomplete', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
-    public function test_failedAuthorization()
+    public function testFailedAuthorization()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
         $request->card->setCardNumber('4005550000000019');
 
         $amount = rand(0, 10000) / 100;
@@ -177,36 +183,35 @@ class AuthorizationOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isFailed());
-        $this->assertEqual($response->getMessage(), 'Authorization was declined');
+        $this->assertSame('Authorization was declined', $response->getMessage());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getStatus(), 'failed');
-        $this->assertEqual($cents, $response->getResponse()->transaction->amount);
-
-        $arResponse = $response->getResponseArray();
-        $this->assertEqual($cents, $arResponse['transaction']['amount']);
+        $this->assertSame('failed', $response->getStatus());
+        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
-    public function test_errorAuthorization()
+    public function testErrorAuthorization()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
         $amount = rand(0, 10000) / 100;
 
         $request->money->setAmount($amount);
-        $cents = $request->money->getCents();
         $request->card->setCardExpYear(10);
 
         $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
-        $this->assertEqual($response->getMessage(), 'Exp year Invalid. Format should be: yyyy. Date is expired.');
-        $this->assertEqual($response->getStatus(), 'error');
+        $this->assertSame('Exp year Invalid. Format should be: yyyy. Date is expired.', $response->getMessage());
+        $this->assertSame('error', $response->getStatus());
     }
 
-    protected function getTestObject($threed = false)
+    protected function getTestRequest($secure3D = false)
     {
-        $request = $this->getTestObjectInstance($threed);
+        $this->authorize($secure3D);
+
+        $request = new AuthorizationOperation;
 
         $request->money->setAmount(12.33);
         $request->money->setCurrency('EUR');
@@ -232,12 +237,5 @@ class AuthorizationOperationTest extends TestCase
         $request->customer->setBirthDate('1970-01-01');
 
         return $request;
-    }
-
-    protected function getTestObjectInstance($threeds = false)
-    {
-        self::authorizeFromEnv($threeds);
-
-        return new AuthorizationOperation();
     }
 }
