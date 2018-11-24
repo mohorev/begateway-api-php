@@ -11,7 +11,6 @@ class MoneyTest extends TestCase
         $money = new Money;
 
         $this->assertInstanceOf(Money::class, $money);
-        $this->assertSame(2, Money::DEFAULT_MULTIPLIER);
 
         $this->assertSame(0, $money->getCents());
         $this->assertSame(0.0, $money->getAmount());
