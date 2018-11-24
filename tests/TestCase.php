@@ -13,7 +13,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
     const SHOP_KEY_3D = '9ad8ad735945919845b9a1996af72d886ab43d3375502256dbf8dd16bca59a4e';
     const SHOP_PUB_KEY_3D = 'ee7257d4-dcff-41bf-a95f-fe0ff79bf64f';
 
-    public function authorize($secure3D)
+    public function authorize($secure3D = false)
     {
         $shopId = null;
         $shopKey = null;

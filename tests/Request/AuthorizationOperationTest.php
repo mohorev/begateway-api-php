@@ -129,7 +129,7 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000) / 100;
 
         $request->money->setAmount($amount);
         $cents = $request->money->getCents();
@@ -149,7 +149,7 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest(true);
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000) / 100;
 
         $request->money->setAmount($amount);
         $request->card->setCardNumber('4012001037141112');
@@ -173,7 +173,7 @@ class AuthorizationOperationTest extends TestCase
         $request = $this->getTestRequest();
         $request->card->setCardNumber('4005550000000019');
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000) / 100;
 
         $request->money->setAmount($amount);
         $cents = $request->money->getCents();
@@ -194,7 +194,7 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000) / 100;
 
         $request->money->setAmount($amount);
         $request->card->setCardExpYear(10);
@@ -207,7 +207,7 @@ class AuthorizationOperationTest extends TestCase
         $this->assertSame('error', $response->getStatus());
     }
 
-    protected function getTestRequest($secure3D = false)
+    private function getTestRequest($secure3D = false)
     {
         $this->authorize($secure3D);
 

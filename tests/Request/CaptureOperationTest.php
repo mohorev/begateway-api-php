@@ -1,48 +1,59 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CaptureOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class CaptureOperationTest extends TestCase
 {
-    public function test_setParentUid()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new CaptureOperation;
 
-        $uid = '1234567';
-        $request->setParentUid($uid);
-        $this->assertEqual($uid, $request->getParentUid());
+        $this->assertInstanceOf(CaptureOperation::class, $request);
     }
 
-    public function test_buildRequestMessage()
+    public function testGetSetParentUid()
     {
-        $request = $this->getTestObject();
-        $arr = [
+        $request = $this->getTestRequest();
+
+        $uid = '10314520-438c04b473';
+        $request->setParentUid($uid);
+        $this->assertSame($uid, $request->getParentUid());
+    }
+
+    public function testEndpoint()
+    {
+        $request = $this->getTestRequest();
+
+        $this->assertSame(Settings::$gatewayBase . '/transactions/captures', $request->endpoint());
+    }
+
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $expected = [
             'request' => [
                 'parent_uid' => '12345678',
                 'amount' => 1256,
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_endpoint()
+    public function testSuccessCapture()
     {
-        $request = $this->getTestObjectInstance();
+        $amount = mt_rand(0, 10000);
 
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/captures');
-    }
+        $parent = $this->runParentRequest($amount);
 
-    public function test_successCapture()
-    {
-        $amount = rand(0, 10000);
-
-        $parent = $this->runParentTransaction($amount);
-
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount);
         $request->setParentUid($parent->getUid());
@@ -52,17 +63,17 @@ class CaptureOperationTest extends TestCase
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($response->getMessage(), 'Successfully processed');
-        $this->assertEqual($response->getResponse()->transaction->parent_uid, $parent->getUid());
+        $this->assertSame('Successfully processed', $response->getMessage());
+        $this->assertSame($response->getResponse()->transaction->parent_uid, $parent->getUid());
     }
 
-    public function test_errorCapture()
+    public function testErrorCapture()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->money->setAmount($amount + 1);
         $request->setParentUid($parent->getUid());
@@ -71,14 +82,14 @@ class CaptureOperationTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
-        $this->assertTrue(preg_match('/Amount can\'t be greater than/', $response->getMessage()));
+        $this->assertContains("Amount can't be greater than", $response->getMessage());
     }
 
-    protected function runParentTransaction($amount = 10.00)
+    private function runParentRequest($amount)
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $request = new AuthorizationOperation();
+        $request = new AuthorizationOperation;
 
         $request->money->setAmount($amount);
         $request->money->setCurrency('EUR');
@@ -103,20 +114,15 @@ class CaptureOperationTest extends TestCase
         return (new ApiClient)->send($request);
     }
 
-    protected function getTestObject()
+    private function getTestRequest($secure3D = false)
     {
-        $request = $this->getTestObjectInstance();
+        $this->authorize($secure3D);
+
+        $request = new CaptureOperation;
 
         $request->setParentUid('12345678');
         $request->money->setAmount(12.56);
 
         return $request;
-    }
-
-    protected function getTestObjectInstance()
-    {
-        self::authorizeFromEnv();
-
-        return new CaptureOperation();
     }
 }
