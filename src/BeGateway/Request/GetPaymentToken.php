@@ -12,9 +12,9 @@ use BeGateway\Settings;
 class GetPaymentToken extends BaseRequest
 {
     const
-        TRANSACTION_TYPE_AUTHORIZATION = 'authorization',
         TRANSACTION_TYPE_PAYMENT = 'payment',
-        TRANSACTION_TYPE_TOKENIZATION = 'tokenization'
+        TRANSACTION_TYPE_TOKENIZATION = 'tokenization',
+        TRANSACTION_TYPE_AUTHORIZATION = 'authorization'
     ;
 
     public static $version = '2.1';
@@ -81,8 +81,8 @@ class GetPaymentToken extends BaseRequest
                     'notification_url' => $this->getNotificationUrl(),
                     'success_url' => $this->getSuccessUrl(),
                     'decline_url' => $this->getDeclineUrl(),
-                    'fail_url' => $this->getFailUrl(),
                     'cancel_url' => $this->getCancelUrl(),
+                    'fail_url' => $this->getFailUrl(),
                     'language' => $this->getLanguage(),
                     'customer_fields' => [
                         'read_only' => $this->getReadonlyFields(),
@@ -237,12 +237,12 @@ class GetPaymentToken extends BaseRequest
 
     public function getReadonlyFields()
     {
-        return $this->readonly;
+        return array_values($this->readonly);
     }
 
     public function getVisibleFields()
     {
-        return $this->visible;
+        return array_values($this->visible);
     }
 
     public function setFirstNameReadonly()

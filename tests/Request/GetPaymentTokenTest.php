@@ -1,45 +1,56 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
+use BeGateway\PaymentMethod;
 use BeGateway\Request\GetPaymentToken;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class GetPaymentTokenTest extends TestCase
 {
-    public function test_setDescription()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new GetPaymentToken;
+
+        $this->assertInstanceOf(GetPaymentToken::class, $request);
+    }
+
+    public function testGetSetDescription()
+    {
+        $request = $this->getTestRequest();
 
         $description = 'Test description';
         $request->setDescription($description);
-        $this->assertEqual($request->getDescription(), $description);
+        $this->assertSame($description, $request->getDescription());
     }
 
-    public function test_setTrackingId()
+    public function testGetSetTrackingId()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
-        $trackingId = 'Test tracking_id';
+        $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
-        $this->assertEqual($request->getTrackingId(), $trackingId);
+        $this->assertSame($trackingId, $request->getTrackingId());
     }
 
-    public function test_setExpiryDate()
+    public function testGetSetExpiryDate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $date = date(DATE_ISO8601, strtotime('2020-12-30 23:21:46'));
         $request->setExpiryDate($date);
-        $this->assertEqual($request->getExpiryDate(), $date);
+        $this->assertSame($date, $request->getExpiryDate());
 
         $date = null;
         $request->setExpiryDate($date);
-        $this->assertEqual($request->getExpiryDate(), null);
+        $this->assertSame(null, $request->getExpiryDate());
     }
 
-    public function test_setUrls()
+    public function testGetSetUrls()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $url = 'http://www.example.com';
 
@@ -49,66 +60,82 @@ class GetPaymentTokenTest extends TestCase
         $request->setDeclineUrl($url . '/d');
         $request->setFailUrl($url . '/f');
 
-        $this->assertEqual($request->getNotificationUrl(), $url . '/n');
-        $this->assertEqual($request->getCancelUrl(), $url . '/c');
-        $this->assertEqual($request->getSuccessUrl(), $url . '/s');
-        $this->assertEqual($request->getDeclineUrl(), $url . '/d');
-        $this->assertEqual($request->getFailUrl(), $url . '/f');
+        $this->assertSame($url . '/n', $request->getNotificationUrl());
+        $this->assertSame($url . '/c', $request->getCancelUrl());
+        $this->assertSame($url . '/s', $request->getSuccessUrl());
+        $this->assertSame($url . '/d', $request->getDeclineUrl());
+        $this->assertSame($url . '/f', $request->getFailUrl());
     }
 
-    public function test_readonly()
+    public function testReadonlyFields()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->setFirstNameReadonly();
         $request->setLastNameReadonly();
         $request->setEmailReadonly();
         $request->setCityReadonly();
 
-        $this->assertEqual(array_diff($request->getReadOnlyFields(), ['first_name', 'last_name', 'email', 'city']), []);
+        $this->assertSame(['first_name', 'last_name', 'email', 'city'], $request->getReadOnlyFields());
 
         $request->unsetFirstNameReadonly();
 
-        $this->assertEqual(array_diff($request->getReadOnlyFields(), ['last_name', 'email', 'city']), []);
-
+        $this->assertSame(['last_name', 'email', 'city'], $request->getReadOnlyFields());
     }
 
-    public function test_visible()
+    public function testVisibleFields()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
         $request->setPhoneVisible();
         $request->setAddressVisible();
 
-        $this->assertEqual(array_diff($request->getVisibleFields(), ['phone', 'address']), []);
+        $this->assertSame(['phone', 'address'], $request->getVisibleFields());
 
         $request->unsetAddressVisible();
 
-        $this->assertEqual(array_diff($request->getVisibleFields(), ['phone']), []);
+        $this->assertSame(['phone'], $request->getVisibleFields());
     }
 
-    public function test_transaction_type()
+    public function testGetSetTransactionType()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
+        $this->assertSame('payment', $request->getTransactionType());
+
         $request->setAuthorizationTransactionType();
+        $this->assertSame('authorization', $request->getTransactionType());
 
-        $this->assertEqual($request->getTransactionType(), 'authorization');
+        $request->setPaymentTransactionType();
+        $this->assertSame('payment', $request->getTransactionType());
+
+        $request->setTokenizationTransactionType();
+        $this->assertSame('tokenization', $request->getTransactionType());
     }
 
-    public function test_setTestMode()
+    public function testGetSetTestMode()
     {
-        $request = $this->getTestObjectInstance();
-        $this->assertFalse($request->getTestMode());
-        $request->setTestMode(true);
+        $request = $this->getTestRequest();
+
         $this->assertTrue($request->getTestMode());
+
         $request->setTestMode(false);
         $this->assertFalse($request->getTestMode());
+
+        $request->setTestMode(true);
+        $this->assertTrue($request->getTestMode());
     }
 
-    public function test_buildRequestMessage()
+    public function testEndpoint()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
-        $arr = [
+        $this->assertSame(Settings::$checkoutBase . '/ctp/api/checkouts', $request->endpoint());
+    }
+
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $expected = [
             'checkout' => [
                 'version' => '2.1',
                 'transaction_type' => 'payment',
@@ -125,15 +152,15 @@ class GetPaymentTokenTest extends TestCase
                     ],
                 ],
                 'settings' => [
-                    'success_url' => 'http://www.example.com/s',
-                    'cancel_url' => 'http://www.example.com/c',
-                    'decline_url' => 'http://www.example.com/d',
-                    'fail_url' => 'http://www.example.com/f',
                     'notification_url' => 'http://www.example.com/n',
+                    'success_url' => 'http://www.example.com/s',
+                    'decline_url' => 'http://www.example.com/d',
+                    'cancel_url' => 'http://www.example.com/c',
+                    'fail_url' => 'http://www.example.com/f',
                     'language' => 'zh',
                     'customer_fields' => [
-                        'visible' => [],
                         'read_only' => [],
+                        'visible' => [],
                     ],
                 ],
                 'customer' => [
@@ -142,26 +169,26 @@ class GetPaymentTokenTest extends TestCase
                     'last_name' => 'Doe',
                     'country' => 'LV',
                     'city' => 'Riga',
-                    'state' => '',
+                    'state' => null,
                     'zip' => 'LV-1082',
                     'address' => 'Demo str 12',
-                    'phone' => '',
-                    'birth_date' => '',
+                    'phone' => null,
+                    'birth_date' => null,
                 ],
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
 
-        $arr['checkout']['test'] = false;
         $request->setTestMode(false);
 
-        $this->assertEqual($arr, $request->data());
+        $expected['checkout']['test'] = false;
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_buildRequestMessageWithErip()
+    public function testDataWithErip()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
         $request->money->setAmount(100);
         $request->money->setCurrency('BYN');
 
@@ -176,9 +203,9 @@ class GetPaymentTokenTest extends TestCase
         $request->addPaymentMethod($erip);
         $request->addPaymentMethod($cc);
 
-        $arr = [
+        $expected = [
             'checkout' => [
-                'version' => "2.1",
+                'version' => '2.1',
                 'transaction_type' => 'payment',
                 'test' => true,
                 'order' => [
@@ -193,15 +220,15 @@ class GetPaymentTokenTest extends TestCase
                     ],
                 ],
                 'settings' => [
-                    'success_url' => 'http://www.example.com/s',
-                    'cancel_url' => 'http://www.example.com/c',
-                    'decline_url' => 'http://www.example.com/d',
-                    'fail_url' => 'http://www.example.com/f',
                     'notification_url' => 'http://www.example.com/n',
+                    'success_url' => 'http://www.example.com/s',
+                    'decline_url' => 'http://www.example.com/d',
+                    'cancel_url' => 'http://www.example.com/c',
+                    'fail_url' => 'http://www.example.com/f',
                     'language' => 'zh',
                     'customer_fields' => [
-                        'visible' => [],
                         'read_only' => [],
+                        'visible' => [],
                     ],
                 ],
                 'customer' => [
@@ -210,18 +237,18 @@ class GetPaymentTokenTest extends TestCase
                     'last_name' => 'Doe',
                     'country' => 'LV',
                     'city' => 'Riga',
-                    'state' => '',
+                    'state' => null,
                     'zip' => 'LV-1082',
                     'address' => 'Demo str 12',
-                    'phone' => '',
+                    'phone' => null,
                     'birth_date' => null,
                 ],
                 'payment_method' => [
                     'types' => ['erip', 'credit_card'],
                     'erip' => [
+                        'order_id' => 100001,
                         'account_number' => '1234',
                         'service_no' => '99999999',
-                        'order_id' => 100001,
                         'service_info' => ['Test payment'],
                     ],
                     'credit_card' => [],
@@ -229,12 +256,12 @@ class GetPaymentTokenTest extends TestCase
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_buildRequestMessageWithEmexVoucher()
+    public function testDataWithEmexVoucher()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
         $request->money->setAmount(100);
         $request->money->setCurrency('USD');
 
@@ -244,7 +271,7 @@ class GetPaymentTokenTest extends TestCase
         $request->addPaymentMethod($emexVoucher);
         $request->addPaymentMethod($cc);
 
-        $arr = [
+        $expected = [
             'checkout' => [
                 'version' => '2.1',
                 'transaction_type' => 'payment',
@@ -261,15 +288,15 @@ class GetPaymentTokenTest extends TestCase
                     ],
                 ],
                 'settings' => [
-                    'success_url' => 'http://www.example.com/s',
-                    'cancel_url' => 'http://www.example.com/c',
-                    'decline_url' => 'http://www.example.com/d',
-                    'fail_url' => 'http://www.example.com/f',
                     'notification_url' => 'http://www.example.com/n',
+                    'success_url' => 'http://www.example.com/s',
+                    'decline_url' => 'http://www.example.com/d',
+                    'cancel_url' => 'http://www.example.com/c',
+                    'fail_url' => 'http://www.example.com/f',
                     'language' => 'zh',
                     'customer_fields' => [
-                        'visible' => [],
                         'read_only' => [],
+                        'visible' => [],
                     ],
                 ],
                 'customer' => [
@@ -278,48 +305,26 @@ class GetPaymentTokenTest extends TestCase
                     'last_name' => 'Doe',
                     'country' => 'LV',
                     'city' => 'Riga',
-                    'state' => '',
+                    'state' => null,
                     'zip' => 'LV-1082',
                     'address' => 'Demo str 12',
-                    'phone' => '',
+                    'phone' => null,
                     'birth_date' => null,
                 ],
                 'payment_method' => [
                     'types' => ['emexvoucher', 'credit_card'],
-                    'credit_card' => [],
                     'emexvoucher' => [],
+                    'credit_card' => [],
                 ],
             ],
         ];
 
-        $this->assertEqual($arr, $request->data());
+        $this->assertSame($expected, $request->data());
     }
 
-    public function test_endpoint()
+    public function testRedirectUrl()
     {
-        $request = $this->getTestObjectInstance();
-
-        $this->assertEqual($request->endpoint(), Settings::$checkoutBase . '/ctp/api/checkouts');
-    }
-
-    public function test_successTokenRequest()
-    {
-        $request = $this->getTestObject();
-
-        $amount = rand(0, 10000) / 100;
-
-        $request->money->setAmount($amount);
-
-        $response = (new ApiClient)->send($request);
-
-        $this->assertTrue($response->isValid());
-        $this->assertTrue($response->isSuccess());
-        $this->assertNotNull($response->getToken());
-    }
-
-    public function test_redirectUrl()
-    {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
         $amount = rand(0, 10000) / 100;
 
@@ -331,19 +336,34 @@ class GetPaymentTokenTest extends TestCase
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getToken());
         $this->assertNotNull($response->getRedirectUrl());
-        $this->assertEqual(
-            \BeGateway\Settings::$checkoutBase . '/v2/checkout?token=' . $response->getToken(),
+        $this->assertSame(
+            Settings::$checkoutBase . '/v2/checkout?token=' . $response->getToken(),
             $response->getRedirectUrl()
         );
-        $this->assertEqual(
-            \BeGateway\Settings::$checkoutBase . '/v2/checkout',
+        $this->assertSame(
+            Settings::$checkoutBase . '/v2/checkout',
             $response->getRedirectUrlScriptName()
         );
     }
 
-    public function test_errorTokenRequest()
+    public function testSuccessTokenRequest()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
+
+        $amount = rand(0, 10000) / 100;
+
+        $request->money->setAmount($amount);
+
+        $response = (new ApiClient)->send($request);
+
+        $this->assertTrue($response->isValid());
+        $this->assertTrue($response->isSuccess());
+        $this->assertNotNull($response->getToken());
+    }
+
+    public function testErrorTokenRequest()
+    {
+        $request = $this->getTestRequest();
 
         $request->money->setAmount(0);
         $request->setDescription('');
@@ -352,11 +372,14 @@ class GetPaymentTokenTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
+        $this->assertSame('description must be filled', $response->getMessage());
     }
 
-    protected function getTestObject()
+    private function getTestRequest()
     {
-        $request = $this->getTestObjectInstance();
+        $this->authorize();
+
+        $request = new GetPaymentToken;
 
         $url = 'http://www.example.com';
 
@@ -384,12 +407,5 @@ class GetPaymentTokenTest extends TestCase
         $request->customer->setEmail('john@example.com');
 
         return $request;
-    }
-
-    protected function getTestObjectInstance()
-    {
-        self::authorizeFromEnv();
-
-        return new GetPaymentToken();
     }
 }
