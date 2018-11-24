@@ -1,28 +1,31 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\AuthorizationOperation;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class GatewayTransportExceptionTest extends TestCase
 {
-    private $_apiBase;
+    private $gatewayBaseUrl;
 
-    function setUp()
+    protected function setUp()
     {
-        $this->_apiBase = Settings::$gatewayBase;
+        $this->gatewayBaseUrl = Settings::$gatewayBase;
 
         Settings::$gatewayBase = 'https://thedomaindoesntexist.begatewaynotexist.com';
     }
 
-    function tearDown()
+    protected function tearDown()
     {
-        Settings::$gatewayBase = $this->_apiBase;
+        Settings::$gatewayBase = $this->gatewayBaseUrl;
     }
 
-    public function test_networkIssuesHandledCorrectly()
+    public function testNetworkIssuesHandledCorrectly()
     {
-        $request = $this->getTestObject();
+        $request = $this->getTestRequest();
 
         $amount = rand(0, 10000) / 100;
 
@@ -31,20 +34,24 @@ class GatewayTransportExceptionTest extends TestCase
         $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isError());
-        $this->assertPattern("|thedomaindoesntexist.begatewaynotexist.com|", $response->getMessage());
+        $this->assertContains('thedomaindoesntexist.begatewaynotexist.com', $response->getMessage());
     }
 
-    protected function getTestObject($threed = false)
+    private function getTestRequest()
     {
-        $request = $this->getTestObjectInstance($threed);
+        $this->authorize();
+
+        $request = new AuthorizationOperation;
 
         $request->money->setAmount(12.33);
         $request->money->setCurrency('EUR');
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
+        $request->setLanguage('de');
+        $request->setTestMode(true);
 
         $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('John Doe');
+        $request->card->setCardHolder('BEGATEWAY');
         $request->card->setCardExpMonth(1);
         $request->card->setCardExpYear(2030);
         $request->card->setCardCvc('123');
@@ -57,14 +64,8 @@ class GatewayTransportExceptionTest extends TestCase
         $request->customer->setZip('LV-1082');
         $request->customer->setIp('127.0.0.1');
         $request->customer->setEmail('john@example.com');
+        $request->customer->setBirthDate('1970-01-01');
 
         return $request;
-    }
-
-    protected function getTestObjectInstance($threed = false)
-    {
-        self::authorizeFromEnv($threed);
-
-        return new AuthorizationOperation();
     }
 }
