@@ -40,11 +40,6 @@ require_once(dirname(__FILE__) . '/BeGateway/TestCase.php');
 require_once(dirname(__FILE__) . '/BeGateway/MoneyTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/CustomerTest.php');
 
-require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/CreditCardTest.php');
-require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/CreditCardHalvaTest.php');
-require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/EripTest.php');
-require_once(dirname(__FILE__) . '/BeGateway/PaymentMethod/EmexVoucherTest.php');
-
 require_once(dirname(__FILE__) . '/BeGateway/AuthorizationOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/PaymentOperationTest.php');
 require_once(dirname(__FILE__) . '/BeGateway/CaptureOperationTest.php');
