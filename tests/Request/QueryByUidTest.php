@@ -34,6 +34,13 @@ class QueryByUidTest extends TestCase
         $this->assertSame(Settings::$gatewayBase . '/transactions/1234', $request->endpoint());
     }
 
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $this->assertSame(null, $request->data());
+    }
+
     public function testQueryRequest()
     {
         $amount = rand(0, 10000);

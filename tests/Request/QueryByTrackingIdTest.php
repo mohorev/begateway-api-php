@@ -1,37 +1,55 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByTrackingId;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class QueryByTrackingIdTest extends TestCase
 {
-    public function test_trackingId()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new QueryByTrackingId;
 
-        $request->setTrackingId('123456');
-        $this->assertEqual($request->getTrackingId(), '123456');
+        $this->assertInstanceOf(QueryByTrackingId::class, $request);
     }
 
-    public function test_endpoint()
+    public function testGetSetTrackingId()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
+
+        $trackingId = 'test_tracking_id';
+        $request->setTrackingId($trackingId);
+        $this->assertSame($trackingId, $request->getTrackingId());
+    }
+
+    public function testEndpoint()
+    {
+        $request = $this->getTestRequest();
         $request->setTrackingId('1234');
 
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/v2/transactions/tracking_id/1234');
+        $this->assertSame(Settings::$gatewayBase . '/v2/transactions/tracking_id/1234', $request->endpoint());
     }
 
-    public function test_queryRequest()
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $this->assertSame(null, $request->data());
+    }
+
+    public function testQueryRequest()
     {
         $amount = rand(0, 10000);
 
         $trackingId = bin2hex(openssl_random_pseudo_bytes(32));
 
-        $parent = $this->runParentTransaction($amount, $trackingId);
+        $parent = $this->runParentRequest($amount, $trackingId);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->setTrackingId($trackingId);
 
@@ -41,16 +59,16 @@ class QueryByTrackingIdTest extends TestCase
 
         $arTrx = $response->getResponse()->transactions;
 
-        $this->assertEqual(sizeof($arTrx), 1);
+        $this->assertCount(1, $arTrx);
         $this->assertNotNull($arTrx[0]->uid);
-        $this->assertEqual($arTrx[0]->amount, $amount * 100);
-        $this->assertEqual($arTrx[0]->tracking_id, $trackingId);
-        $this->assertEqual($parent->getUid(), $arTrx[0]->uid);
+        $this->assertSame($amount * 100, $arTrx[0]->amount);
+        $this->assertSame($trackingId, $arTrx[0]->tracking_id);
+        $this->assertSame($parent->getUid(), $arTrx[0]->uid);
     }
 
     public function test_queryResponseForUnknownUid()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->setTrackingId('1234567890qwerty');
 
@@ -59,14 +77,14 @@ class QueryByTrackingIdTest extends TestCase
         $this->assertTrue($response->isValid());
 
         $arTrx = $response->getResponse()->transactions;
-        $this->assertEqual(sizeof($arTrx), 0);
+        $this->assertSame([], $arTrx);
     }
 
-    protected function runParentTransaction($amount = 10.00, $trackingId = '12345')
+    private function runParentRequest($amount, $trackingId = '12345')
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $request = new PaymentOperation();
+        $request = new PaymentOperation;
 
         $request->money->setAmount($amount);
         $request->money->setCurrency('EUR');
@@ -92,10 +110,10 @@ class QueryByTrackingIdTest extends TestCase
         return (new ApiClient)->send($request);
     }
 
-    protected function getTestObjectInstance()
+    private function getTestRequest()
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        return new QueryByTrackingId();
+        return new QueryByTrackingId;
     }
 }
