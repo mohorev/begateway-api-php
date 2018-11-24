@@ -1,35 +1,46 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByUid;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class QueryByUidTest extends TestCase
 {
-    public function test_setUid()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
-        $request->setUid('123456');
+        $request = new QueryByUid;
 
-        $this->assertEqual($request->getUid(), '123456');
+        $this->assertInstanceOf(QueryByUid::class, $request);
     }
 
-    public function test_endpoint()
+    public function testGetSetUid()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
+
+        $uid = '123456';
+        $request->setUid($uid);
+        $this->assertSame($uid, $request->getUid());
+    }
+
+    public function testEndpoint()
+    {
+        $request = $this->getTestRequest();
         $request->setUid('1234');
 
-        $this->assertEqual($request->endpoint(), Settings::$gatewayBase . '/transactions/1234');
+        $this->assertSame(Settings::$gatewayBase . '/transactions/1234', $request->endpoint());
     }
 
-    public function test_queryRequest()
+    public function testQueryRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
         $request->setUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -37,25 +48,25 @@ class QueryByUidTest extends TestCase
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
         $this->assertNotNull($response->getUid());
-        $this->assertEqual($parent->getUid(), $response->getUid());
+        $this->assertSame($parent->getUid(), $response->getUid());
     }
 
-    public function test_queryResponseForUnknownUid()
+    public function testQueryResponseForUnknownUid()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
         $request->setUid('1234567890qwerty');
 
         $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
-        $this->assertEqual($response->getMessage(), 'Record not found');
+        $this->assertSame('Record not found', $response->getMessage());
     }
 
-    protected function runParentTransaction($amount = 10.00)
+    private function runParentRequest($amount)
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $transaction = new PaymentOperation();
+        $transaction = new PaymentOperation;
 
         $transaction->money->setAmount($amount);
         $transaction->money->setCurrency('EUR');
@@ -80,10 +91,10 @@ class QueryByUidTest extends TestCase
         return (new ApiClient)->send($transaction);
     }
 
-    protected function getTestObjectInstance()
+    private function getTestRequest()
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        return new QueryByUid();
+        return new QueryByUid;
     }
 }
