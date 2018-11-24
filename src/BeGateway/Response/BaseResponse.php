@@ -7,12 +7,10 @@ use BeGateway\Contract\Response;
 abstract class BaseResponse implements Response
 {
     protected $response;
-    protected $responseArray;
 
     public function __construct($message)
     {
         $this->response = json_decode($message);
-        $this->responseArray = json_decode($message, true);
     }
 
     abstract public function isSuccess();
@@ -42,10 +40,5 @@ abstract class BaseResponse implements Response
     public function getResponse()
     {
         return $this->response;
-    }
-
-    public function getResponseArray()
-    {
-        return $this->responseArray;
     }
 }

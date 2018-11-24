@@ -142,7 +142,6 @@ class AuthorizationOperationTest extends TestCase
         $this->assertNotNull($response->getUid());
         $this->assertSame('successful', $response->getStatus());
         $this->assertSame($cents, $response->getResponse()->transaction->amount);
-        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
     public function testIncompleteAuthorization()
@@ -165,7 +164,6 @@ class AuthorizationOperationTest extends TestCase
         $this->assertContains('process', $response->getResponse()->transaction->redirect_url);
         $this->assertSame('incomplete', $response->getStatus());
         $this->assertSame($cents, $response->getResponse()->transaction->amount);
-        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
     public function testFailedAuthorization()
@@ -187,7 +185,6 @@ class AuthorizationOperationTest extends TestCase
         $this->assertNotNull($response->getUid());
         $this->assertSame('failed', $response->getStatus());
         $this->assertSame($cents, $response->getResponse()->transaction->amount);
-        $this->assertSame($cents, $response->getResponseArray()['transaction']['amount']);
     }
 
     public function testErrorAuthorization()
