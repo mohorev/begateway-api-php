@@ -66,7 +66,7 @@ class QueryByTrackingIdTest extends TestCase
         $this->assertSame($parent->getUid(), $arTrx[0]->uid);
     }
 
-    public function test_queryResponseForUnknownUid()
+    public function testQueryResponseForUnknownUid()
     {
         $request = $this->getTestRequest();
 

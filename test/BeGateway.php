@@ -37,5 +37,3 @@ $log_level = getenv('LOG_LEVEL');
 //}
 
 require_once(dirname(__FILE__) . '/BeGateway/TestCase.php');
-
-require_once(dirname(__FILE__) . '/BeGateway/WebhookTest.php');
