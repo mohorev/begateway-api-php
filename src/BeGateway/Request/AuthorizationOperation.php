@@ -5,7 +5,6 @@ namespace BeGateway\Request;
 use BeGateway\AdditionalData;
 use BeGateway\Card;
 use BeGateway\Customer;
-use BeGateway\Language;
 use BeGateway\Money;
 use BeGateway\Settings;
 
@@ -28,7 +27,6 @@ class AuthorizationOperation extends BaseRequest
         $this->money = new Money;
         $this->customer = new Customer;
         $this->additionalData = new AdditionalData;
-        $this->language = Language::getDefaultLanguage();
     }
 
     public function setDescription($description)

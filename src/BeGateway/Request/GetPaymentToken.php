@@ -4,9 +4,7 @@ namespace BeGateway\Request;
 
 use BeGateway\AdditionalData;
 use BeGateway\Customer;
-use BeGateway\Language;
 use BeGateway\Money;
-use BeGateway\Response\CheckoutResponse;
 use BeGateway\Settings;
 
 class GetPaymentToken extends BaseRequest
@@ -45,7 +43,6 @@ class GetPaymentToken extends BaseRequest
         $this->customer = new Customer;
         $this->money = new Money;
         $this->additionalData = new AdditionalData;
-        $this->language = Language::getDefaultLanguage();
     }
 
     /**
@@ -201,20 +198,6 @@ class GetPaymentToken extends BaseRequest
     public function getTransactionType()
     {
         return $this->transactionType;
-    }
-
-    public function setLanguage($code)
-    {
-        if (in_array($code, Language::getSupportedLanguages())) {
-            $this->language = $code;
-        } else {
-            $this->language = Language::getDefaultLanguage();
-        }
-    }
-
-    public function getLanguage()
-    {
-        return $this->language;
     }
 
     # date when payment expires for payment

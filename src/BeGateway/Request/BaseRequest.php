@@ -3,7 +3,7 @@
 namespace BeGateway\Request;
 
 use BeGateway\Contract\Request;
-use BeGateway\Language;
+use BeGateway\Resource;
 
 abstract class BaseRequest implements Request
 {
@@ -11,15 +11,17 @@ abstract class BaseRequest implements Request
 
     public function setLanguage($code)
     {
-        if (in_array($code, Language::getSupportedLanguages())) {
-            $this->language = $code;
-        } else {
-            $this->language = Language::getDefaultLanguage();
-        }
+        $this->language = $code;
     }
 
     public function getLanguage()
     {
-        return $this->language;
+        $language = (new Resource)->get('language');
+
+        if (in_array($this->language, $language['supported'], true)) {
+            return $this->language;
+        }
+
+        return $language['default'];
     }
 }
