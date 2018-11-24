@@ -1,35 +1,53 @@
 <?php
 
-namespace BeGateway;
+namespace BeGateway\Tests\Request;
 
+use BeGateway\ApiClient;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Request\QueryByPaymentToken;
+use BeGateway\Settings;
+use BeGateway\Tests\TestCase;
 
 class QueryByPaymentTokenTest extends TestCase
 {
-    public function test_setToken()
+    public function testCreate()
     {
-        $request = $this->getTestObjectInstance();
+        $request = new QueryByPaymentToken;
 
-        $request->setToken('123456');
-        $this->assertEqual($request->getToken(), '123456');
+        $this->assertInstanceOf(QueryByPaymentToken::class, $request);
     }
 
-    public function test_endpoint()
+    public function testGetSetToken()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
+
+        $token = '123456';
+        $request->setToken($token);
+        $this->assertSame($request->getToken(), $token);
+    }
+
+    public function testEndpoint()
+    {
+        $request = $this->getTestRequest();
         $request->setToken('1234');
 
-        $this->assertEqual($request->endpoint(), Settings::$checkoutBase . '/ctp/api/checkouts/1234');
+        $this->assertSame(Settings::$checkoutBase . '/ctp/api/checkouts/1234', $request->endpoint());
     }
 
-    public function test_queryRequest()
+    public function testData()
+    {
+        $request = $this->getTestRequest();
+
+        $this->assertSame(null, $request->data());
+    }
+
+    public function testQueryRequest()
     {
         $amount = rand(0, 10000);
 
-        $parent = $this->runParentTransaction($amount);
+        $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->setToken($parent->getToken());
 
@@ -39,23 +57,23 @@ class QueryByPaymentTokenTest extends TestCase
         $this->assertNotNull($response->getToken(), $parent->getToken());
     }
 
-    public function test_queryResponseForUnknownUid()
+    public function testQueryResponseForUnknownUid()
     {
-        $request = $this->getTestObjectInstance();
+        $request = $this->getTestRequest();
 
         $request->setToken('1234567890qwerty');
 
         $response = (new ApiClient)->send($request);
 
         $this->assertTrue($response->isValid());
-        $this->assertEqual($response->getMessage(), 'Record not found');
+        $this->assertSame('Record not found', $response->getMessage());
     }
 
-    protected function runParentTransaction($amount = 10.00)
+    private function runParentRequest($amount)
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        $request = new GetPaymentToken();
+        $request = new GetPaymentToken;
 
         $url = 'http://www.example.com';
 
@@ -82,10 +100,10 @@ class QueryByPaymentTokenTest extends TestCase
         return (new ApiClient)->send($request);
     }
 
-    protected function getTestObjectInstance()
+    private function getTestRequest()
     {
-        self::authorizeFromEnv();
+        $this->authorize();
 
-        return new QueryByPaymentToken();
+        return new QueryByPaymentToken;
     }
 }
