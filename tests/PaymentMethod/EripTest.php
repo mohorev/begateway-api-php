@@ -2,6 +2,7 @@
 
 namespace BeGateway\Tests\PaymentMethod;
 
+use BeGateway\Contract\PaymentMethod;
 use BeGateway\PaymentMethod\Erip;
 use BeGateway\Tests\TestCase;
 
@@ -17,6 +18,8 @@ class EripTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Erip::class, $payment);
+        $this->assertInstanceOf(PaymentMethod::class, $payment);
+
         $this->assertSame('erip', $payment->name());
         $this->assertSame([
             'order_id' => 100001,

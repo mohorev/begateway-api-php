@@ -2,6 +2,7 @@
 
 namespace BeGateway\Tests\PaymentMethod;
 
+use BeGateway\Contract\PaymentMethod;
 use BeGateway\PaymentMethod\EmexVoucher;
 use BeGateway\Tests\TestCase;
 
@@ -12,6 +13,8 @@ class EmexVoucherTest extends TestCase
         $payment = new EmexVoucher;
 
         $this->assertInstanceOf(EmexVoucher::class, $payment);
+        $this->assertInstanceOf(PaymentMethod::class, $payment);
+
         $this->assertSame('emexvoucher', $payment->name());
         $this->assertSame([], $payment->parameters());
     }
