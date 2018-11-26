@@ -1,11 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../../src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\PaymentOperation;
+use BeGateway\Request\QueryByUid;
+
 require_once __DIR__ . '/test_shop_data.php';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$transaction = new \BeGateway\Request\PaymentOperation;
+$transaction = new PaymentOperation;
 
 $amount = rand(1, 100);
 
@@ -31,8 +35,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-
-$response = (new \BeGateway\ApiClient)->send($transaction);
+$response = (new ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -41,10 +44,10 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Query by UID ' . $response->getUid() . PHP_EOL;
 
-    $query = new \BeGateway\Request\QueryByUid;
+    $query = new QueryByUid;
     $query->setUid($response->getUid());
 
-    $response = (new \BeGateway\ApiClient)->send($query);
+    $response = (new ApiClient)->send($query);
 
     print_r($response);
 }

@@ -55,14 +55,16 @@ This data you will receive from your payment processor.
 Simple usage looks like:
 
 ```php
-require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\GetPaymentToken;
 
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::INFO);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::INFO);
 
-$transaction = new \BeGateway\Request\GetPaymentToken;
+$transaction = new GetPaymentToken;
 
 $transaction->money->setAmount(1.00);
 $transaction->money->setCurrency('EUR');
@@ -84,7 +86,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = (new \BeGateway\ApiClient)->send($transaction);
+$response = (new ApiClient)->send($transaction);
 
 if ($response->isSuccess()) {
   header("Location: " . $response->getRedirectUrl());
@@ -96,14 +98,16 @@ if ($response->isSuccess()) {
 Simple usage looks like:
 
 ```php
-require_once __DIR__ . 'PATH_TO_INSTALLED_LIBRARY/src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\PaymentOperation;
 
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::INFO);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::INFO);
 
-$transaction = new \BeGateway\Request\PaymentOperation;
+$transaction = new PaymentOperation;
 
 $transaction->money->setAmount(1.00);
 $transaction->money->setCurrency('EUR');
@@ -125,7 +129,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = (new \BeGateway\ApiClient)->send($transaction);
+$response = (new ApiClient)->send($transaction);
 
 if ($response->isSuccess()) {
   print 'Status: ' . $response->getStatus() . PHP_EOL;

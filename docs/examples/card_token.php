@@ -1,23 +1,27 @@
 <?php
 
-require_once __DIR__ . '/../../src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\CardToken;
+use BeGateway\Request\PaymentOperation;
+
 require_once __DIR__ . '/test_shop_data.php';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$token = new \BeGateway\Request\CardToken;
+$token = new CardToken;
 $token->card->setCardNumber('4200000000000000');
 $token->card->setCardHolder('John Doe');
 $token->card->setCardExpMonth(1);
 $token->card->setCardExpYear(2029);
 
-$response = (new \BeGateway\ApiClient)->send($token);
+$response = (new ApiClient)->send($token);
 
 if ($response->isSuccess()) {
     print 'Card token: ' . $response->card->getCardToken() . PHP_EOL;
     print 'Trying to make a payment by the token and with CVC 123' . PHP_EOL;
 
-    $transaction = new \BeGateway\Request\PaymentOperation;
+    $transaction = new PaymentOperation;
 
     $amount = rand(1, 100);
 
@@ -40,8 +44,7 @@ if ($response->isSuccess()) {
     $transaction->customer->setIp('127.0.0.1');
     $transaction->customer->setEmail('john@example.com');
 
-
-    $response = (new \BeGateway\ApiClient)->send($transaction);
+    $response = (new ApiClient)->send($transaction);
 
     print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
     print 'Transaction status: ' . $response->getStatus() . PHP_EOL;

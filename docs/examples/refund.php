@@ -1,11 +1,15 @@
 <?php
 
-require_once __DIR__ . '/../../src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\PaymentOperation;
+use BeGateway\Request\RefundOperation;
+
 require_once __DIR__ . '/test_shop_data.php';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$transaction = new \BeGateway\Request\PaymentOperation;
+$transaction = new PaymentOperation;
 
 $amount = rand(1, 100);
 
@@ -31,7 +35,7 @@ $transaction->customer->setZip('LV-1082');
 $transaction->customer->setIp('127.0.0.1');
 $transaction->customer->setEmail('john@example.com');
 
-$response = (new \BeGateway\ApiClient)->send($transaction);
+$response = (new ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -40,12 +44,12 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Refund transaction ' . $response->getUid() . PHP_EOL;
 
-    $refund = new \BeGateway\Request\RefundOperation;
+    $refund = new RefundOperation;
     $refund->setParentUid($response->getUid());
     $refund->money->setAmount($transaction->money->getAmount());
     $refund->setReason('customer request');
 
-    $response = (new \BeGateway\ApiClient)->send($refund);
+    $response = (new ApiClient)->send($refund);
 
     if ($response->isSuccess()) {
         print 'Refund successfully. Refund transaction UID ' . $response->getUid() . PHP_EOL;

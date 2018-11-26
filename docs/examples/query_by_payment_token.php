@@ -1,15 +1,19 @@
 <?php
 
-require_once __DIR__ . '/../../src/BeGateway.php';
+use BeGateway\ApiClient;
+use BeGateway\Request\QueryByPaymentToken;
+
 require_once __DIR__ . '/test_shop_data.php';
 
-\BeGateway\Logger::getInstance()->setLogLevel(\BeGateway\Logger::DEBUG);
+// TODO: Logger example
+// Logger::getInstance()->setLogLevel(Logger::DEBUG);
+
 $token = $argv[1];
 print 'Trying to Query by Payment token ' . $token . PHP_EOL;
 
-$query = new \BeGateway\Request\QueryByPaymentToken;
+$query = new QueryByPaymentToken;
 $query->setToken($token);
 
-$response = (new \BeGateway\ApiClient)->send($query);
+$response = (new ApiClient)->send($query);
 
 print_r($response);
