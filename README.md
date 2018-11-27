@@ -66,8 +66,8 @@ use BeGateway\Request\GetPaymentToken;
 
 $transaction = new GetPaymentToken;
 
-$transaction->money->setAmount(1.00);
-$transaction->money->setCurrency('EUR');
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
+
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
 $transaction->setLanguage('en');
@@ -109,8 +109,8 @@ use BeGateway\Request\PaymentOperation;
 
 $transaction = new PaymentOperation;
 
-$transaction->money->setAmount(1.00);
-$transaction->money->setCurrency('EUR');
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
+
 $transaction->setDescription('test order');
 $transaction->setTrackingId('my_custom_variable');
 

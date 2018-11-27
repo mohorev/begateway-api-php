@@ -16,7 +16,7 @@ class CreditOperation extends BaseRequest
 
     public function __construct()
     {
-        $this->money = new Money;
+        $this->money = new Money(0, 'USD');
         $this->card = new Card;
     }
 
@@ -55,7 +55,7 @@ class CreditOperation extends BaseRequest
     {
         return [
             'request' => [
-                'amount' => $this->money->getCents(),
+                'amount' => $this->money->getAmount(),
                 'currency' => $this->money->getCurrency(),
                 'description' => $this->getDescription(),
                 'tracking_id' => $this->getTrackingId(),

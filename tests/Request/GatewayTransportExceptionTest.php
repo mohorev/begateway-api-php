@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
@@ -27,9 +28,9 @@ class GatewayTransportExceptionTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000);
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
 
         $response = (new ApiClient)->send($request);
 
@@ -43,8 +44,8 @@ class GatewayTransportExceptionTest extends TestCase
 
         $request = new AuthorizationOperation;
 
-        $request->money->setAmount(12.33);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money(1233, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
         $request->setLanguage('de');

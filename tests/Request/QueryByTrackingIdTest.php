@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByTrackingId;
 use BeGateway\Settings;
@@ -45,7 +46,7 @@ class QueryByTrackingIdTest extends TestCase
 
     public function testQueryRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $trackingId = bin2hex(openssl_random_pseudo_bytes(32));
 
@@ -63,7 +64,7 @@ class QueryByTrackingIdTest extends TestCase
 
         $this->assertCount(1, $arTrx);
         $this->assertNotNull($arTrx[0]->uid);
-        $this->assertSame($amount * 100, $arTrx[0]->amount);
+        $this->assertSame($amount, $arTrx[0]->amount);
         $this->assertSame($trackingId, $arTrx[0]->tracking_id);
         $this->assertSame($parent->getUid(), $arTrx[0]->uid);
     }
@@ -88,8 +89,8 @@ class QueryByTrackingIdTest extends TestCase
 
         $request = new PaymentOperation;
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId($trackingId);
         $request->setTestMode(true);

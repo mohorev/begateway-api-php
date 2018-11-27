@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Settings;
@@ -65,14 +66,14 @@ class CreditOperationTest extends TestCase
 
     public function testSuccessCreditRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount * 2);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount * 2, 'EUR');
+
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
         $request->card->setCardToken($parent->getResponse()->transaction->credit_card->token);
@@ -87,14 +88,14 @@ class CreditOperationTest extends TestCase
 
     public function testErrorCreditRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount * 2);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount * 2, 'EUR');
+
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
         $request->card->setCardToken('12345');
@@ -112,8 +113,8 @@ class CreditOperationTest extends TestCase
 
         $request = new PaymentOperation;
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
@@ -141,8 +142,8 @@ class CreditOperationTest extends TestCase
 
         $request = new CreditOperation;
 
-        $request->money->setAmount(12.56);
-        $request->money->setCurrency('RUB');
+        $request->money = new Money(1256, 'RUB');
+
         $request->card->setCardToken('12345');
         $request->setDescription('description');
         $request->setTrackingId('tracking');

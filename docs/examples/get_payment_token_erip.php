@@ -1,6 +1,7 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Money;
 use BeGateway\PaymentMethod\CreditCard;
 use BeGateway\PaymentMethod\Erip;
 use BeGateway\Request\GetPaymentToken;
@@ -23,10 +24,8 @@ $erip = new Erip([
 $transaction->addPaymentMethod($cc);
 $transaction->addPaymentMethod($erip);
 
-$amount = rand(100, 1000);
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money->setAmount($amount);
-$transaction->money->setCurrency('BYN');
 $transaction->setDescription('Тестовая оплата');
 $transaction->setTrackingId('my_custom_variable');
 $transaction->setLanguage('ru');

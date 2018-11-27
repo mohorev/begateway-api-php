@@ -1,6 +1,7 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Money;
 use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
 
@@ -11,10 +12,8 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $transaction = new PaymentOperation;
 
-$amount = rand(1, 100);
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money->setAmount($amount);
-$transaction->money->setCurrency('EUR');
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
 
@@ -46,10 +45,8 @@ if ($response->isSuccess()) {
 
     $credit = new CreditOperation;
 
-    $amount = rand(100, 10000);
+    $credit->money = new Money(3000, 'EUR'); // 30 EUR
 
-    $credit->money->setAmount($amount);
-    $credit->money->setCurrency('USD');
     $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
     $credit->setDescription('Test credit');
 

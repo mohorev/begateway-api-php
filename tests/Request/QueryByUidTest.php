@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByUid;
 use BeGateway\Settings;
@@ -45,7 +46,7 @@ class QueryByUidTest extends TestCase
 
     public function testQueryRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
@@ -77,8 +78,8 @@ class QueryByUidTest extends TestCase
 
         $transaction = new PaymentOperation;
 
-        $transaction->money->setAmount($amount);
-        $transaction->money->setCurrency('EUR');
+        $transaction->money = new Money($amount, 'EUR');
+
         $transaction->setDescription('test');
         $transaction->setTrackingId('my_custom_variable');
 

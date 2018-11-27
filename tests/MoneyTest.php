@@ -8,78 +8,43 @@ class MoneyTest extends TestCase
 {
     public function testCreate()
     {
-        $money = new Money;
+        $money = new Money(0, 'USD');
 
         $this->assertInstanceOf(Money::class, $money);
 
-        $this->assertSame(0, $money->getCents());
-        $this->assertSame(0.0, $money->getAmount());
+        $this->assertSame(0, $money->getAmount());
         $this->assertSame('USD', $money->getCurrency());
     }
 
-    public function testSetAmountWithDecimals()
+    public function testCreateFromFloat()
     {
-        $money = new Money;
+        $money = Money::fromFloat(10.57, 'EUR');
 
-        $money->setAmount(10.57);
-        $money->setCurrency('EUR');
-
-        $this->assertSame(1057, $money->getCents());
-        $this->assertSame(10.57, $money->getAmount());
+        $this->assertSame(1057, $money->getAmount());
+        $this->assertSame('EUR', $money->getCurrency());
     }
 
-    public function testSetAmountWithoutDecimals()
+    public function testCreateFromSubunits()
     {
-        $money = new Money;
+        $money = new Money(2550, 'BYR');
 
-        $money->setAmount(2550);
-        $money->setCurrency('BYR');
-
-        $this->assertSame(2550, $money->getCents());
-        $this->assertSame(2550.0, $money->getAmount());
+        $this->assertSame(2550, $money->getAmount());
+        $this->assertSame('BYR', $money->getCurrency());
     }
 
-    public function testSetCentsWithDecimals()
+    public function testCreateFromFloatWith99Amount()
     {
-        $money = new Money;
+        $money = Money::fromFloat(20.99, 'EUR');
 
-        $money->setCents(1057);
-        $money->setCurrency('EUR');
-
-        $this->assertSame(1057, $money->getCents());
-        $this->assertSame(10.57, $money->getAmount());
+        $this->assertSame(2099, $money->getAmount());
+        $this->assertSame('EUR', $money->getCurrency());
     }
 
-    public function testSetCentsWithoutDecimals()
+    public function testRoundFloatAmount()
     {
-        $money = new Money;
+        $money = Money::fromFloat(151.2, 'EUR');
 
-        $money->setCents(2550);
-        $money->setCurrency('JPY');
-
-        $this->assertSame(2550, $money->getCents());
-        $this->assertSame(2550.0, $money->getAmount());
-    }
-
-    public function testSet99Amount()
-    {
-        $money = new Money;
-
-        $money->setAmount(20.99);
-        $money->setCurrency('EUR');
-
-        $this->assertSame(2099, $money->getCents());
-        $this->assertSame(20.99, $money->getAmount());
-    }
-
-    public function testRoundAmount()
-    {
-        $money = new Money;
-
-        $money->setAmount(151.2);
-        $money->setCurrency('EUR');
-
-        $this->assertSame(15120, $money->getCents());
-        $this->assertSame(151.20, $money->getAmount());
+        $this->assertSame(15120, $money->getAmount());
+        $this->assertSame('EUR', $money->getCurrency());
     }
 }

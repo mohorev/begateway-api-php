@@ -1,6 +1,7 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\VoidOperation;
 
@@ -11,10 +12,8 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $transaction = new AuthorizationOperation;
 
-$amount = rand(1, 100);
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money->setAmount($amount);
-$transaction->money->setCurrency('EUR');
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
 
@@ -46,7 +45,7 @@ if ($response->isSuccess()) {
 
     $void = new VoidOperation;
     $void->setParentUid($response->getUid());
-    $void->money->setAmount($transaction->money->getAmount());
+    $void->money = $transaction->money;
 
     $response = (new ApiClient)->send($void);
 

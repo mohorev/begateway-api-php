@@ -12,7 +12,7 @@ abstract class ChildTransaction extends BaseRequest
 
     public function __construct()
     {
-        $this->money = new Money;
+        $this->money = new Money(0, 'USD');
     }
 
     public function setParentUid($uid)
@@ -30,7 +30,7 @@ abstract class ChildTransaction extends BaseRequest
         return [
             'request' => [
                 'parent_uid' => $this->getParentUid(),
-                'amount' => $this->money->getCents(),
+                'amount' => $this->money->getAmount(),
             ],
         ];
     }

@@ -41,7 +41,7 @@ class GetPaymentToken extends BaseRequest
     public function __construct()
     {
         $this->customer = new Customer;
-        $this->money = new Money;
+        $this->money = new Money(0, 'USD');
         $this->additionalData = new AdditionalData;
     }
 
@@ -64,7 +64,7 @@ class GetPaymentToken extends BaseRequest
                 'transaction_type' => $this->transactionType,
                 'test' => $this->getTestMode(),
                 'order' => [
-                    'amount' => $this->money->getCents(),
+                    'amount' => $this->money->getAmount(),
                     'currency' => $this->money->getCurrency(),
                     'description' => $this->getDescription(),
                     'tracking_id' => $this->getTrackingId(),

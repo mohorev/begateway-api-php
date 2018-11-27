@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Request\QueryByPaymentToken;
 use BeGateway\Settings;
@@ -45,7 +46,7 @@ class QueryByPaymentTokenTest extends TestCase
 
     public function testQueryRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
@@ -79,8 +80,8 @@ class QueryByPaymentTokenTest extends TestCase
 
         $url = 'http://www.example.com';
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'EUR');
+
         $request->setAuthorizationTransactionType();
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

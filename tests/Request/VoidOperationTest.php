@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\VoidOperation;
 use BeGateway\Settings;
@@ -51,13 +52,13 @@ class VoidOperationTest extends TestCase
 
     public function testSuccessVoidRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
         $request->setParentUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -71,13 +72,13 @@ class VoidOperationTest extends TestCase
 
     public function testErrorVoidRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount + 1);
+        $request->money = new Money($amount + 1, 'EUR');
         $request->setParentUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -93,8 +94,8 @@ class VoidOperationTest extends TestCase
 
         $request = new AuthorizationOperation;
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
@@ -123,7 +124,7 @@ class VoidOperationTest extends TestCase
         $request = new VoidOperation;
 
         $request->setParentUid('12345678');
-        $request->money->setAmount(12.56);
+        $request->money = new Money(1256, 'EUR');
 
         return $request;
     }

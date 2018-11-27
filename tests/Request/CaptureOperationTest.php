@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CaptureOperation;
 use BeGateway\Settings;
@@ -57,7 +58,7 @@ class CaptureOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'USD');
         $request->setParentUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -77,7 +78,7 @@ class CaptureOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount + 1);
+        $request->money = new Money($amount + 1, 'USD');
         $request->setParentUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -93,8 +94,8 @@ class CaptureOperationTest extends TestCase
 
         $request = new AuthorizationOperation;
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'USD');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
@@ -123,7 +124,7 @@ class CaptureOperationTest extends TestCase
         $request = new CaptureOperation;
 
         $request->setParentUid('12345678');
-        $request->money->setAmount(12.56);
+        $request->money = new Money(1256, 'USD');
 
         return $request;
     }

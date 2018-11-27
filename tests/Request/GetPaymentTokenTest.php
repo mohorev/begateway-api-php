@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\PaymentMethod;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Settings;
@@ -191,8 +192,7 @@ class GetPaymentTokenTest extends TestCase
     public function testDataWithErip()
     {
         $request = $this->getTestRequest();
-        $request->money->setAmount(100);
-        $request->money->setCurrency('BYN');
+        $request->money = new Money(100, 'BYN');
 
         $erip = new PaymentMethod\Erip([
             'account_number' => '1234',
@@ -211,7 +211,7 @@ class GetPaymentTokenTest extends TestCase
                 'transaction_type' => 'payment',
                 'test' => true,
                 'order' => [
-                    'amount' => 10000,
+                    'amount' => 100,
                     'currency' => 'BYN',
                     'description' => 'test',
                     'tracking_id' => 'my_custom_variable',
@@ -264,8 +264,7 @@ class GetPaymentTokenTest extends TestCase
     public function testDataWithEmexVoucher()
     {
         $request = $this->getTestRequest();
-        $request->money->setAmount(100);
-        $request->money->setCurrency('USD');
+        $request->money = new Money(100, 'USD');
 
         $emexVoucher = new PaymentMethod\EmexVoucher();
         $cc = new PaymentMethod\CreditCard();
@@ -279,7 +278,7 @@ class GetPaymentTokenTest extends TestCase
                 'transaction_type' => 'payment',
                 'test' => true,
                 'order' => [
-                    'amount' => 10000,
+                    'amount' => 100,
                     'currency' => 'USD',
                     'description' => 'test',
                     'tracking_id' => 'my_custom_variable',
@@ -328,9 +327,9 @@ class GetPaymentTokenTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000);
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
 
         $response = (new ApiClient)->send($request);
 
@@ -352,9 +351,9 @@ class GetPaymentTokenTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = rand(0, 10000) / 100;
+        $amount = mt_rand(0, 10000);
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
 
         $response = (new ApiClient)->send($request);
 
@@ -367,7 +366,7 @@ class GetPaymentTokenTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->money->setAmount(0);
+        $request->money = new Money(0, 'EUR');
         $request->setDescription('');
 
         $response = (new ApiClient)->send($request);
@@ -385,8 +384,8 @@ class GetPaymentTokenTest extends TestCase
 
         $url = 'http://www.example.com';
 
-        $request->money->setAmount(12.33);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money(1233, 'EUR');
+
         $request->setPaymentTransactionType();
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

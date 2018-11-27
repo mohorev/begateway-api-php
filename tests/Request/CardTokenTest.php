@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CardToken;
 use BeGateway\Settings;
@@ -78,12 +79,9 @@ class CardTokenTest extends TestCase
         $this->assertNotNull($response2->card->getCardToken());
 
         # make authorization with token
-        $amount = rand(0, 10000) / 100;
-
         $request = $this->getAuthorizationRequest();
 
-        $request->money->setAmount($amount);
-        $cents = $request->money->getCents();
+        $amount = $request->money->getAmount();
 
         $request->card->setCardToken($response2->card->getCardToken());
         $request->card->setCardCvc('123');
@@ -94,7 +92,7 @@ class CardTokenTest extends TestCase
         $this->assertSame('Successfully processed', $response3->getMessage());
         $this->assertNotNull($response3->getUid());
         $this->assertSame('successful', $response3->getStatus());
-        $this->assertSame($cents, $response3->getResponse()->transaction->amount);
+        $this->assertSame($amount, $response3->getResponse()->transaction->amount);
     }
 
     private function getTestRequest($secure3D = false)
@@ -117,7 +115,8 @@ class CardTokenTest extends TestCase
 
         $request = new AuthorizationOperation;
 
-        $request->money->setCurrency('EUR');
+        $request->money = new Money(mt_rand(0, 10000), 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 

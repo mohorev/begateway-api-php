@@ -1,6 +1,7 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 
 require_once __DIR__ . '/test_shop_data.php';
@@ -10,10 +11,8 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $transaction = new PaymentOperation;
 
-$amount = rand(1, 100);
+$transaction->money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money->setAmount($amount);
-$transaction->money->setCurrency('EUR');
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
 

@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\RefundOperation;
 use BeGateway\Settings;
@@ -61,13 +62,14 @@ class RefundOperationTest extends TestCase
 
     public function testSuccessRefundRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
+
         $request->setParentUid($parent->getUid());
         $request->setReason('test reason');
 
@@ -82,13 +84,13 @@ class RefundOperationTest extends TestCase
 
     public function testErrorRefundRequest()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount + 1);
+        $request->money = new Money($amount + 1, 'EUR');
         $request->setParentUid($parent->getUid());
 
         $response = (new ApiClient)->send($request);
@@ -100,13 +102,13 @@ class RefundOperationTest extends TestCase
 
     public function testErrorRefundRequestWitoutReason()
     {
-        $amount = rand(0, 10000);
+        $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
         $request = $this->getTestRequest();
 
-        $request->money->setAmount($amount);
+        $request->money = new Money($amount, 'EUR');
         $request->setParentUid($parent->getUid());
         $request->setReason('');
 
@@ -121,8 +123,8 @@ class RefundOperationTest extends TestCase
     {
         $request = new PaymentOperation;
 
-        $request->money->setAmount($amount);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money($amount, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
@@ -151,7 +153,7 @@ class RefundOperationTest extends TestCase
         $request = new RefundOperation;
 
         $request->setParentUid('12345678');
-        $request->money->setAmount(12.56);
+        $request->money = new Money(1256, 'EUR');
         $request->setReason('merchant request');
 
         return $request;

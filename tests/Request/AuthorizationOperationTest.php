@@ -4,6 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
@@ -131,10 +132,8 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = mt_rand(0, 10000) / 100;
-
-        $request->money->setAmount($amount);
-        $cents = $request->money->getCents();
+        $request->money = new Money(mt_rand(0, 10000), 'EUR');
+        $amount = $request->money->getAmount();
 
         $response = (new ApiClient)->send($request);
 
@@ -143,18 +142,16 @@ class AuthorizationOperationTest extends TestCase
         $this->assertSame('Successfully processed', $response->getMessage());
         $this->assertNotNull($response->getUid());
         $this->assertSame('successful', $response->getStatus());
-        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($amount, $response->getResponse()->transaction->amount);
     }
 
     public function testIncompleteAuthorization()
     {
         $request = $this->getTestRequest(true);
 
-        $amount = mt_rand(0, 10000) / 100;
-
-        $request->money->setAmount($amount);
+        $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $request->card->setCardNumber('4012001037141112');
-        $cents = $request->money->getCents();
+        $amount = $request->money->getAmount();
 
         $response = (new ApiClient)->send($request);
 
@@ -165,7 +162,7 @@ class AuthorizationOperationTest extends TestCase
         $this->assertNotNull($response->getResponse()->transaction->redirect_url);
         $this->assertContains('process', $response->getResponse()->transaction->redirect_url);
         $this->assertSame('incomplete', $response->getStatus());
-        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($amount, $response->getResponse()->transaction->amount);
     }
 
     public function testFailedAuthorization()
@@ -173,10 +170,8 @@ class AuthorizationOperationTest extends TestCase
         $request = $this->getTestRequest();
         $request->card->setCardNumber('4005550000000019');
 
-        $amount = mt_rand(0, 10000) / 100;
-
-        $request->money->setAmount($amount);
-        $cents = $request->money->getCents();
+        $request->money = new Money(mt_rand(0, 10000), 'EUR');
+        $amount = $request->money->getAmount();
         $request->card->setCardExpMonth(10);
 
         $response = (new ApiClient)->send($request);
@@ -186,16 +181,14 @@ class AuthorizationOperationTest extends TestCase
         $this->assertSame('Authorization was declined', $response->getMessage());
         $this->assertNotNull($response->getUid());
         $this->assertSame('failed', $response->getStatus());
-        $this->assertSame($cents, $response->getResponse()->transaction->amount);
+        $this->assertSame($amount, $response->getResponse()->transaction->amount);
     }
 
     public function testErrorAuthorization()
     {
         $request = $this->getTestRequest();
 
-        $amount = mt_rand(0, 10000) / 100;
-
-        $request->money->setAmount($amount);
+        $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $request->card->setCardExpYear(10);
 
         $response = (new ApiClient)->send($request);
@@ -212,8 +205,8 @@ class AuthorizationOperationTest extends TestCase
 
         $request = new AuthorizationOperation;
 
-        $request->money->setAmount(12.33);
-        $request->money->setCurrency('EUR');
+        $request->money = new Money(1233, 'EUR');
+
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
         $request->setLanguage('de');
