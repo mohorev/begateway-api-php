@@ -11,7 +11,9 @@ require_once __DIR__ . '/test_shop_data.php';
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$transaction = new GetPaymentToken;
+$money = new Money(100, 'EUR'); // 1 EUR
+
+$transaction = new GetPaymentToken($money);
 
 $cc = new CreditCard;
 
@@ -19,8 +21,6 @@ $halva = new CreditCardHalva;
 
 $transaction->addPaymentMethod($cc);
 $transaction->addPaymentMethod($halva);
-
-$transaction->money = new Money(100, 'EUR'); // 1 EUR
 
 $transaction->setDescription('Тестовая оплата');
 $transaction->setTrackingId('my_custom_variable');

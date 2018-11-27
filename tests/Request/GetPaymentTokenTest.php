@@ -14,7 +14,7 @@ class GetPaymentTokenTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new GetPaymentToken;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(GetPaymentToken::class, $request);
@@ -380,11 +380,11 @@ class GetPaymentTokenTest extends TestCase
     {
         $this->authorize();
 
-        $request = new GetPaymentToken;
+        $money = new Money(1233, 'EUR');
+
+        $request = new GetPaymentToken($money);
 
         $url = 'http://www.example.com';
-
-        $request->money = new Money(1233, 'EUR');
 
         $request->setPaymentTransactionType();
         $request->setDescription('test');

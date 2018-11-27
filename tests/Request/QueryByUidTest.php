@@ -76,9 +76,9 @@ class QueryByUidTest extends TestCase
     {
         $this->authorize();
 
-        $transaction = new PaymentOperation;
+        $money = new Money($amount, 'EUR');
 
-        $transaction->money = new Money($amount, 'EUR');
+        $transaction = new PaymentOperation($money);
 
         $transaction->setDescription('test');
         $transaction->setTrackingId('my_custom_variable');

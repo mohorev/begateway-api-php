@@ -43,9 +43,8 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Refund transaction ' . $response->getUid() . PHP_EOL;
 
-    $refund = new RefundOperation;
+    $refund = new RefundOperation($transaction->money);
     $refund->setParentUid($response->getUid());
-    $refund->money = $transaction->money;
     $refund->setReason('customer request');
 
     $response = (new ApiClient)->send($refund);

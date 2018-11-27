@@ -21,10 +21,10 @@ class AuthorizationOperation extends BaseRequest
     private $returnUrl;
     private $testMode = false;
 
-    public function __construct()
+    public function __construct(Money $money)
     {
         $this->card = new Card;
-        $this->money = new Money(0, 'USD');
+        $this->money = $money;
         $this->customer = new Customer;
         $this->additionalData = new AdditionalData;
     }

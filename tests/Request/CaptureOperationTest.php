@@ -14,7 +14,7 @@ class CaptureOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new CaptureOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CaptureOperation::class, $request);
@@ -92,9 +92,9 @@ class CaptureOperationTest extends TestCase
     {
         $this->authorize();
 
-        $request = new AuthorizationOperation;
+        $money = new Money($amount, 'USD');
 
-        $request->money = new Money($amount, 'USD');
+        $request = new AuthorizationOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
@@ -121,10 +121,10 @@ class CaptureOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new CaptureOperation;
+        $money = new Money(1256, 'USD');
+        $request = new CaptureOperation($money);
 
         $request->setParentUid('12345678');
-        $request->money = new Money(1256, 'USD');
 
         return $request;
     }

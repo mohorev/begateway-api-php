@@ -42,9 +42,9 @@ class GatewayTransportExceptionTest extends TestCase
     {
         $this->authorize();
 
-        $request = new AuthorizationOperation;
+        $money = new Money(1233, 'EUR');
 
-        $request->money = new Money(1233, 'EUR');
+        $request = new AuthorizationOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

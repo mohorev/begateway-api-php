@@ -22,9 +22,9 @@ if ($response->isSuccess()) {
     print 'Card token: ' . $response->card->getCardToken() . PHP_EOL;
     print 'Trying to make a payment by the token and with CVC 123' . PHP_EOL;
 
-    $transaction = new PaymentOperation;
+    $money = new Money(100, 'EUR'); // 1 EUR
 
-    $transaction->money = new Money(100, 'EUR'); // 1 EUR
+    $transaction = new PaymentOperation($money);
 
     $transaction->setDescription('test');
     $transaction->setTrackingId('my_custom_variable');

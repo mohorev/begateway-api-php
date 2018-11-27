@@ -87,9 +87,9 @@ class QueryByTrackingIdTest extends TestCase
     {
         $this->authorize();
 
-        $request = new PaymentOperation;
+        $money = new Money($amount, 'EUR');
 
-        $request->money = new Money($amount, 'EUR');
+        $request = new PaymentOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId($trackingId);

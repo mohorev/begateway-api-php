@@ -14,7 +14,7 @@ class RefundOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new RefundOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(RefundOperation::class, $request);
@@ -121,9 +121,9 @@ class RefundOperationTest extends TestCase
 
     private function runParentRequest($amount)
     {
-        $request = new PaymentOperation;
+        $money = new Money($amount, 'EUR');
 
-        $request->money = new Money($amount, 'EUR');
+        $request = new PaymentOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
@@ -150,10 +150,11 @@ class RefundOperationTest extends TestCase
     {
         $this->authorize();
 
-        $request = new RefundOperation;
+        $money = new Money(1256, 'EUR');
+
+        $request = new RefundOperation($money);
 
         $request->setParentUid('12345678');
-        $request->money = new Money(1256, 'EUR');
         $request->setReason('merchant request');
 
         return $request;

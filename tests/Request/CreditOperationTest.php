@@ -14,7 +14,7 @@ class CreditOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new CreditOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CreditOperation::class, $request);
@@ -111,9 +111,9 @@ class CreditOperationTest extends TestCase
     {
         $this->authorize();
 
-        $request = new PaymentOperation;
+        $money = new Money($amount, 'EUR');
 
-        $request->money = new Money($amount, 'EUR');
+        $request = new PaymentOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
@@ -140,9 +140,9 @@ class CreditOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new CreditOperation;
+        $money = new Money(1256, 'RUB');
 
-        $request->money = new Money(1256, 'RUB');
+        $request = new CreditOperation($money);
 
         $request->card->setCardToken('12345');
         $request->setDescription('description');

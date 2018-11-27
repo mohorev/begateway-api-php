@@ -10,9 +10,9 @@ abstract class ChildTransaction extends BaseRequest
 
     private $parentUid;
 
-    public function __construct()
+    public function __construct(Money $money)
     {
-        $this->money = new Money(0, 'USD');
+        $this->money = $money;
     }
 
     public function setParentUid($uid)

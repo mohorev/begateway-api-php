@@ -64,9 +64,9 @@ use BeGateway\Request\GetPaymentToken;
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::INFO);
 
-$transaction = new GetPaymentToken;
+$money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money = new Money(100, 'EUR'); // 1 EUR
+$transaction = new GetPaymentToken($money);
 
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
@@ -107,9 +107,9 @@ use BeGateway\Request\PaymentOperation;
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::INFO);
 
-$transaction = new PaymentOperation;
+$money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money = new Money(100, 'EUR'); // 1 EUR
+$transaction = new PaymentOperation($money);
 
 $transaction->setDescription('test order');
 $transaction->setTrackingId('my_custom_variable');

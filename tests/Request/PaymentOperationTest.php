@@ -13,7 +13,7 @@ class PaymentOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new PaymentOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(PaymentOperation::class, $request);
@@ -189,9 +189,9 @@ class PaymentOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new PaymentOperation;
+        $money = new Money(1233, 'EUR');
 
-        $request->money = new Money(1233, 'EUR');
+        $request = new PaymentOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

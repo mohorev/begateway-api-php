@@ -14,10 +14,10 @@ class CreditOperation extends BaseRequest
     private $description;
     private $trackingId;
 
-    public function __construct()
+    public function __construct(Money $money)
     {
-        $this->money = new Money(0, 'USD');
         $this->card = new Card;
+        $this->money = $money;
     }
 
     public function setDescription($description)

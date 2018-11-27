@@ -76,11 +76,11 @@ class QueryByPaymentTokenTest extends TestCase
     {
         $this->authorize();
 
-        $request = new GetPaymentToken;
+        $money = new Money($amount, 'EUR');
+
+        $request = new GetPaymentToken($money);
 
         $url = 'http://www.example.com';
-
-        $request->money = new Money($amount, 'EUR');
 
         $request->setAuthorizationTransactionType();
         $request->setDescription('test');

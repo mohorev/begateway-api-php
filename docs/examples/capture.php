@@ -10,9 +10,9 @@ require_once __DIR__ . '/test_shop_data.php';
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$transaction = new AuthorizationOperation;
+$money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction->money = new Money(100, 'EUR'); // 1 EUR
+$transaction = new AuthorizationOperation($money);
 
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');

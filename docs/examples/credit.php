@@ -43,9 +43,9 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Credit to card ' . $transaction->card->getCardNumber() . PHP_EOL;
 
-    $credit = new CreditOperation;
+    $money = new Money(3000, 'EUR'); // 30 EUR
 
-    $credit->money = new Money(3000, 'EUR'); // 30 EUR
+    $credit = new CreditOperation($money);
 
     $credit->card->setCardToken($response->getResponse()->transaction->credit_card->token);
     $credit->setDescription('Test credit');

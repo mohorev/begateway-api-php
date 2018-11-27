@@ -13,7 +13,7 @@ class AuthorizationOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(AuthorizationOperation::class, $request);
@@ -21,7 +21,7 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetDescription()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $description = 'Test description';
         $request->setDescription($description);
@@ -30,7 +30,7 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetTrackingId()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
@@ -39,7 +39,7 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetNotificationUrl()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $url = 'http://www.example.com';
         $request->setNotificationUrl($url);
@@ -48,7 +48,7 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetReturnUrl()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $url = 'http://www.example.com';
         $request->setReturnUrl($url);
@@ -57,20 +57,20 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetTestMode()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
-        $this->assertFalse($request->getTestMode());
-
-        $request->setTestMode(true);
         $this->assertTrue($request->getTestMode());
 
         $request->setTestMode(false);
         $this->assertFalse($request->getTestMode());
+
+        $request->setTestMode(true);
+        $this->assertTrue($request->getTestMode());
     }
 
     public function testEndpoint()
     {
-        $request = new AuthorizationOperation;
+        $request = $this->getTestRequest();
 
         $this->assertSame(Settings::$gatewayBase . '/transactions/authorizations', $request->endpoint());
     }
@@ -203,9 +203,9 @@ class AuthorizationOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new AuthorizationOperation;
+        $money = new Money(1233, 'EUR');
 
-        $request->money = new Money(1233, 'EUR');
+        $request = new AuthorizationOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

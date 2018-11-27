@@ -113,9 +113,9 @@ class CardTokenTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new AuthorizationOperation;
+        $money = new Money(mt_rand(0, 10000), 'EUR');
 
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = new AuthorizationOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');

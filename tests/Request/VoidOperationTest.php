@@ -14,7 +14,7 @@ class VoidOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new VoidOperation;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(VoidOperation::class, $request);
@@ -92,9 +92,9 @@ class VoidOperationTest extends TestCase
     {
         $this->authorize();
 
-        $request = new AuthorizationOperation;
+        $money = new Money($amount, 'EUR');
 
-        $request->money = new Money($amount, 'EUR');
+        $request = new AuthorizationOperation($money);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
@@ -121,10 +121,11 @@ class VoidOperationTest extends TestCase
     {
         $this->authorize();
 
-        $request = new VoidOperation;
+        $money = new Money(1256, 'EUR');
+
+        $request = new VoidOperation($money);
 
         $request->setParentUid('12345678');
-        $request->money = new Money(1256, 'EUR');
 
         return $request;
     }
