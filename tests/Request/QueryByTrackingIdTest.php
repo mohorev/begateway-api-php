@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByTrackingId;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class QueryByTrackingIdTest extends TestCase
     {
         $request = new QueryByTrackingId;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByTrackingId::class, $request);
     }
 

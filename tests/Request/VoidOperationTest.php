@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\VoidOperation;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class VoidOperationTest extends TestCase
     {
         $request = new VoidOperation;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(VoidOperation::class, $request);
     }
 

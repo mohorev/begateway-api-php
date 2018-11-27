@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Request\QueryByPaymentToken;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class QueryByPaymentTokenTest extends TestCase
     {
         $request = new QueryByPaymentToken;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByPaymentToken::class, $request);
     }
 

@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CaptureOperation;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class CaptureOperationTest extends TestCase
     {
         $request = new CaptureOperation;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CaptureOperation::class, $request);
     }
 

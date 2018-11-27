@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
@@ -13,6 +14,7 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = new AuthorizationOperation;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(AuthorizationOperation::class, $request);
     }
 

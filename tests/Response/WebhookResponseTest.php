@@ -2,6 +2,7 @@
 
 namespace BeGateway\Tests\Response;
 
+use BeGateway\Contract\Response;
 use BeGateway\Response\WebhookResponse;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
@@ -20,6 +21,7 @@ class WebhookResponseTest extends TestCase
     {
         $webhook = new WebhookResponse;
 
+        $this->assertInstanceOf(Response::class, $webhook);
         $this->assertInstanceOf(WebhookResponse::class, $webhook);
     }
 

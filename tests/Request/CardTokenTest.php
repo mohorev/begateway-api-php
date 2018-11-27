@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CardToken;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class CardTokenTest extends TestCase
     {
         $request = new CardToken;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CardToken::class, $request);
     }
 

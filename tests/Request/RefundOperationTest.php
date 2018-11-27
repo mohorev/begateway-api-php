@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\RefundOperation;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class RefundOperationTest extends TestCase
     {
         $request = new RefundOperation;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(RefundOperation::class, $request);
     }
 

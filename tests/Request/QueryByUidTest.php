@@ -3,6 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\ApiClient;
+use BeGateway\Contract\Request;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByUid;
 use BeGateway\Settings;
@@ -14,6 +15,7 @@ class QueryByUidTest extends TestCase
     {
         $request = new QueryByUid;
 
+        $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByUid::class, $request);
     }
 
