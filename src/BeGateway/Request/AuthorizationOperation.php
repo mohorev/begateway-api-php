@@ -21,11 +21,11 @@ class AuthorizationOperation extends BaseRequest
     private $returnUrl;
     private $testMode = false;
 
-    public function __construct(Money $money)
+    public function __construct(Money $money, Customer $customer)
     {
         $this->card = new Card;
         $this->money = $money;
-        $this->customer = new Customer;
+        $this->customer = $customer;
         $this->additionalData = new AdditionalData;
     }
 
@@ -92,7 +92,7 @@ class AuthorizationOperation extends BaseRequest
      */
     public function data()
     {
-        return [
+        $data = [
             'request' => [
                 'amount' => $this->money->getAmount(),
                 'currency' => $this->money->getCurrency(),
@@ -116,21 +116,27 @@ class AuthorizationOperation extends BaseRequest
                     'email' => $this->customer->getEmail(),
                     'birth_date' => $this->customer->getBirthDate(),
                 ],
-                'billing_address' => [
-                    'first_name' => $this->customer->getFirstName(),
-                    'last_name' => $this->customer->getLastName(),
-                    'country' => $this->customer->getCountry(),
-                    'city' => $this->customer->getCity(),
-                    'state' => $this->customer->getState(),
-                    'zip' => $this->customer->getZip(),
-                    'address' => $this->customer->getAddress(),
-                    'phone' => $this->customer->getPhone(),
-                ],
-                'additional_data' => [
-                    'receipt_text' => $this->additionalData->getReceipt(),
-                    'contract' => $this->additionalData->getContract(),
-                ],
             ],
         ];
+
+        if ($address = $this->customer->getAddress()) {
+            $data['request']['billing_address'] = [
+                'first_name' => $this->customer->getFirstName(),
+                'last_name' => $this->customer->getLastName(),
+                'country' => $address->getCountry(),
+                'city' => $address->getCity(),
+                'state' => $address->getState(),
+                'zip' => $address->getZip(),
+                'address' => $address->getAddress(),
+                'phone' => $this->customer->getPhone(),
+            ];
+        }
+
+        $data['request']['additional_data'] = [
+            'receipt_text' => $this->additionalData->getReceipt(),
+            'contract' => $this->additionalData->getContract(),
+        ];
+
+        return $data;
     }
 }

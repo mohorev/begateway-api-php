@@ -38,10 +38,10 @@ class GetPaymentToken extends BaseRequest
     private $expiredAt;
     private $testMode = false;
 
-    public function __construct(Money $money)
+    public function __construct(Money $money, Customer $customer)
     {
-        $this->customer = new Customer;
         $this->money = $money;
+        $this->customer = $customer;
         $this->additionalData = new AdditionalData;
     }
 
@@ -86,20 +86,31 @@ class GetPaymentToken extends BaseRequest
                         'visible' => $this->getVisibleFields(),
                     ],
                 ],
-                'customer' => [
-                    'email' => $this->customer->getEmail(),
-                    'first_name' => $this->customer->getFirstName(),
-                    'last_name' => $this->customer->getLastName(),
-                    'country' => $this->customer->getCountry(),
-                    'city' => $this->customer->getCity(),
-                    'state' => $this->customer->getState(),
-                    'zip' => $this->customer->getZip(),
-                    'address' => $this->customer->getAddress(),
-                    'phone' => $this->customer->getPhone(),
-                    'birth_date' => $this->customer->getBirthDate(),
-                ],
             ],
         ];
+
+        if ($this->customer) {
+            $customer = [
+                'email' => $this->customer->getEmail(),
+                'first_name' => $this->customer->getFirstName(),
+                'last_name' => $this->customer->getLastName(),
+            ];
+
+            if ($address = $this->customer->getAddress()) {
+                $customer = array_merge($customer, [
+                    'country' => $address->getCountry(),
+                    'city' => $address->getCity(),
+                    'state' => $address->getState(),
+                    'zip' => $address->getZip(),
+                    'address' => $address->getAddress(),
+                ]);
+            }
+
+            $customer['phone'] = $this->customer->getPhone();
+            $customer['birth_date'] = $this->customer->getBirthDate();
+
+            $request['checkout']['customer'] = $customer;
+        }
 
         $paymentMethods = $this->getPaymentMethods();
 

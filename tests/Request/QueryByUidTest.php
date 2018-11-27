@@ -2,8 +2,10 @@
 
 namespace BeGateway\Tests\Request;
 
+use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Request\QueryByUid;
@@ -78,7 +80,13 @@ class QueryByUidTest extends TestCase
 
         $money = new Money($amount, 'EUR');
 
-        $transaction = new PaymentOperation($money);
+        $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+        $customer = new Customer('John', 'Doe', 'john@example.com');
+        $customer->setAddress($address);
+        $customer->setIP('127.0.0.1');
+
+        $transaction = new PaymentOperation($money, $customer);
 
         $transaction->setDescription('test');
         $transaction->setTrackingId('my_custom_variable');
@@ -88,15 +96,6 @@ class QueryByUidTest extends TestCase
         $transaction->card->setCardExpMonth(1);
         $transaction->card->setCardExpYear(2030);
         $transaction->card->setCardCvc('123');
-
-        $transaction->customer->setFirstName('John');
-        $transaction->customer->setLastName('Doe');
-        $transaction->customer->setCountry('LV');
-        $transaction->customer->setAddress('Demo str 12');
-        $transaction->customer->setCity('Riga');
-        $transaction->customer->setZip('LV-1082');
-        $transaction->customer->setIp('127.0.0.1');
-        $transaction->customer->setEmail('john@example.com');
 
         return (new ApiClient)->send($transaction);
     }

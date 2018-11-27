@@ -1,6 +1,8 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Address;
+use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\CardToken;
 use BeGateway\Request\PaymentOperation;
@@ -24,7 +26,13 @@ if ($response->isSuccess()) {
 
     $money = new Money(100, 'EUR'); // 1 EUR
 
-    $transaction = new PaymentOperation($money);
+    $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+    $customer = new Customer('John', 'Doe', 'john@example.com');
+    $customer->setAddress($address);
+    $customer->setIP('127.0.0.1');
+
+    $transaction = new PaymentOperation($money, $customer);
 
     $transaction->setDescription('test');
     $transaction->setTrackingId('my_custom_variable');
@@ -33,15 +41,6 @@ if ($response->isSuccess()) {
     $transaction->card->setCardToken($response->card->getCardToken());
 
     $transaction->setTestMode(true);
-
-    $transaction->customer->setFirstName('John');
-    $transaction->customer->setLastName('Doe');
-    $transaction->customer->setCountry('LV');
-    $transaction->customer->setAddress('Demo str 12');
-    $transaction->customer->setCity('Riga');
-    $transaction->customer->setZip('LV-1082');
-    $transaction->customer->setIp('127.0.0.1');
-    $transaction->customer->setEmail('john@example.com');
 
     $response = (new ApiClient)->send($transaction);
 

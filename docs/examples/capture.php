@@ -1,6 +1,8 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Address;
+use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CaptureOperation;
@@ -12,7 +14,13 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction = new AuthorizationOperation($money);
+$address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+$customer = new Customer('John', 'Doe', 'john@example.com');
+$customer->setAddress($address);
+$customer->setIP('127.0.0.1');
+
+$transaction = new AuthorizationOperation($money, $customer);
 
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
@@ -25,15 +33,6 @@ $transaction->card->setCardExpMonth(1);
 $transaction->card->setCardExpYear(2030);
 $transaction->card->setCardCvc('123');
 
-$transaction->customer->setFirstName('John');
-$transaction->customer->setLastName('Doe');
-$transaction->customer->setCountry('LV');
-$transaction->customer->setAddress('Demo str 12');
-$transaction->customer->setCity('Riga');
-$transaction->customer->setZip('LV-1082');
-$transaction->customer->setIp('127.0.0.1');
-$transaction->customer->setEmail('john@example.com');
-
 $response = (new ApiClient)->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
@@ -43,9 +42,8 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Capture transaction ' . $response->getUid() . PHP_EOL;
 
-    $capture = new CaptureOperation;
+    $capture = new CaptureOperation($transaction->money);
     $capture->setParentUid($response->getUid());
-    $capture->money = $transaction->money;
 
     $response = (new ApiClient)->send($capture);
 

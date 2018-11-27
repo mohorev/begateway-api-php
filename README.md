@@ -56,6 +56,9 @@ Simple usage looks like:
 
 ```php
 use BeGateway\ApiClient;
+use BeGateway\Address;
+use BeGateway\Customer;
+use BeGateway\Money;
 use BeGateway\Request\GetPaymentToken;
 
 \BeGateway\Settings::$shopId  = 361;
@@ -66,7 +69,13 @@ use BeGateway\Request\GetPaymentToken;
 
 $money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction = new GetPaymentToken($money);
+$address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+$customer = new Customer('John', 'Doe', 'john@example.com');
+$customer->setAddress($address);
+$customer->setIP('127.0.0.1');
+
+$transaction = new GetPaymentToken($money, $customer);
 
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
@@ -76,15 +85,6 @@ $transaction->setSuccessUrl('http://www.example.com/success');
 $transaction->setDeclineUrl('http://www.example.com/decline');
 $transaction->setFailUrl('http://www.example.com/fail');
 $transaction->setCancelUrl('http://www.example.com/cancel');
-
-$transaction->customer->setFirstName('John');
-$transaction->customer->setLastName('Doe');
-$transaction->customer->setCountry('LV');
-$transaction->customer->setAddress('Demo str 12');
-$transaction->customer->setCity('Riga');
-$transaction->customer->setZip('LV-1082');
-$transaction->customer->setIp('127.0.0.1');
-$transaction->customer->setEmail('john@example.com');
 
 $response = (new ApiClient)->send($transaction);
 
@@ -99,6 +99,9 @@ Simple usage looks like:
 
 ```php
 use BeGateway\ApiClient;
+use BeGateway\Address;
+use BeGateway\Customer;
+use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
 
 \BeGateway\Settings::$shopId  = 361;
@@ -109,7 +112,13 @@ use BeGateway\Request\PaymentOperation;
 
 $money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction = new PaymentOperation($money);
+$address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+$customer = new Customer('John', 'Doe', 'john@example.com');
+$customer->setAddress($address);
+$customer->setIP('127.0.0.1');
+
+$transaction = new PaymentOperation($money, $customer);
 
 $transaction->setDescription('test order');
 $transaction->setTrackingId('my_custom_variable');
@@ -119,15 +128,6 @@ $transaction->card->setCardHolder('John Doe');
 $transaction->card->setCardExpMonth(1);
 $transaction->card->setCardExpYear(2030);
 $transaction->card->setCardCvc('123');
-
-$transaction->customer->setFirstName('John');
-$transaction->customer->setLastName('Doe');
-$transaction->customer->setCountry('LV');
-$transaction->customer->setAddress('Demo str 12');
-$transaction->customer->setCity('Riga');
-$transaction->customer->setZip('LV-1082');
-$transaction->customer->setIp('127.0.0.1');
-$transaction->customer->setEmail('john@example.com');
 
 $response = (new ApiClient)->send($transaction);
 

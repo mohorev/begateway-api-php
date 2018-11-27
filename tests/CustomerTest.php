@@ -2,80 +2,55 @@
 
 namespace BeGateway\Tests;
 
+use BeGateway\Address;
 use BeGateway\Customer;
 
 class CustomerTest extends TestCase
 {
     public function testCreate()
     {
-        $customer = new Customer;
+        $customer = new Customer('John', 'Doe', 'test@example.com');
 
         $this->assertInstanceOf(Customer::class, $customer);
     }
 
-    public function testGetSetFirstName()
+    public function testGetFirstName()
     {
-        $customer = new Customer;
-
-        $customer->setFirstName('John');
+        $customer = new Customer('John', 'Doe', 'test@example.com');
         $this->assertSame('John', $customer->getFirstName());
 
-        $customer->setFirstName('');
+        $customer = new Customer('', 'Doe', 'test@example.com');
         $this->assertSame(null, $customer->getFirstName());
     }
 
-    public function testGetSetLastName()
+    public function testGetLastName()
     {
-        $customer = new Customer;
+        $customer = new Customer('John', 'Doe', 'test@example.com');
 
-        $customer->setLastName('Doe');
         $this->assertSame('Doe', $customer->getLastName());
 
-        $customer->setLastName('');
+        $customer = new Customer('John', '', 'test@example.com');
         $this->assertSame(null, $customer->getLastName());
     }
 
-    public function testGetSetEmail()
+    public function testGetEmail()
     {
-        $customer = new Customer;
-
-        $customer->setEmail('test@example.com');
+        $customer = new Customer('John', 'Doe', 'test@example.com');
         $this->assertSame('test@example.com', $customer->getEmail());
 
-        $customer->setEmail('');
+        $customer = new Customer('John', 'Doe', '');
         $this->assertSame(null, $customer->getEmail());
     }
 
     public function testGetSetAddress()
     {
-        $customer = new Customer;
+        $customer = new Customer('John', 'Doe', 'test@example.com');
 
-        $customer->setAddress('po box 123');
-        $this->assertSame('po box 123', $customer->getAddress());
-
-        $customer->setAddress('');
         $this->assertSame(null, $customer->getAddress());
-    }
 
-    public function testGetSetCountry()
-    {
-        $customer = new Customer;
+        $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+        $customer->setAddress($address);
 
-        $customer->setCountry('LV');
-        $this->assertSame('LV', $customer->getCountry());
-
-        $customer->setCountry('');
-        $this->assertSame(null, $customer->getCountry());
-    }
-
-    public function testGetSetZip()
-    {
-        $customer = new Customer;
-
-        $customer->setZip('LV1024');
-        $this->assertSame('LV1024', $customer->getZip());
-
-        $customer->setZip('');
-        $this->assertSame(null, $customer->getZip());
+        $this->assertSame($address, $customer->getAddress());
     }
 }

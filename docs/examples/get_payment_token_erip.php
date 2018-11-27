@@ -1,6 +1,8 @@
 <?php
 
 use BeGateway\ApiClient;
+use BeGateway\Address;
+use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\PaymentMethod\CreditCard;
 use BeGateway\PaymentMethod\Erip;
@@ -13,7 +15,13 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $money = new Money(100, 'EUR'); // 1 EUR
 
-$transaction = new GetPaymentToken($money);
+$address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
+
+$customer = new Customer('John', 'Doe', 'john@example.com');
+$customer->setAddress($address);
+$customer->setIP('127.0.0.1');
+
+$transaction = new GetPaymentToken($money, $customer);
 
 $cc = new CreditCard;
 $erip = new Erip([
@@ -40,8 +48,6 @@ $transaction->setCancelUrl('http://www.example.com/cancel');
 
 # No available to make payment for the order in 2 days
 $transaction->setExpiryDate(date('Y-m-d', 3 * 24 * 3600 + time()) . 'T00:00:00+03:00');
-
-$transaction->customer->setEmail('john@example.com');
 
 $response = (new ApiClient)->send($transaction);
 

@@ -22,32 +22,35 @@ class Address
      */
     private $address;
     /**
-     * @var string|null the two-letter billing state only if the billing
-     * address country is US or CA. Optional.
-     */
-    private $state;
-    /**
      * @var string|null the billing ZIP or postal code. If country=US,
      * zip format must be NNNNN or NNNNN-NNNN. Optional.
      */
     private $zip;
+    /**
+     * @var string|null the two-letter billing state only if the billing
+     * address country is US or CA. Optional.
+     */
+    private $state;
 
     /**
      * Initialize a new Address.
      *
      * @param string $country
      * @param string $city
-     * @param string $state
-     * @param string $zip
      * @param string $address
+     * @param string $zip
+     * @param string $state
      */
-    public function __construct($country, $city, $address, $state = null, $zip = null)
+    public function __construct($country, $city, $address, $zip = null, $state = null)
     {
         $this->country = $country;
         $this->city = $city;
         $this->address = $address;
-        $this->state = $state;
         $this->zip = $zip;
+
+        if (in_array($this->country, ['US', 'CA'], true)) {
+            $this->state = $state;
+        }
     }
 
     /**
@@ -75,18 +78,18 @@ class Address
     }
 
     /**
-     * @return string|null the two-letter billing state.
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
      * @return string|null the billing ZIP or postal code.
      */
     public function getZip()
     {
         return $this->zip;
+    }
+
+    /**
+     * @return string|null the two-letter billing state.
+     */
+    public function getState()
+    {
+        return $this->state;
     }
 }
