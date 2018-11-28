@@ -5,6 +5,7 @@ namespace BeGateway;
 use BeGateway\Contract\GatewayTransport;
 use BeGateway\Contract\Request;
 use BeGateway\Request\CardToken;
+use BeGateway\Request\CardTokenUpdate;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Request\QueryByPaymentToken;
 use BeGateway\Response\CardTokenResponse;
@@ -65,7 +66,7 @@ class ApiClient implements LoggerAwareInterface
             return new CheckoutResponse($response);
         }
 
-        if ($request instanceof CardToken) {
+        if ($request instanceof CardToken || $request instanceof CardTokenUpdate) {
             return new CardTokenResponse($response);
         }
 

@@ -5,12 +5,14 @@ namespace BeGateway\Tests\Request;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
+use BeGateway\TokenCard;
 
 class CreditOperationTest extends TestCase
 {
@@ -78,7 +80,7 @@ class CreditOperationTest extends TestCase
 
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
-        $request->card->setCardToken($parent->getResponse()->transaction->credit_card->token);
+        $request->card = new TokenCard($parent->getResponse()->transaction->credit_card->token);
 
         $response = (new ApiClient)->send($request);
 
@@ -100,7 +102,6 @@ class CreditOperationTest extends TestCase
 
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
-        $request->card->setCardToken('12345');
 
         $response = (new ApiClient)->send($request);
 
@@ -113,6 +114,8 @@ class CreditOperationTest extends TestCase
     {
         $this->authorize();
 
+        $card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
+
         $money = new Money($amount, 'EUR');
 
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
@@ -121,16 +124,9 @@ class CreditOperationTest extends TestCase
         $customer->setAddress($address);
         $customer->setIP('127.0.0.1');
 
-        $request = new PaymentOperation($money, $customer);
-
+        $request = new PaymentOperation($card, $money, $customer);
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
-
-        $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('John Doe');
-        $request->card->setCardExpMonth(1);
-        $request->card->setCardExpYear(2030);
-        $request->card->setCardCvc('123');
 
         return (new ApiClient)->send($request);
     }
@@ -139,11 +135,11 @@ class CreditOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
+        $card = new TokenCard('12345');
+
         $money = new Money(1256, 'RUB');
 
-        $request = new CreditOperation($money);
-
-        $request->card->setCardToken('12345');
+        $request = new CreditOperation($card, $money);
         $request->setDescription('description');
         $request->setTrackingId('tracking');
 

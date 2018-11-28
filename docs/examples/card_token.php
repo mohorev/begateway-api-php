@@ -6,22 +6,19 @@ use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\CardToken;
 use BeGateway\Request\PaymentOperation;
+use BeGateway\TokenCard;
 
 require_once __DIR__ . '/test_shop_data.php';
 
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::DEBUG);
 
-$token = new CardToken;
-$token->card->setCardNumber('4200000000000000');
-$token->card->setCardHolder('John Doe');
-$token->card->setCardExpMonth(1);
-$token->card->setCardExpYear(2029);
+$token = new CardToken('4200000000000000', 'John Doe', 1, 2029);
 
 $response = (new ApiClient)->send($token);
 
 if ($response->isSuccess()) {
-    print 'Card token: ' . $response->card->getCardToken() . PHP_EOL;
+    print 'Card token: ' . $response->token . PHP_EOL;
     print 'Trying to make a payment by the token and with CVC 123' . PHP_EOL;
 
     $money = new Money(100, 'EUR'); // 1 EUR
@@ -32,14 +29,15 @@ if ($response->isSuccess()) {
     $customer->setAddress($address);
     $customer->setIP('127.0.0.1');
 
-    $transaction = new PaymentOperation($money, $customer);
+    $card = new TokenCard($response->token);
 
+//    TODO: Payment operation with CVC
+//    $transaction->card->setCardCvc('123');
+//    $transaction->card->setCardToken();
+
+    $transaction = new PaymentOperation($card, $money, $customer);
     $transaction->setDescription('test');
     $transaction->setTrackingId('my_custom_variable');
-
-    $transaction->card->setCardCvc('123');
-    $transaction->card->setCardToken($response->card->getCardToken());
-
     $transaction->setTestMode(true);
 
     $response = (new ApiClient)->send($transaction);

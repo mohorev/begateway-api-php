@@ -4,19 +4,19 @@ namespace BeGateway\Request;
 
 use BeGateway\Settings;
 
-class CardToken extends BaseRequest
+class CardTokenUpdate extends BaseRequest
 {
-    private $number;
+    private $token;
     private $holder;
     private $expMonth;
     private $expYear;
 
-    public function __construct($number, $holder, $expMonth, $expYear)
+    public function __construct($token, $holder = null, $expMonth = null, $expYear = null)
     {
-        $this->number = $number;
+        $this->token = $token;
         $this->holder = $holder;
-        $this->expMonth = sprintf('%02d', $expMonth);
-        $this->expYear = (string) $expYear;
+        $this->expMonth = $expMonth ? sprintf('%02d', $expMonth) : null;
+        $this->expYear = $expYear ? (string) $expYear : null;
     }
 
     /**
@@ -24,7 +24,7 @@ class CardToken extends BaseRequest
      */
     public function endpoint()
     {
-        return Settings::$gatewayBase . '/credit_cards';
+        return Settings::$gatewayBase . '/credit_cards/' . $this->token;
     }
 
     /**
@@ -34,7 +34,6 @@ class CardToken extends BaseRequest
     {
         return [
             'request' => [
-                'number' => $this->number,
                 'holder' => $this->holder,
                 'exp_month' => $this->expMonth,
                 'exp_year' => $this->expYear,

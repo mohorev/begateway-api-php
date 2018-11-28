@@ -6,6 +6,7 @@ use BeGateway\AdditionalData;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
@@ -93,19 +94,17 @@ class PaymentOperationTest extends TestCase
                 'return_url' => null,
                 'language' => 'en',
                 'test' => true,
+                'customer' => [
+                    'ip' => '127.0.0.1',
+                    'email' => 'john@example.com',
+                    'birth_date' => '1970-01-01',
+                ],
                 'credit_card' => [
                     'number' => '4200000000000000',
                     'verification_value' => '123',
                     'holder' => 'BEGATEWAY',
                     'exp_month' => '01',
                     'exp_year' => '2030',
-                    'token' => null,
-                    'skip_three_d_secure_verification' => false,
-                ],
-                'customer' => [
-                    'ip' => '127.0.0.1',
-                    'email' => 'john@example.com',
-                    'birth_date' => '1970-01-01',
                 ],
                 'billing_address' => [
                     'first_name' => 'John',
@@ -154,7 +153,7 @@ class PaymentOperationTest extends TestCase
         $request = $this->getTestRequest(true);
 
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $request->card->setCardNumber('4012001037141112');
+        $request->card = new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
         $amount = $request->money->getAmount();
 
         $response = (new ApiClient)->send($request);
@@ -172,11 +171,9 @@ class PaymentOperationTest extends TestCase
     public function testFailedPayment()
     {
         $request = $this->getTestRequest();
-        $request->card->setCardNumber('4005550000000019');
-
+        $request->card = new CreditCard('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
-        $request->card->setCardExpMonth(10);
 
         $response = (new ApiClient)->send($request);
 
@@ -192,6 +189,8 @@ class PaymentOperationTest extends TestCase
     {
         $this->authorize($secure3D);
 
+        $card = new CreditCard('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
+
         $money = new Money(1233, 'EUR');
 
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
@@ -201,17 +200,10 @@ class PaymentOperationTest extends TestCase
         $customer->setIP('127.0.0.1');
         $customer->setBirthDate('1970-01-01');
 
-        $request = new PaymentOperation($money, $customer);
-
+        $request = new PaymentOperation($card, $money, $customer);
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
         $request->setTestMode(true);
-
-        $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('BEGATEWAY');
-        $request->card->setCardExpMonth(1);
-        $request->card->setCardExpYear(2030);
-        $request->card->setCardCvc('123');
 
         $request->setAdditionalData(new AdditionalData);
 

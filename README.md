@@ -100,6 +100,7 @@ Simple usage looks like:
 ```php
 use BeGateway\ApiClient;
 use BeGateway\Address;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
@@ -110,6 +111,8 @@ use BeGateway\Request\PaymentOperation;
 // TODO: Logger example
 // Logger::getInstance()->setLogLevel(Logger::INFO);
 
+$card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
+
 $money = new Money(100, 'EUR'); // 1 EUR
 
 $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
@@ -118,16 +121,9 @@ $customer = new Customer('John', 'Doe', 'john@example.com');
 $customer->setAddress($address);
 $customer->setIP('127.0.0.1');
 
-$transaction = new PaymentOperation($money, $customer);
-
+$transaction = new PaymentOperation($card, $money, $customer);
 $transaction->setDescription('test order');
 $transaction->setTrackingId('my_custom_variable');
-
-$transaction->card->setCardNumber('4200000000000000');
-$transaction->card->setCardHolder('John Doe');
-$transaction->card->setCardExpMonth(1);
-$transaction->card->setCardExpYear(2030);
-$transaction->card->setCardCvc('123');
 
 $response = (new ApiClient)->send($transaction);
 

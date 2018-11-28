@@ -6,6 +6,7 @@ use BeGateway\AdditionalData;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
@@ -92,19 +93,17 @@ class AuthorizationOperationTest extends TestCase
                 'return_url' => null,
                 'language' => 'de',
                 'test' => true,
+                'customer' => [
+                    'ip' => '127.0.0.1',
+                    'email' => 'john@example.com',
+                    'birth_date' => '1970-01-01',
+                ],
                 'credit_card' => [
                     'number' => '4200000000000000',
                     'verification_value' => '123',
                     'holder' => 'BEGATEWAY',
                     'exp_month' => '01',
                     'exp_year' => '2030',
-                    'token' => null,
-                    'skip_three_d_secure_verification' => false,
-                ],
-                'customer' => [
-                    'ip' => '127.0.0.1',
-                    'email' => 'john@example.com',
-                    'birth_date' => '1970-01-01',
                 ],
                 'billing_address' => [
                     'first_name' => 'John',
@@ -152,8 +151,8 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest(true);
 
+        $request->card = $this->getInvalidCard();
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $request->card->setCardNumber('4012001037141112');
         $amount = $request->money->getAmount();
 
         $response = (new ApiClient)->send($request);
@@ -171,11 +170,10 @@ class AuthorizationOperationTest extends TestCase
     public function testFailedAuthorization()
     {
         $request = $this->getTestRequest();
-        $request->card->setCardNumber('4005550000000019');
 
+        $request->card = $this->getUnauthorizedCard();
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
-        $request->card->setCardExpMonth(10);
 
         $response = (new ApiClient)->send($request);
 
@@ -191,8 +189,8 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
+        $request->card = $this->getExpInvalidCard();
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $request->card->setCardExpYear(10);
 
         $response = (new ApiClient)->send($request);
 
@@ -202,9 +200,31 @@ class AuthorizationOperationTest extends TestCase
         $this->assertSame('error', $response->getStatus());
     }
 
+    private function getValidCard()
+    {
+        return new CreditCard('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
+    }
+
+    private function getInvalidCard()
+    {
+        return new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
+    }
+
+    private function getUnauthorizedCard()
+    {
+        return new CreditCard('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
+    }
+
+    private function getExpInvalidCard()
+    {
+        return new CreditCard('4200000000000000', 'BEGATEWAY', 1, 10, '123');
+    }
+
     private function getTestRequest($secure3D = false)
     {
         $this->authorize($secure3D);
+
+        $card = $this->getValidCard();
 
         $money = new Money(1233, 'EUR');
 
@@ -215,18 +235,11 @@ class AuthorizationOperationTest extends TestCase
         $customer->setIP('127.0.0.1');
         $customer->setBirthDate('1970-01-01');
 
-        $request = new AuthorizationOperation($money, $customer);
-
+        $request = new AuthorizationOperation($card, $money, $customer);
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
         $request->setLanguage('de');
         $request->setTestMode(true);
-
-        $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('BEGATEWAY');
-        $request->card->setCardExpMonth(1);
-        $request->card->setCardExpYear(2030);
-        $request->card->setCardCvc('123');
 
         $request->setAdditionalData(new AdditionalData);
 

@@ -11,7 +11,7 @@ class Money
 {
     /**
      * @var int the amount expressed in the smallest
-     * units of currency (eg. cents).
+     * units of currency (e.g. cents).
      */
     private $amount;
     /**

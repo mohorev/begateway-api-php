@@ -5,18 +5,21 @@ namespace BeGateway\Tests\Request;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
 use BeGateway\Request\CardToken;
+use BeGateway\Request\CardTokenUpdate;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
+use BeGateway\TokenCard;
 
 class CardTokenTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new CardToken;
+        $request = $this->getTestRequest();
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CardToken::class, $request);
@@ -35,11 +38,10 @@ class CardTokenTest extends TestCase
 
         $expected = [
             'request' => [
-                'holder' => 'John Smith',
                 'number' => '4200000000000000',
+                'holder' => 'John Smith',
                 'exp_month' => '02',
                 'exp_year' => '2030',
-                'token' => null,
             ],
         ];
 
@@ -55,38 +57,34 @@ class CardTokenTest extends TestCase
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
-        $this->assertSame('John Smith', $response->card->getCardHolder());
-        $this->assertSame('visa', $response->card->getBrand());
-        $this->assertSame('4', $response->card->getFirst1());
-        $this->assertSame('0000', $response->card->getLast4());
-        $this->assertSame('02', $response->card->getCardExpMonth());
-        $this->assertSame('2030', $response->card->getCardExpYear());
-        $this->assertNotNull($response->card->getCardToken());
+        $this->assertSame('John Smith', $response->holder);
+        $this->assertSame('visa', $response->brand);
+        $this->assertSame('4', $response->first1);
+        $this->assertSame('0000', $response->last4);
+        $this->assertSame('02', $response->expMonth);
+        $this->assertSame('2030', $response->expYear);
+        $this->assertNotNull($response->token);
+
+        $token = $response->token;
 
         # update token
-        $request->card->setCardExpMonth(1);
-        $request->card->setCardHolder('John Doe');
-        $oldToken = $response->card->getCardToken();
-        $request->card->setCardToken($oldToken);
-        $request->card->setCardNumber(null);
+        $request = new CardTokenUpdate($token, 'John Doe', 1, 2050);
 
         $response2 = (new ApiClient)->send($request);
-        $this->assertSame('John Doe', $response2->card->getCardHolder());
-        $this->assertSame('visa', $response2->card->getBrand());
-        $this->assertSame('4', $response2->card->getFirst1());
-        $this->assertSame('0000', $response2->card->getLast4());
-        $this->assertSame('01', $response2->card->getCardExpMonth());
-        $this->assertSame('2030', $response2->card->getCardExpYear());
-        $this->assertSame($response2->card->getCardToken(), $oldToken);
-        $this->assertNotNull($response2->card->getCardToken());
+
+        $this->assertSame('John Doe', $response2->holder);
+        $this->assertSame('visa', $response2->brand);
+        $this->assertSame('4', $response2->first1);
+        $this->assertSame('0000', $response2->last4);
+        $this->assertSame('01', $response2->expMonth);
+        $this->assertSame('2050', $response2->expYear);
+        $this->assertNotNull($response2->token);
+        $this->assertSame($response2->token, $token);
 
         # make authorization with token
-        $request = $this->getAuthorizationRequest();
+        $request = $this->getAuthorizationRequest($token);
 
         $amount = $request->money->getAmount();
-
-        $request->card->setCardToken($response2->card->getCardToken());
-        $request->card->setCardCvc('123');
 
         $response3 = (new ApiClient)->send($request);
         $this->assertTrue($response3->isValid());
@@ -101,19 +99,14 @@ class CardTokenTest extends TestCase
     {
         $this->authorize($secure3D);
 
-        $request = new CardToken;
-
-        $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('John Smith');
-        $request->card->setCardExpMonth(2);
-        $request->card->setCardExpYear(2030);
-
-        return $request;
+        return new CardToken('4200000000000000', 'John Smith', 2, 2030);
     }
 
-    public function getAuthorizationRequest($secure3D = false)
+    public function getAuthorizationRequest($cardToken)
     {
-        $this->authorize($secure3D);
+        $this->authorize();
+
+        $card = new TokenCard($cardToken, false);
 
         $money = new Money(mt_rand(0, 10000), 'EUR');
 
@@ -123,8 +116,7 @@ class CardTokenTest extends TestCase
         $customer->setAddress($address);
         $customer->setIP('127.0.0.1');
 
-        $request = new AuthorizationOperation($money, $customer);
-
+        $request = new AuthorizationOperation($card, $money, $customer);
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 

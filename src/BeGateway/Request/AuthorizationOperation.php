@@ -3,15 +3,26 @@
 namespace BeGateway\Request;
 
 use BeGateway\AdditionalData;
-use BeGateway\Card;
+use BeGateway\Contract\Card;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Settings;
+use BeGateway\TokenCard;
 
 class AuthorizationOperation extends BaseRequest
 {
+    /**
+     * @var CreditCard
+     */
     public $card;
+    /**
+     * @var Money
+     */
     public $money;
+    /**
+     * @var Customer
+     */
     public $customer;
 
     private $description;
@@ -24,9 +35,9 @@ class AuthorizationOperation extends BaseRequest
     private $additionalData;
     private $testMode = false;
 
-    public function __construct(Money $money, Customer $customer)
+    public function __construct(Card $card, Money $money, Customer $customer)
     {
-        $this->card = new Card;
+        $this->card = $card;
         $this->money = $money;
         $this->customer = $customer;
     }
@@ -109,15 +120,6 @@ class AuthorizationOperation extends BaseRequest
                 'return_url' => $this->getReturnUrl(),
                 'language' => $this->getLanguage(),
                 'test' => $this->getTestMode(),
-                'credit_card' => [
-                    'number' => $this->card->getCardNumber(),
-                    'verification_value' => $this->card->getCardCvc(),
-                    'holder' => $this->card->getCardHolder(),
-                    'exp_month' => $this->card->getCardExpMonth(),
-                    'exp_year' => $this->card->getCardExpYear(),
-                    'token' => $this->card->getCardToken(),
-                    'skip_three_d_secure_verification' => $this->card->getSkip3D(),
-                ],
                 'customer' => [
                     'ip' => $this->customer->getIP(),
                     'email' => $this->customer->getEmail(),
@@ -125,6 +127,23 @@ class AuthorizationOperation extends BaseRequest
                 ],
             ],
         ];
+
+        if ($this->card instanceof CreditCard) {
+            $data['request']['credit_card'] = [
+                'number' => $this->card->getNumber(),
+                'verification_value' => $this->card->getCvc(),
+                'holder' => $this->card->getHolder(),
+                'exp_month' => $this->card->getExpMonth(),
+                'exp_year' => $this->card->getExpYear(),
+            ];
+        }
+
+        if ($this->card instanceof TokenCard) {
+            $data['request']['credit_card'] = [
+                'token' => $this->card->getToken(),
+                'skip_three_d_secure_verification' => $this->card->getSkip3D(),
+            ];
+        }
 
         if ($address = $this->customer->getAddress()) {
             $data['request']['billing_address'] = [

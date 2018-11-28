@@ -5,6 +5,7 @@ namespace BeGateway\Tests\Request;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
+use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
@@ -123,6 +124,8 @@ class RefundOperationTest extends TestCase
 
     private function runParentRequest($amount)
     {
+        $card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
+
         $money = new Money($amount, 'EUR');
 
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
@@ -131,16 +134,10 @@ class RefundOperationTest extends TestCase
         $customer->setAddress($address);
         $customer->setIP('127.0.0.1');
 
-        $request = new PaymentOperation($money, $customer);
+        $request = new PaymentOperation($card, $money, $customer);
 
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
-
-        $request->card->setCardNumber('4200000000000000');
-        $request->card->setCardHolder('John Doe');
-        $request->card->setCardExpMonth(1);
-        $request->card->setCardExpYear(2030);
-        $request->card->setCardCvc('123');
 
         return (new ApiClient)->send($request);
     }

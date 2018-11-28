@@ -2,26 +2,30 @@
 
 namespace BeGateway\Response;
 
-use BeGateway\Card;
-
 class CardTokenResponse extends BaseResponse
 {
-    public $card;
+    public $holder;
+    public $brand;
+    public $first1;
+    public $last4;
+    public $stamp;
+    public $token;
+    public $expMonth;
+    public $expYear;
 
     public function __construct($message)
     {
-        $this->card = new Card;
-
         parent::__construct($message);
 
         if ($this->isSuccess()) {
-            $this->card->setCardToken($this->getResponse()->token);
-            $this->card->setCardHolder($this->getResponse()->holder);
-            $this->card->setCardExpMonth($this->getResponse()->exp_month);
-            $this->card->setCardExpYear($this->getResponse()->exp_year);
-            $this->card->setBrand($this->getResponse()->brand);
-            $this->card->setFirst_1($this->getResponse()->first_1);
-            $this->card->setLast_4($this->getResponse()->last_4);
+            $this->holder = $this->getResponse()->holder;
+            $this->brand = $this->getResponse()->brand;
+            $this->first1 = $this->getResponse()->first_1;
+            $this->last4 = $this->getResponse()->last_4;
+            $this->stamp = $this->getResponse()->stamp;
+            $this->token = $this->getResponse()->token;
+            $this->expMonth = sprintf('%02d', $this->getResponse()->exp_month);
+            $this->expYear = (string) $this->getResponse()->exp_year;
         }
     }
 

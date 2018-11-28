@@ -2,9 +2,9 @@
 
 namespace BeGateway\Request;
 
-use BeGateway\Card;
 use BeGateway\Money;
 use BeGateway\Settings;
+use BeGateway\TokenCard;
 
 class CreditOperation extends BaseRequest
 {
@@ -14,9 +14,9 @@ class CreditOperation extends BaseRequest
     private $description;
     private $trackingId;
 
-    public function __construct(Money $money)
+    public function __construct(TokenCard $card, Money $money)
     {
-        $this->card = new Card;
+        $this->card = $card;
         $this->money = $money;
     }
 
@@ -60,7 +60,7 @@ class CreditOperation extends BaseRequest
                 'description' => $this->getDescription(),
                 'tracking_id' => $this->getTrackingId(),
                 'credit_card' => [
-                    'token' => $this->card->getCardToken(),
+                    'token' => $this->card->getToken(),
                 ],
             ],
         ];

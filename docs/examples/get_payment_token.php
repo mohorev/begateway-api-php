@@ -20,11 +20,9 @@ $customer->setAddress($address);
 $customer->setIP('127.0.0.1');
 
 $transaction = new GetPaymentToken($money, $customer);
-
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
 $transaction->setLanguage('en');
-
 $transaction->setTestMode(true);
 
 $transaction->setNotificationUrl('http://www.example.com/notify');
