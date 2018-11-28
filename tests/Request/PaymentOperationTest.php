@@ -2,6 +2,7 @@
 
 namespace BeGateway\Tests\Request;
 
+use BeGateway\AdditionalData;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
@@ -211,6 +212,8 @@ class PaymentOperationTest extends TestCase
         $request->card->setCardExpMonth(1);
         $request->card->setCardExpYear(2030);
         $request->card->setCardCvc('123');
+
+        $request->setAdditionalData(new AdditionalData);
 
         return $request;
     }

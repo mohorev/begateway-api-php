@@ -19,7 +19,6 @@ class GetPaymentToken extends BaseRequest
 
     public $money;
     public $customer;
-    public $additionalData;
 
     private $description;
     private $trackingId;
@@ -36,13 +35,16 @@ class GetPaymentToken extends BaseRequest
      */
     private $paymentMethods = [];
     private $expiredAt;
+    /**
+     * @var AdditionalData the detailed information about the payment.
+     */
+    private $additionalData;
     private $testMode = false;
 
     public function __construct(Money $money, Customer $customer)
     {
         $this->money = $money;
         $this->customer = $customer;
-        $this->additionalData = new AdditionalData;
     }
 
     /**
@@ -69,10 +71,6 @@ class GetPaymentToken extends BaseRequest
                     'description' => $this->getDescription(),
                     'tracking_id' => $this->getTrackingId(),
                     'expired_at' => $this->getExpiryDate(),
-                    'additional_data' => [
-                        'receipt_text' => $this->additionalData->getReceipt(),
-                        'contract' => $this->additionalData->getContract(),
-                    ],
                 ],
                 'settings' => [
                     'notification_url' => $this->getNotificationUrl(),
@@ -88,6 +86,13 @@ class GetPaymentToken extends BaseRequest
                 ],
             ],
         ];
+
+        if ($this->additionalData) {
+            $request['checkout']['order']['additional_data'] = [
+                'receipt_text' => $this->additionalData->getReceipt(),
+                'contract' => $this->additionalData->getContract(),
+            ];
+        }
 
         if ($this->customer) {
             $customer = [
@@ -227,6 +232,11 @@ class GetPaymentToken extends BaseRequest
     public function getExpiryDate()
     {
         return $this->expiredAt;
+    }
+
+    public function setAdditionalData(AdditionalData $data)
+    {
+        $this->additionalData = $data;
     }
 
     public function getReadonlyFields()

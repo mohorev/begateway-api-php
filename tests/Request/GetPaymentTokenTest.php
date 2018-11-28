@@ -2,6 +2,7 @@
 
 namespace BeGateway\Tests\Request;
 
+use BeGateway\AdditionalData;
 use BeGateway\Address;
 use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
@@ -405,6 +406,8 @@ class GetPaymentTokenTest extends TestCase
         $request->setLanguage('zh');
         $request->setExpiryDate('2030-12-31T00:21:46+0300');
         $request->setTestMode(true);
+
+        $request->setAdditionalData(new AdditionalData);
 
         return $request;
     }

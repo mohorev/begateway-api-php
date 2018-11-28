@@ -13,12 +13,15 @@ class AuthorizationOperation extends BaseRequest
     public $card;
     public $money;
     public $customer;
-    public $additionalData;
 
     private $description;
     private $trackingId;
     private $notificationUrl;
     private $returnUrl;
+    /**
+     * @var AdditionalData the additional transaction data.
+     */
+    private $additionalData;
     private $testMode = false;
 
     public function __construct(Money $money, Customer $customer)
@@ -26,7 +29,6 @@ class AuthorizationOperation extends BaseRequest
         $this->card = new Card;
         $this->money = $money;
         $this->customer = $customer;
-        $this->additionalData = new AdditionalData;
     }
 
     public function setDescription($description)
@@ -77,6 +79,11 @@ class AuthorizationOperation extends BaseRequest
     public function getTestMode()
     {
         return $this->testMode;
+    }
+
+    public function setAdditionalData(AdditionalData $data)
+    {
+        $this->additionalData = $data;
     }
 
     /**
@@ -132,10 +139,12 @@ class AuthorizationOperation extends BaseRequest
             ];
         }
 
-        $data['request']['additional_data'] = [
-            'receipt_text' => $this->additionalData->getReceipt(),
-            'contract' => $this->additionalData->getContract(),
-        ];
+        if ($this->additionalData) {
+            $data['request']['additional_data'] = [
+                'receipt_text' => $this->additionalData->getReceipt(),
+                'contract' => $this->additionalData->getContract(),
+            ];
+        }
 
         return $data;
     }
