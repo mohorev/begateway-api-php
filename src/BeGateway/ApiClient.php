@@ -13,8 +13,10 @@ use BeGateway\Response\CheckoutResponse;
 use BeGateway\Response\TransactionResponse;
 use BeGateway\Traits\SetLanguage;
 use BeGateway\Traits\SetTestMode;
+use BeGateway\Transport\CurlTransport;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
 class ApiClient implements LoggerAwareInterface
 {
@@ -62,7 +64,16 @@ class ApiClient implements LoggerAwareInterface
             $this->testMode = true;
         }
 
-        $this->transport = new \BeGateway\Transport\CurlTransport;
+        $this->logger = new NullLogger;
+        $this->transport = $transport ? $transport : new CurlTransport;
+    }
+
+    /**
+     * @param GatewayTransport $transport
+     */
+    public function setGatewayTransport(GatewayTransport $transport)
+    {
+        $this->transport = $transport;
     }
 
     /**
@@ -81,6 +92,8 @@ class ApiClient implements LoggerAwareInterface
         if ($request instanceof SetTestMode) {
             $request->setTestMode($this->testMode);
         }
+
+        $this->transport->setLogger($this->logger);
 
         try {
             $response = $this->transport->send($shopId, $shopKey, $request);

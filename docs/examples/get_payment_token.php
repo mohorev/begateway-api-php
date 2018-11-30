@@ -8,9 +8,6 @@ use BeGateway\Request\GetPaymentToken;
 
 require_once __DIR__ . '/test_shop_data.php';
 
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::DEBUG);
-
 $money = new Money(100, 'EUR'); // 1 EUR
 
 $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');

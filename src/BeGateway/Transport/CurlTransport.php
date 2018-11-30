@@ -20,13 +20,13 @@ class CurlTransport implements GatewayTransport, LoggerAwareInterface
 
         $ch = curl_init();
 
-//        echo sprintf('host: %s', $request->endpoint()) . "\n\n";
-//        echo sprintf('shop id %s key %s', $shopId, $shopKey) . "\n\n";
+        $this->logger->debug(sprintf('host: %s', $request->endpoint()));
+        $this->logger->debug(sprintf('shop id %s key %s', $shopId, $shopKey));
 
         if ($request->data() !== null) {
             $json = json_encode($request->data());
 
-//            echo 'with message ' . $json . "\n\n";
+            $this->logger->debug(sprintf('with message %s', $json));
         }
 
         $options = [
@@ -54,7 +54,7 @@ class CurlTransport implements GatewayTransport, LoggerAwareInterface
 
         curl_close($ch);
 
-//        echo "Response {$response}\n\n";
+        $this->logger->debug(sprintf('Response %s', $response));
 
         return $response;
     }

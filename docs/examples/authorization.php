@@ -9,9 +9,6 @@ use BeGateway\Request\AuthorizationOperation;
 
 require_once __DIR__ . '/test_shop_data.php';
 
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::DEBUG);
-
 $card = new CreditCard('4200000000000000', 'JOHN DOE', 1, 2030, '123');
 
 $money = new Money(100, 'EUR'); // 1 EUR
@@ -30,6 +27,7 @@ $client = new ApiClient([
     'language' => 'en',
     'test' => true,
 ]);
+
 $response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;

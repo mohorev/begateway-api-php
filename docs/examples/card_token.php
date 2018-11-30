@@ -10,9 +10,6 @@ use BeGateway\TokenCard;
 
 require_once __DIR__ . '/test_shop_data.php';
 
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::DEBUG);
-
 $token = new CardToken('4200000000000000', 'John Doe', 1, 2029);
 
 $client = new ApiClient([

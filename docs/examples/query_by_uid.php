@@ -10,9 +10,6 @@ use BeGateway\Request\QueryByUid;
 
 require_once __DIR__ . '/test_shop_data.php';
 
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::DEBUG);
-
 $card = new CreditCard('4200000000000000', 'JOHN DOE', 1, 2030, '123');
 
 $money = new Money(100, 'EUR'); // 1 EUR

@@ -64,9 +64,6 @@ use BeGateway\Request\GetPaymentToken;
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
 
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::INFO);
-
 $money = new Money(100, 'EUR'); // 1 EUR
 
 $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
@@ -110,9 +107,6 @@ use BeGateway\Request\PaymentOperation;
 
 \BeGateway\Settings::$shopId  = 361;
 \BeGateway\Settings::$shopKey = 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d';
-
-// TODO: Logger example
-// Logger::getInstance()->setLogLevel(Logger::INFO);
 
 $card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
 
