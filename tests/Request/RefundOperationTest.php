@@ -3,7 +3,6 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
@@ -76,7 +75,7 @@ class RefundOperationTest extends TestCase
         $request->setParentUid($parent->getUid());
         $request->setReason('test reason');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -96,7 +95,7 @@ class RefundOperationTest extends TestCase
         $request->money = new Money($amount + 1, 'EUR');
         $request->setParentUid($parent->getUid());
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
@@ -115,7 +114,7 @@ class RefundOperationTest extends TestCase
         $request->setParentUid($parent->getUid());
         $request->setReason('');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
@@ -124,6 +123,8 @@ class RefundOperationTest extends TestCase
 
     private function runParentRequest($amount)
     {
+        $this->authorize();
+
         $card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
 
         $money = new Money($amount, 'EUR');
@@ -139,13 +140,11 @@ class RefundOperationTest extends TestCase
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
-        return (new ApiClient)->send($request);
+        return $this->getApiClient()->send($request);
     }
 
     private function getTestRequest()
     {
-        $this->authorize();
-
         $money = new Money(1256, 'EUR');
 
         $request = new RefundOperation($money);

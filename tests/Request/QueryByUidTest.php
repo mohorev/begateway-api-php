@@ -3,7 +3,6 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
@@ -56,7 +55,7 @@ class QueryByUidTest extends TestCase
         $request = $this->getTestRequest();
         $request->setUid($parent->getUid());
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -69,7 +68,7 @@ class QueryByUidTest extends TestCase
         $request = $this->getTestRequest();
         $request->setUid('1234567890qwerty');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertSame('Record not found', $response->getMessage());
@@ -94,7 +93,7 @@ class QueryByUidTest extends TestCase
         $transaction->setDescription('test');
         $transaction->setTrackingId('my_custom_variable');
 
-        return (new ApiClient)->send($transaction);
+        return $this->getApiClient()->send($transaction);
     }
 
     private function getTestRequest()

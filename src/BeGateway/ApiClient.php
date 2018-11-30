@@ -36,6 +36,16 @@ class ApiClient implements LoggerAwareInterface
     const BASE_API_URL = 'https://api.begateway.com';
 
     /**
+     * @var string the shop identifier.
+     * One of the parameters used in the process of authentication.
+     */
+    private $shopId;
+    /**
+     * @var string the shop secret key.
+     * One of the parameters used in the process of authentication.
+     */
+    private $shopKey;
+    /**
      * @var string the language of your checkout page or customer.
      */
     private $language = 'en';
@@ -64,6 +74,13 @@ class ApiClient implements LoggerAwareInterface
             $this->testMode = true;
         }
 
+        if (!isset($config['shop_id'], $config['shop_key'])) {
+            throw new \InvalidArgumentException('The "shop_id" and "shop_key" attributes are required.');
+        }
+
+        $this->shopId = $config['shop_id'];
+        $this->shopKey = $config['shop_key'];
+
         $this->logger = new NullLogger;
         $this->transport = $transport ? $transport : new CurlTransport;
     }
@@ -82,9 +99,6 @@ class ApiClient implements LoggerAwareInterface
      */
     public function send(Request $request)
     {
-        $shopId = Settings::$shopId;
-        $shopKey = Settings::$shopKey;
-
         if ($request instanceof SetLanguage) {
             $request->setLanguage($this->language);
         }
@@ -96,7 +110,7 @@ class ApiClient implements LoggerAwareInterface
         $this->transport->setLogger($this->logger);
 
         try {
-            $response = $this->transport->send($shopId, $shopKey, $request);
+            $response = $this->transport->send($this->shopId, $this->shopKey, $request);
         } catch (\Exception $e) {
             $msg = $e->getMessage();
             $response = '{ "errors":"' . $msg . '", "message":"' . $msg . '" }';

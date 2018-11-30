@@ -4,8 +4,6 @@ namespace BeGateway;
 
 class Settings
 {
-    public static $shopId;
-    public static $shopKey;
     public static $shopPubKey;
 
     public static $gatewayBase = 'https://demo-gateway.begateway.com';

@@ -3,7 +3,6 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
@@ -82,7 +81,7 @@ class CreditOperationTest extends TestCase
         $request->setTrackingId('tracking_id');
         $request->card = new TokenCard($parent->getResponse()->transaction->credit_card->token);
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -103,7 +102,7 @@ class CreditOperationTest extends TestCase
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());
@@ -128,7 +127,7 @@ class CreditOperationTest extends TestCase
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
-        return (new ApiClient)->send($request);
+        return $this->getApiClient()->send($request);
     }
 
     private function getTestRequest($secure3D = false)

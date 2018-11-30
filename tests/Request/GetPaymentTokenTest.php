@@ -4,7 +4,6 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\AdditionalData;
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\Customer;
 use BeGateway\Money;
@@ -334,7 +333,7 @@ class GetPaymentTokenTest extends TestCase
 
         $request->money = new Money($amount, 'EUR');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -358,7 +357,7 @@ class GetPaymentTokenTest extends TestCase
 
         $request->money = new Money($amount, 'EUR');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -372,7 +371,7 @@ class GetPaymentTokenTest extends TestCase
         $request->money = new Money(0, 'EUR');
         $request->setDescription('');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());

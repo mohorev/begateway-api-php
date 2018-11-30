@@ -4,7 +4,6 @@ namespace BeGateway\Tests\Response;
 
 use BeGateway\Contract\Response;
 use BeGateway\Response\WebhookResponse;
-use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
 
 class WebhookResponseTest extends TestCase
@@ -29,10 +28,10 @@ class WebhookResponseTest extends TestCase
     {
         $webhook = $this->getTestResponse();
 
-        $_SERVER['PHP_AUTH_USER'] = Settings::$shopId;
-        $_SERVER['PHP_AUTH_PW'] = Settings::$shopKey;
+        $_SERVER['PHP_AUTH_USER'] = $this->shopId;
+        $_SERVER['PHP_AUTH_PW'] = $this->shopKey;
 
-        $this->assertTrue($webhook->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testWebhookIsSentWithIncorrectCredentials()
@@ -42,7 +41,7 @@ class WebhookResponseTest extends TestCase
         $_SERVER['PHP_AUTH_USER'] = '123';
         $_SERVER['PHP_AUTH_PW'] = '321';
 
-        $this->assertFalse($webhook->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testWebhookIsSentWithCorrectCredentialsWhenHttpAuthorization()
@@ -51,10 +50,10 @@ class WebhookResponseTest extends TestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = sprintf(
             'Basic %s',
-            base64_encode(Settings::$shopId . ':' . Settings::$shopKey)
+            base64_encode($this->shopId . ':' . $this->shopKey)
         );
 
-        $this->assertTrue($webhook->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testWebhookIsSentWithCorrectCredentialsWhenRedirectHttpAuthorization()
@@ -63,10 +62,10 @@ class WebhookResponseTest extends TestCase
 
         $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = sprintf(
             'Basic %s',
-            base64_encode(Settings::$shopId . ':' . Settings::$shopKey)
+            base64_encode($this->shopId . ':' . $this->shopKey)
         );
 
-        $this->assertTrue($webhook->isAuthorized());
+        $this->assertTrue($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testWebhookIsSentWithIncorrectCredentialsWhenHttpAuthorization()
@@ -75,7 +74,7 @@ class WebhookResponseTest extends TestCase
 
         $_SERVER['HTTP_AUTHORIZATION'] = 'Basic QWxhZGRpbjpPcGVuU2VzYW1l';
 
-        $this->assertFalse($webhook->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testWebhookIsSentWithIncorrectCredentialsWhenRedirectHttpAuthorization()
@@ -84,7 +83,7 @@ class WebhookResponseTest extends TestCase
 
         $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic QWxhZGRpbjpPcGVuU2VzYW1l';
 
-        $this->assertFalse($webhook->isAuthorized());
+        $this->assertFalse($webhook->isAuthorized($this->shopId, $this->shopKey));
     }
 
     public function testRequestIsValidAndItIsSuccess()

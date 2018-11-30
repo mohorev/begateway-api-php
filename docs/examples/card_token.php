@@ -13,6 +13,8 @@ require_once __DIR__ . '/test_shop_data.php';
 $token = new CardToken('4200000000000000', 'John Doe', 1, 2029);
 
 $client = new ApiClient([
+    'shop_id' => 361,
+    'shop_key' => 'b8647b68898b084b836474ed8d61ffe117c9a01168d867f24953b776ddcb134d',
     'language' => 'en',
     'test' => true,
 ]);

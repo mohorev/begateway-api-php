@@ -3,7 +3,6 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\Customer;
 use BeGateway\Money;
@@ -56,7 +55,7 @@ class QueryByPaymentTokenTest extends TestCase
 
         $request->setToken($parent->getToken());
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertNotNull($response->getToken(), $parent->getToken());
@@ -68,7 +67,7 @@ class QueryByPaymentTokenTest extends TestCase
 
         $request->setToken('1234567890qwerty');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertSame('Record not found', $response->getMessage());
@@ -99,7 +98,7 @@ class QueryByPaymentTokenTest extends TestCase
         $request->setDeclineUrl($url . '/d');
         $request->setFailUrl($url . '/f');
 
-        return (new ApiClient)->send($request);
+        return $this->getApiClient()->send($request);
     }
 
     private function getTestRequest()

@@ -15,11 +15,11 @@ class WebhookResponse extends TransactionResponse
         parent::__construct(file_get_contents($this->source));
     }
 
-    public function isAuthorized()
+    public function isAuthorized($shopId, $shopKey)
     {
         $this->processAuthData();
 
-        return $this->id == Settings::$shopId && $this->key == Settings::$shopKey;
+        return $this->id == $shopId && $this->key == $shopKey;
     }
 
     private function processAuthData()

@@ -3,9 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
-use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
@@ -53,7 +51,7 @@ class CardTokenTest extends TestCase
         $request = $this->getTestRequest();
 
         # create token
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -70,7 +68,7 @@ class CardTokenTest extends TestCase
         # update token
         $request = new CardTokenUpdate($token, 'John Doe', 1, 2050);
 
-        $response2 = (new ApiClient)->send($request);
+        $response2 = $this->getApiClient()->send($request);
 
         $this->assertSame('John Doe', $response2->holder);
         $this->assertSame('visa', $response2->brand);
@@ -86,7 +84,7 @@ class CardTokenTest extends TestCase
 
         $amount = $request->money->getAmount();
 
-        $response3 = (new ApiClient)->send($request);
+        $response3 = $this->getApiClient()->send($request);
         $this->assertTrue($response3->isValid());
         $this->assertTrue($response3->isSuccess());
         $this->assertSame('Successfully processed', $response3->getMessage());

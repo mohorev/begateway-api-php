@@ -4,7 +4,6 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\AdditionalData;
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
@@ -137,7 +136,7 @@ class AuthorizationOperationTest extends TestCase
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -155,7 +154,7 @@ class AuthorizationOperationTest extends TestCase
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isIncomplete());
@@ -175,7 +174,7 @@ class AuthorizationOperationTest extends TestCase
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isFailed());
@@ -192,7 +191,7 @@ class AuthorizationOperationTest extends TestCase
         $request->card = $this->getExpInvalidCard();
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isError());

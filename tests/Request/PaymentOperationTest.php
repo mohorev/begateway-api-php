@@ -4,7 +4,6 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\AdditionalData;
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
@@ -138,7 +137,7 @@ class PaymentOperationTest extends TestCase
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isSuccess());
@@ -156,7 +155,7 @@ class PaymentOperationTest extends TestCase
         $request->card = new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isIncomplete());
@@ -175,7 +174,7 @@ class PaymentOperationTest extends TestCase
         $request->money = new Money(mt_rand(0, 10000), 'EUR');
         $amount = $request->money->getAmount();
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isValid());
         $this->assertTrue($response->isFailed());

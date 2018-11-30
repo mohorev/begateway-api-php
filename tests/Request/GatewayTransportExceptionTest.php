@@ -3,7 +3,6 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\ApiClient;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
@@ -35,7 +34,7 @@ class GatewayTransportExceptionTest extends TestCase
 
         $request->money = new Money($amount, 'EUR');
 
-        $response = (new ApiClient)->send($request);
+        $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isError());
         $this->assertContains('thedomaindoesntexist.begatewaynotexist.com', $response->getMessage());
