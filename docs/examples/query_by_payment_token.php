@@ -14,6 +14,11 @@ print 'Trying to Query by Payment token ' . $token . PHP_EOL;
 $query = new QueryByPaymentToken;
 $query->setToken($token);
 
-$response = (new ApiClient)->send($query);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+
+$response = $client->send($query);
 
 print_r($response);

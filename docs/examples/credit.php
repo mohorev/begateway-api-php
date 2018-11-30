@@ -27,9 +27,12 @@ $card = new CreditCard('4200000000000000', 'JOHN DOE', 1, 2030, '123');
 $transaction = new PaymentOperation($card, $money, $customer);
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setTestMode(true);
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -45,7 +48,7 @@ if ($response->isSuccess()) {
     $credit = new CreditOperation($card, $money);
     $credit->setDescription('Test credit');
 
-    $response = (new ApiClient)->send($credit);
+    $response = $client->send($credit);
 
     if ($response->isSuccess()) {
         print 'Credited successfully. Credit transaction UID ' . $response->getUid() . PHP_EOL;

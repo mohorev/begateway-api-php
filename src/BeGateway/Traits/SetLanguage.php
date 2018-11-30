@@ -1,19 +1,27 @@
 <?php
 
-namespace BeGateway\Request;
+namespace BeGateway\Traits;
 
-use BeGateway\Contract\Request;
 use BeGateway\Resource;
 
-abstract class BaseRequest implements Request
+trait SetLanguage
 {
-    protected $language;
+    /**
+     * @var string
+     */
+    private $language;
 
+    /**
+     * @param string $code
+     */
     public function setLanguage($code)
     {
         $this->language = $code;
     }
 
+    /**
+     * @return string the language code.
+     */
     public function getLanguage()
     {
         $language = (new Resource)->get('language');

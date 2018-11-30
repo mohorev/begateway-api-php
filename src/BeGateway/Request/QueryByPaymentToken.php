@@ -2,9 +2,10 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Settings;
 
-class QueryByPaymentToken extends BaseRequest
+class QueryByPaymentToken implements Request
 {
     private $token;
 

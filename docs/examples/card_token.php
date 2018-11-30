@@ -15,7 +15,12 @@ require_once __DIR__ . '/test_shop_data.php';
 
 $token = new CardToken('4200000000000000', 'John Doe', 1, 2029);
 
-$response = (new ApiClient)->send($token);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+
+$response = $client->send($token);
 
 if ($response->isSuccess()) {
     print 'Card token: ' . $response->token . PHP_EOL;
@@ -38,9 +43,8 @@ if ($response->isSuccess()) {
     $transaction = new PaymentOperation($card, $money, $customer);
     $transaction->setDescription('test');
     $transaction->setTrackingId('my_custom_variable');
-    $transaction->setTestMode(true);
 
-    $response = (new ApiClient)->send($transaction);
+    $response = $client->send($transaction);
 
     print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
     print 'Transaction status: ' . $response->getStatus() . PHP_EOL;

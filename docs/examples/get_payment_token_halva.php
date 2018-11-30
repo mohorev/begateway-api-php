@@ -23,18 +23,11 @@ $customer->setIP('127.0.0.1');
 
 $transaction = new GetPaymentToken($money, $customer);
 
-$cc = new CreditCard;
-
-$halva = new CreditCardHalva;
-
-$transaction->addPaymentMethod($cc);
-$transaction->addPaymentMethod($halva);
+$transaction->addPaymentMethod(new CreditCard);
+$transaction->addPaymentMethod(new CreditCardHalva);
 
 $transaction->setDescription('Тестовая оплата');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setLanguage('ru');
-
-$transaction->setTestMode(true);
 
 $transaction->setNotificationUrl('http://www.example.com/notify');
 $transaction->setSuccessUrl('http://www.example.com/success');
@@ -45,7 +38,11 @@ $transaction->setCancelUrl('http://www.example.com/cancel');
 # No available to make payment for the order in 2 days
 $transaction->setExpiryDate(date('Y-m-d', 3 * 24 * 3600 + time()) . 'T00:00:00+03:00');
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 

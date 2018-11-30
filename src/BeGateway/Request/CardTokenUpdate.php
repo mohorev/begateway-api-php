@@ -2,9 +2,10 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Settings;
 
-class CardTokenUpdate extends BaseRequest
+class CardTokenUpdate implements Request
 {
     private $token;
     private $holder;

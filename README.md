@@ -79,14 +79,17 @@ $transaction = new GetPaymentToken($money, $customer);
 
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setLanguage('en');
 $transaction->setNotificationUrl('http://www.example.com/notify');
 $transaction->setSuccessUrl('http://www.example.com/success');
 $transaction->setDeclineUrl('http://www.example.com/decline');
 $transaction->setFailUrl('http://www.example.com/fail');
 $transaction->setCancelUrl('http://www.example.com/cancel');
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+]);
+
+$response = $client->send($transaction);
 
 if ($response->isSuccess()) {
   header("Location: " . $response->getRedirectUrl());
@@ -125,7 +128,11 @@ $transaction = new PaymentOperation($card, $money, $customer);
 $transaction->setDescription('test order');
 $transaction->setTrackingId('my_custom_variable');
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+]);
+
+$response = $client->send($transaction);
 
 if ($response->isSuccess()) {
   print 'Status: ' . $response->getStatus() . PHP_EOL;

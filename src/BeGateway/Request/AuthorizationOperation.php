@@ -4,14 +4,19 @@ namespace BeGateway\Request;
 
 use BeGateway\AdditionalData;
 use BeGateway\Contract\Card;
+use BeGateway\Contract\Request;
 use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Settings;
 use BeGateway\TokenCard;
+use BeGateway\Traits\SetLanguage;
+use BeGateway\Traits\SetTestMode;
 
-class AuthorizationOperation extends BaseRequest
+class AuthorizationOperation implements Request
 {
+    use SetLanguage, SetTestMode;
+
     /**
      * @var CreditCard
      */
@@ -33,7 +38,6 @@ class AuthorizationOperation extends BaseRequest
      * @var AdditionalData the additional transaction data.
      */
     private $additionalData;
-    private $testMode = false;
 
     public function __construct(Card $card, Money $money, Customer $customer)
     {
@@ -80,16 +84,6 @@ class AuthorizationOperation extends BaseRequest
     public function getReturnUrl()
     {
         return $this->returnUrl;
-    }
-
-    public function setTestMode($mode = true)
-    {
-        $this->testMode = $mode;
-    }
-
-    public function getTestMode()
-    {
-        return $this->testMode;
     }
 
     public function setAdditionalData(AdditionalData $data)

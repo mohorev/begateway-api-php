@@ -2,11 +2,12 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Money;
 use BeGateway\Settings;
 use BeGateway\TokenCard;
 
-class CreditOperation extends BaseRequest
+class CreditOperation implements Request
 {
     public $card;
     public $money;

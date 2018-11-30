@@ -11,6 +11,8 @@ use BeGateway\Request\QueryByPaymentToken;
 use BeGateway\Response\CardTokenResponse;
 use BeGateway\Response\CheckoutResponse;
 use BeGateway\Response\TransactionResponse;
+use BeGateway\Traits\SetLanguage;
+use BeGateway\Traits\SetTestMode;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -32,6 +34,14 @@ class ApiClient implements LoggerAwareInterface
     const BASE_API_URL = 'https://api.begateway.com';
 
     /**
+     * @var string the language of your checkout page or customer.
+     */
+    private $language = 'en';
+    /**
+     * @var bool whether the test mode is enabled.
+     */
+    private $testMode = false;
+    /**
      * @var \BeGateway\Contract\GatewayTransport
      */
     private $transport;
@@ -39,10 +49,19 @@ class ApiClient implements LoggerAwareInterface
     /**
      * Initialize a new Api Client.
      *
+     * @param array $config the array of config params to override default settings.
      * @param \BeGateway\Contract\GatewayTransport $transport
      */
-    public function __construct(GatewayTransport $transport = null)
+    public function __construct(array $config = [], GatewayTransport $transport = null)
     {
+        if (isset($config['language'])) {
+            $this->language = $config['language'];
+        }
+
+        if (!empty($config['test'])) {
+            $this->testMode = true;
+        }
+
         $this->transport = new \BeGateway\Transport\CurlTransport;
     }
 
@@ -54,6 +73,14 @@ class ApiClient implements LoggerAwareInterface
     {
         $shopId = Settings::$shopId;
         $shopKey = Settings::$shopKey;
+
+        if ($request instanceof SetLanguage) {
+            $request->setLanguage($this->language);
+        }
+
+        if ($request instanceof SetTestMode) {
+            $request->setTestMode($this->testMode);
+        }
 
         try {
             $response = $this->transport->send($shopId, $shopKey, $request);

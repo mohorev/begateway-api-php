@@ -22,13 +22,10 @@ $customer->setIP('127.0.0.1');
 
 $transaction = new GetPaymentToken($money, $customer);
 
-$voucher = new EmexVoucher;
-
-$transaction->addPaymentMethod($voucher);
+$transaction->addPaymentMethod(new EmexVoucher);
 
 $transaction->setDescription('Test payment');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setLanguage('en');
 $transaction->setNotificationUrl('http://www.example.com/notify');
 $transaction->setSuccessUrl('http://www.example.com/success');
 $transaction->setDeclineUrl('http://www.example.com/decline');
@@ -38,7 +35,11 @@ $transaction->setCancelUrl('http://www.example.com/cancel');
 # No available to make payment for the order in 2 days
 $transaction->setExpiryDate(date('Y-m-d', 3 * 24 * 3600 + time()) . 'T00:00:00+03:00');
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 

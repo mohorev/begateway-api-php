@@ -26,9 +26,13 @@ $customer->setIP('127.0.0.1');
 $transaction = new PaymentOperation($card, $money, $customer);
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setTestMode(true);
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -41,7 +45,7 @@ if ($response->isSuccess()) {
     $refund->setParentUid($response->getUid());
     $refund->setReason('customer request');
 
-    $response = (new ApiClient)->send($refund);
+    $response = $client->send($refund);
 
     if ($response->isSuccess()) {
         print 'Refund successfully. Refund transaction UID ' . $response->getUid() . PHP_EOL;

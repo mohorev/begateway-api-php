@@ -25,10 +25,12 @@ $customer->setIP('127.0.0.1');
 $transaction = new AuthorizationOperation($card, $money, $customer);
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setLanguage('en');
-$transaction->setTestMode(true);
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;

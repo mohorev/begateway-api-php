@@ -2,9 +2,10 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Settings;
 
-class QueryByTrackingId extends BaseRequest
+class QueryByTrackingId implements Request
 {
     private $trackingId;
 

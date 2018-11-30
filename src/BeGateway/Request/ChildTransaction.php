@@ -2,9 +2,10 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Money;
 
-abstract class ChildTransaction extends BaseRequest
+abstract class ChildTransaction implements Request
 {
     public $money;
 

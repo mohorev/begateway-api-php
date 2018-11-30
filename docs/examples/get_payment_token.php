@@ -22,8 +22,6 @@ $customer->setIP('127.0.0.1');
 $transaction = new GetPaymentToken($money, $customer);
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setLanguage('en');
-$transaction->setTestMode(true);
 
 $transaction->setNotificationUrl('http://www.example.com/notify');
 $transaction->setSuccessUrl('http://www.example.com/success');
@@ -36,7 +34,11 @@ $transaction->setCancelUrl('http://www.example.com/cancel');
 // $transaction->setAuthorizationTransactionType();
 // $transaction->setTokenizationTransactionType();
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 

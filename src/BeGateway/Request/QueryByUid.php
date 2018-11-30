@@ -2,9 +2,10 @@
 
 namespace BeGateway\Request;
 
+use BeGateway\Contract\Request;
 use BeGateway\Settings;
 
-class QueryByUid extends BaseRequest
+class QueryByUid implements Request
 {
     private $uid;
 

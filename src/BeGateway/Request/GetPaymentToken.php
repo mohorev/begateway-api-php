@@ -3,12 +3,17 @@
 namespace BeGateway\Request;
 
 use BeGateway\AdditionalData;
+use BeGateway\Contract\Request;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Settings;
+use BeGateway\Traits\SetLanguage;
+use BeGateway\Traits\SetTestMode;
 
-class GetPaymentToken extends BaseRequest
+class GetPaymentToken implements Request
 {
+    use SetLanguage, SetTestMode;
+
     const
         TRANSACTION_TYPE_PAYMENT = 'payment',
         TRANSACTION_TYPE_TOKENIZATION = 'tokenization',
@@ -39,7 +44,6 @@ class GetPaymentToken extends BaseRequest
      * @var AdditionalData the detailed information about the payment.
      */
     private $additionalData;
-    private $testMode = false;
 
     public function __construct(Money $money, Customer $customer)
     {
@@ -442,16 +446,6 @@ class GetPaymentToken extends BaseRequest
     public function addPaymentMethod($method)
     {
         $this->paymentMethods[] = $method;
-    }
-
-    public function setTestMode($mode = true)
-    {
-        $this->testMode = $mode;
-    }
-
-    public function getTestMode()
-    {
-        return $this->testMode;
     }
 
     private function searchAndAdd($array, $value)

@@ -26,9 +26,13 @@ $customer->setIP('127.0.0.1');
 $transaction = new AuthorizationOperation($card, $money, $customer);
 $transaction->setDescription('test');
 $transaction->setTrackingId('my_custom_variable');
-$transaction->setTestMode(true);
 
-$response = (new ApiClient)->send($transaction);
+$client = new ApiClient([
+    'language' => 'en',
+    'test' => true,
+]);
+
+$response = $client->send($transaction);
 
 print 'Transaction message: ' . $response->getMessage() . PHP_EOL;
 print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
@@ -40,7 +44,7 @@ if ($response->isSuccess()) {
     $capture = new CaptureOperation($transaction->money);
     $capture->setParentUid($response->getUid());
 
-    $response = (new ApiClient)->send($capture);
+    $response = $client->send($capture);
 
     if ($response->isSuccess()) {
         print 'Captured successfully. Captured transaction UID ' . $response->getUid() . PHP_EOL;
