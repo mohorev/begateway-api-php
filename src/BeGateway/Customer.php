@@ -26,7 +26,7 @@ class Customer
      */
     private $address;
     /**
-     * @var string the IP address of customer.
+     * @var string the IPv4 address of customer.
      */
     private $ip;
     /**
@@ -44,12 +44,22 @@ class Customer
      * @param string $firstName
      * @param string $lastName
      * @param string $email
+     * @param string $ip
      */
-    public function __construct($firstName, $lastName, $email)
+    public function __construct($firstName, $lastName, $email, $ip)
     {
         $this->firstName = $this->setNullIfEmpty($firstName);
         $this->lastName = $this->setNullIfEmpty($lastName);
-        $this->email = $this->setNullIfEmpty($email);
+        $this->email = $email;
+        $this->ip = $ip;
+
+        if (filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) {
+            throw new \InvalidArgumentException('Invalid email address');
+        }
+
+        if (filter_var($this->ip, FILTER_VALIDATE_IP) === false) {
+            throw new \InvalidArgumentException('Invalid IP address');
+        }
     }
 
     public function getFirstName()
@@ -67,6 +77,11 @@ class Customer
         return $this->email;
     }
 
+    public function getIP()
+    {
+        return $this->ip;
+    }
+
     public function setAddress(Address $address)
     {
         $this->address = $address;
@@ -78,16 +93,6 @@ class Customer
     public function getAddress()
     {
         return $this->address;
-    }
-
-    public function setIP($ip)
-    {
-        $this->ip = $this->setNullIfEmpty($ip);
-    }
-
-    public function getIP()
-    {
-        return $this->ip;
     }
 
     public function setPhone($phone)

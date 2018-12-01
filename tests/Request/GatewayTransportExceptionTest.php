@@ -50,9 +50,8 @@ class GatewayTransportExceptionTest extends TestCase
 
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
 
-        $customer = new Customer('John', 'Doe', 'john@example.com');
+        $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
-        $customer->setIP('127.0.0.1');
 
         $request = new AuthorizationOperation($card, $money, $customer);
         $request->setDescription('test');
