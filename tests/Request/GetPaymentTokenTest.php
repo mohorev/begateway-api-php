@@ -196,16 +196,8 @@ class GetPaymentTokenTest extends TestCase
         $request = $this->getTestRequest();
         $request->money = new Money(100, 'BYN');
 
-        $erip = new PaymentMethod\Erip([
-            'account_number' => '1234',
-            'service_no' => '99999999',
-            'order_id' => 100001,
-            'service_info' => ['Test payment'],
-        ]);
-        $cc = new PaymentMethod\CreditCard();
-
-        $request->addPaymentMethod($erip);
-        $request->addPaymentMethod($cc);
+        $request->addPaymentMethod(new PaymentMethod\Erip(100001, '1234', '99999999', ['Test payment']));
+        $request->addPaymentMethod(new PaymentMethod\CreditCard);
 
         $expected = [
             'checkout' => [
@@ -268,11 +260,8 @@ class GetPaymentTokenTest extends TestCase
         $request = $this->getTestRequest();
         $request->money = new Money(100, 'USD');
 
-        $emexVoucher = new PaymentMethod\EmexVoucher();
-        $cc = new PaymentMethod\CreditCard();
-
-        $request->addPaymentMethod($emexVoucher);
-        $request->addPaymentMethod($cc);
+        $request->addPaymentMethod(new PaymentMethod\EmexVoucher);
+        $request->addPaymentMethod(new PaymentMethod\CreditCard);
 
         $expected = [
             'checkout' => [

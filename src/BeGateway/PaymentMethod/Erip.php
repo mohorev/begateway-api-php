@@ -6,18 +6,17 @@ use BeGateway\Contract\PaymentMethod;
 
 class Erip implements PaymentMethod
 {
-    private $params;
+    private $orderId;
+    private $accountNumber;
+    private $serviceNo;
+    private $serviceInfo;
 
-    public function __construct($params)
+    public function __construct($orderId, $accountNumber, $serviceNo, $serviceInfo = [])
     {
-        $defaults = [
-            'order_id' => null,
-            'account_number' => null,
-            'service_no' => null,
-            'service_info' => null,
-        ];
-
-        $this->params = array_merge($defaults, $params);
+        $this->orderId = $orderId;
+        $this->accountNumber = $accountNumber;
+        $this->serviceNo = $serviceNo;
+        $this->serviceInfo = $serviceInfo;
     }
 
     /**
@@ -34,15 +33,13 @@ class Erip implements PaymentMethod
     public function parameters()
     {
         $params = [
-            'order_id' => $this->params['order_id'],
-            'account_number' => $this->params['account_number'],
-            'service_no' => $this->params['service_no'],
+            'order_id' => $this->orderId,
+            'account_number' => $this->accountNumber,
+            'service_no' => $this->serviceNo,
         ];
 
-        $serviceInfo = $this->params['service_info'];
-
-        if (is_array($serviceInfo) && !empty($serviceInfo)) {
-            $params['service_info'] = $serviceInfo;
+        if ($this->serviceInfo) {
+            $params['service_info'] = $this->serviceInfo;
         }
 
         return $params;

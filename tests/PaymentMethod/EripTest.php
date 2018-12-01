@@ -10,12 +10,7 @@ class EripTest extends TestCase
 {
     public function testCreate()
     {
-        $payment = new Erip([
-            'order_id' => 100001,
-            'account_number' => '1234',
-            'service_no' => '99999999',
-            'service_info' => ['Test payment'],
-        ]);
+        $payment = new Erip(100001, '1234', '99999999', ['Test payment']);
 
         $this->assertInstanceOf(Erip::class, $payment);
         $this->assertInstanceOf(PaymentMethod::class, $payment);

@@ -20,12 +20,7 @@ $customer->setAddress($address);
 $transaction = new GetPaymentToken($money, $customer);
 
 $transaction->addPaymentMethod(new CreditCard);
-$transaction->addPaymentMethod(new Erip([
-    'order_id' => 1234,
-    'account_number' => '1234',
-    'service_no' => '99999999',
-    'service_info' => ['Order 1234'],
-]));
+$transaction->addPaymentMethod(new Erip(1234, '1234', '99999999', ['Order 1234']));
 
 $transaction->setDescription('Тестовая оплата');
 $transaction->setTrackingId('my_custom_variable');
