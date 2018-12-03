@@ -14,13 +14,16 @@ class GetPaymentToken implements Request
 {
     use SetLanguage, SetTestMode;
 
+    /**
+     * @const payment page version.
+     */
+    const VERSION = '2.1';
+
     const
         TRANSACTION_TYPE_PAYMENT = 'payment',
         TRANSACTION_TYPE_TOKENIZATION = 'tokenization',
         TRANSACTION_TYPE_AUTHORIZATION = 'authorization'
     ;
-
-    public static $version = '2.1';
 
     public $money;
     public $customer;
@@ -66,7 +69,7 @@ class GetPaymentToken implements Request
     {
         $request = [
             'checkout' => [
-                'version' => self::$version,
+                'version' => self::VERSION,
                 'transaction_type' => $this->transactionType,
                 'test' => $this->getTestMode(),
                 'order' => [
