@@ -6,9 +6,12 @@ use BeGateway\Contract\Request;
 use BeGateway\Money;
 use BeGateway\Settings;
 use BeGateway\TokenCard;
+use BeGateway\Traits\IdempotentRequest;
 
 class CreditOperation implements Request
 {
+    use IdempotentRequest;
+
     public $card;
     public $money;
 

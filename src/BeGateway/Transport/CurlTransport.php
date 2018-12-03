@@ -4,6 +4,7 @@ namespace BeGateway\Transport;
 
 use BeGateway\Contract\GatewayTransport;
 use BeGateway\Contract\Request;
+use BeGateway\Traits\IdempotentRequest;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -37,6 +38,10 @@ class CurlTransport implements GatewayTransport, LoggerAwareInterface
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_HTTPHEADER => ['Accept: application/json'],
         ];
+
+        if ($request instanceof IdempotentRequest) {
+            $options[CURLOPT_HTTPHEADER][] = sprintf('RequestID: %s', $request->getId());
+        }
 
         if (!empty($json)) {
             $options[CURLOPT_HTTPHEADER][] = 'Content-type: application/json';

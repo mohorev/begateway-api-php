@@ -4,12 +4,9 @@ namespace BeGateway;
 
 use BeGateway\Contract\GatewayTransport;
 use BeGateway\Contract\Request;
-use BeGateway\Request\CardToken;
-use BeGateway\Request\CardTokenUpdate;
-use BeGateway\Request\GetPaymentToken;
-use BeGateway\Request\QueryByPaymentToken;
 use BeGateway\Response\CardTokenResponse;
 use BeGateway\Response\CheckoutResponse;
+use BeGateway\Response\ResponseFactory;
 use BeGateway\Response\TransactionResponse;
 use BeGateway\Traits\SetLanguage;
 use BeGateway\Traits\SetTestMode;
@@ -18,6 +15,12 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
+/**
+ * Class ApiClient
+ *
+ * @see API docs: https://docs.bepaid.by/en/introduction
+ * @package BeGateway
+ */
 class ApiClient implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -59,7 +62,7 @@ class ApiClient implements LoggerAwareInterface
     private $transport;
 
     /**
-     * Initialize a new Api Client.
+     * Initialize a new ApiClient.
      *
      * @param array $config the array of config params to override default settings.
      * @param \BeGateway\Contract\GatewayTransport $transport
@@ -95,6 +98,10 @@ class ApiClient implements LoggerAwareInterface
 
     /**
      * @param Request $request
+     * @param string $requestId the idempotent request identifier.
+     * All requests with the same key will be considered attempts for the same request.
+     * These keys are stored for a period of 24 hours.
+     * @see https://docs.bepaid.by/en/guides/idempotent-requests
      * @return TransactionResponse|CheckoutResponse|CardTokenResponse
      */
     public function send(Request $request)
@@ -116,19 +123,6 @@ class ApiClient implements LoggerAwareInterface
             $response = '{ "errors":"' . $msg . '", "message":"' . $msg . '" }';
         }
 
-        if ($request instanceof GetPaymentToken || $request instanceof QueryByPaymentToken) {
-            return new CheckoutResponse($response);
-        }
-
-        if ($request instanceof CardToken || $request instanceof CardTokenUpdate) {
-            return new CardTokenResponse($response);
-        }
-
-        return new TransactionResponse($response);
-    }
-
-    public function sendIdempotent(Request $request, $id)
-    {
-        //
+        return ResponseFactory::make($request, $response);
     }
 }

@@ -11,11 +11,12 @@ use BeGateway\Money;
 use BeGateway\Settings;
 use BeGateway\TokenCard;
 use BeGateway\Traits\SetLanguage;
+use BeGateway\Traits\IdempotentRequest;
 use BeGateway\Traits\SetTestMode;
 
 class AuthorizationOperation implements Request
 {
-    use SetLanguage, SetTestMode;
+    use SetLanguage, SetTestMode, IdempotentRequest;
 
     /**
      * @var CreditCard

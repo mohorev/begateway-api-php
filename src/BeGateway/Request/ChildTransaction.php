@@ -4,11 +4,13 @@ namespace BeGateway\Request;
 
 use BeGateway\Contract\Request;
 use BeGateway\Money;
+use BeGateway\Traits\IdempotentRequest;
 
 abstract class ChildTransaction implements Request
 {
-    public $money;
+    use IdempotentRequest;
 
+    public $money;
     private $parentUid;
 
     public function __construct(Money $money)
