@@ -194,7 +194,7 @@ class GetPaymentTokenTest extends TestCase
     public function testDataWithErip()
     {
         $request = $this->getTestRequest();
-        $request->money = new Money(100, 'BYN');
+        $request->setMoney(new Money(100, 'BYN'));
 
         $request->addPaymentMethod(new PaymentMethod\Erip(100001, '1234', '99999999', ['Test payment']));
         $request->addPaymentMethod(new PaymentMethod\CreditCard);
@@ -258,7 +258,7 @@ class GetPaymentTokenTest extends TestCase
     public function testDataWithEmexVoucher()
     {
         $request = $this->getTestRequest();
-        $request->money = new Money(100, 'USD');
+        $request->setMoney(new Money(100, 'USD'));
 
         $request->addPaymentMethod(new PaymentMethod\EmexVoucher);
         $request->addPaymentMethod(new PaymentMethod\CreditCard);
@@ -320,7 +320,7 @@ class GetPaymentTokenTest extends TestCase
 
         $amount = mt_rand(0, 10000);
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
 
         $response = $this->getApiClient()->send($request);
 
@@ -344,7 +344,7 @@ class GetPaymentTokenTest extends TestCase
 
         $amount = mt_rand(0, 10000);
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
 
         $response = $this->getApiClient()->send($request);
 
@@ -357,7 +357,7 @@ class GetPaymentTokenTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->money = new Money(0, 'EUR');
+        $request->setMoney(new Money(0, 'EUR'));
         $request->setDescription('');
 
         $response = $this->getApiClient()->send($request);

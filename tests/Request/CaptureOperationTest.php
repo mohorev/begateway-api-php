@@ -60,7 +60,7 @@ class CaptureOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount, 'USD');
+        $request->setMoney(new Money($amount, 'USD'));
         $request->setParentUid($parent->getUid());
 
         $response = $this->getApiClient()->send($request);
@@ -80,7 +80,7 @@ class CaptureOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount + 1, 'USD');
+        $request->setMoney(new Money($amount + 1, 'USD'));
         $request->setParentUid($parent->getUid());
 
         $response = $this->getApiClient()->send($request);

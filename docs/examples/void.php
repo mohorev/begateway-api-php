@@ -39,7 +39,7 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Void transaction ' . $response->getUid() . PHP_EOL;
 
-    $void = new VoidOperation($transaction->money);
+    $void = new VoidOperation($transaction->getMoney());
     $void->setParentUid($response->getUid());
 
     $response = $client->send($void);

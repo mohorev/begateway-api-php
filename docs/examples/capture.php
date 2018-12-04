@@ -39,7 +39,7 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Capture transaction ' . $response->getUid() . PHP_EOL;
 
-    $capture = new CaptureOperation($transaction->money);
+    $capture = new CaptureOperation($transaction->getMoney());
     $capture->setParentUid($response->getUid());
 
     $response = $client->send($capture);

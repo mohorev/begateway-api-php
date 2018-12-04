@@ -75,11 +75,11 @@ class CreditOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount * 2, 'EUR');
+        $request->setMoney(new Money($amount * 2, 'EUR'));
 
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');
-        $request->card = new TokenCard($parent->getResponse()->transaction->credit_card->token);
+        $request->setCard(new TokenCard($parent->getResponse()->transaction->credit_card->token));
 
         $response = $this->getApiClient()->send($request);
 
@@ -97,7 +97,7 @@ class CreditOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount * 2, 'EUR');
+        $request->setMoney(new Money($amount * 2, 'EUR'));
 
         $request->setDescription('test description');
         $request->setTrackingId('tracking_id');

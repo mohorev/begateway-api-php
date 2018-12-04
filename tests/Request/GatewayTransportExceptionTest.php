@@ -32,7 +32,7 @@ class GatewayTransportExceptionTest extends TestCase
 
         $amount = mt_rand(0, 10000);
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
 
         $response = $this->getApiClient()->send($request);
 

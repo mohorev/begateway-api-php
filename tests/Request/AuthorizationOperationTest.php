@@ -133,8 +133,8 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $amount = $request->money->getAmount();
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 
@@ -150,9 +150,9 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest(true);
 
-        $request->card = $this->getInvalidCard();
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $amount = $request->money->getAmount();
+        $request->setCard($this->getInvalidCard());
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 
@@ -170,9 +170,9 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->card = $this->getUnauthorizedCard();
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $amount = $request->money->getAmount();
+        $request->setCard($this->getUnauthorizedCard());
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 
@@ -188,8 +188,8 @@ class AuthorizationOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->card = $this->getExpInvalidCard();
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
+        $request->setCard($this->getExpInvalidCard());
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
 
         $response = $this->getApiClient()->send($request);
 

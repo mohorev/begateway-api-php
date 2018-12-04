@@ -82,7 +82,7 @@ class CardTokenTest extends TestCase
         # make authorization with token
         $request = $this->getAuthorizationRequest($token);
 
-        $amount = $request->money->getAmount();
+        $amount = $request->getMoney()->getAmount();
 
         $response3 = $this->getApiClient()->send($request);
         $this->assertTrue($response3->isValid());

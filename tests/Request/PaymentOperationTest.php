@@ -134,8 +134,8 @@ class PaymentOperationTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $amount = $request->money->getAmount();
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 
@@ -151,9 +151,9 @@ class PaymentOperationTest extends TestCase
     {
         $request = $this->getTestRequest(true);
 
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $request->card = new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
-        $amount = $request->money->getAmount();
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $request->setCard(new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123'));
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 
@@ -170,9 +170,10 @@ class PaymentOperationTest extends TestCase
     public function testFailedPayment()
     {
         $request = $this->getTestRequest();
-        $request->card = new CreditCard('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
-        $request->money = new Money(mt_rand(0, 10000), 'EUR');
-        $amount = $request->money->getAmount();
+        $request->setCard(new CreditCard('4005550000000019', 'BEGATEWAY', 10, 2030, '123'));
+        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+
+        $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
 

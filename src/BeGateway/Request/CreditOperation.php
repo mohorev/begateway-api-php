@@ -12,9 +12,8 @@ class CreditOperation implements Request
 {
     use IdempotentRequest;
 
-    public $card;
-    public $money;
-
+    private $card;
+    private $money;
     private $description;
     private $trackingId;
 
@@ -22,6 +21,26 @@ class CreditOperation implements Request
     {
         $this->card = $card;
         $this->money = $money;
+    }
+
+    public function setCard(TokenCard $card)
+    {
+        $this->card = $card;
+    }
+
+    public function getCard()
+    {
+        return $this->card;
+    }
+
+    public function setMoney(Money $money)
+    {
+        $this->money = $money;
+    }
+
+    public function getMoney()
+    {
+        return $this->money;
     }
 
     public function setDescription($description)

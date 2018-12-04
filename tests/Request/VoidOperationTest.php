@@ -60,7 +60,7 @@ class VoidOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
         $request->setParentUid($parent->getUid());
 
         $response = $this->getApiClient()->send($request);
@@ -80,7 +80,7 @@ class VoidOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount + 1, 'EUR');
+        $request->setMoney(new Money($amount + 1, 'EUR'));
         $request->setParentUid($parent->getUid());
 
         $response = $this->getApiClient()->send($request);

@@ -21,15 +21,15 @@ class AuthorizationOperation implements Request
     /**
      * @var CreditCard
      */
-    public $card;
+    private $card;
     /**
      * @var Money
      */
-    public $money;
+    private $money;
     /**
      * @var Customer
      */
-    public $customer;
+    private $customer;
 
     private $description;
     private $trackingId;
@@ -45,6 +45,36 @@ class AuthorizationOperation implements Request
         $this->card = $card;
         $this->money = $money;
         $this->customer = $customer;
+    }
+
+    public function setCard(Card $card)
+    {
+        $this->card = $card;
+    }
+
+    public function getCard()
+    {
+        return $this->card;
+    }
+
+    public function setMoney(Money $money)
+    {
+        $this->money = $money;
+    }
+
+    public function getMoney()
+    {
+        return $this->money;
+    }
+
+    public function setCustomer(Customer $customer)
+    {
+        $this->customer = $customer;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
     }
 
     public function setDescription($description)

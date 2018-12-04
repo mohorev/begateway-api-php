@@ -10,12 +10,22 @@ abstract class ChildTransaction implements Request
 {
     use IdempotentRequest;
 
-    public $money;
+    private $money;
     private $parentUid;
 
     public function __construct(Money $money)
     {
         $this->money = $money;
+    }
+
+    public function setMoney(Money $money)
+    {
+        $this->money = $money;
+    }
+
+    public function getMoney()
+    {
+        return $this->money;
     }
 
     public function setParentUid($uid)

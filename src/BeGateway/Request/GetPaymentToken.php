@@ -25,9 +25,8 @@ class GetPaymentToken implements Request
         TRANSACTION_TYPE_AUTHORIZATION = 'authorization'
     ;
 
-    public $money;
-    public $customer;
-
+    private $money;
+    private $customer;
     private $description;
     private $trackingId;
     private $successUrl;
@@ -52,6 +51,26 @@ class GetPaymentToken implements Request
     {
         $this->money = $money;
         $this->customer = $customer;
+    }
+
+    public function setMoney(Money $money)
+    {
+        $this->money = $money;
+    }
+
+    public function getMoney()
+    {
+        return $this->money;
+    }
+
+    public function setCustomer(Customer $customer)
+    {
+        $this->customer = $customer;
+    }
+
+    public function getCustomer()
+    {
+        return $this->customer;
     }
 
     /**

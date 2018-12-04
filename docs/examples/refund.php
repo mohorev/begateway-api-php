@@ -39,7 +39,7 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Refund transaction ' . $response->getUid() . PHP_EOL;
 
-    $refund = new RefundOperation($transaction->money);
+    $refund = new RefundOperation($transaction->getMoney());
     $refund->setParentUid($response->getUid());
     $refund->setReason('customer request');
 

@@ -70,7 +70,7 @@ class RefundOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
 
         $request->setParentUid($parent->getUid());
         $request->setReason('test reason');
@@ -92,7 +92,7 @@ class RefundOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount + 1, 'EUR');
+        $request->setMoney(new Money($amount + 1, 'EUR'));
         $request->setParentUid($parent->getUid());
 
         $response = $this->getApiClient()->send($request);
@@ -110,7 +110,7 @@ class RefundOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->money = new Money($amount, 'EUR');
+        $request->setMoney(new Money($amount, 'EUR'));
         $request->setParentUid($parent->getUid());
         $request->setReason('');
 

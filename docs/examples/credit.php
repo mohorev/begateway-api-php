@@ -37,7 +37,7 @@ print 'Transaction status: ' . $response->getStatus() . PHP_EOL;
 
 if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
-    print 'Trying to Credit to card ' . $transaction->card->getNumber() . PHP_EOL;
+    print 'Trying to Credit to card ' . $transaction->getCard()->getNumber() . PHP_EOL;
 
     $card = new TokenCard($response->getResponse()->transaction->credit_card->token);
 
