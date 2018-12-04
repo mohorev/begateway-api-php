@@ -16,31 +16,37 @@ class CaptureOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'USD');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(CaptureOperation::class, $request);
     }
 
-    public function testGetSetParentUid()
+    public function testGetParentUid()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'USD');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
-        $uid = '10314520-438c04b473';
-        $request->setParentUid($uid);
-        $this->assertSame($uid, $request->getParentUid());
+        $this->assertSame('12345678', $request->getParentUid());
     }
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'USD');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $this->assertSame(Settings::$gatewayBase . '/transactions/captures', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'USD');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $expected = [
             'request' => [
@@ -58,10 +64,9 @@ class CaptureOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount, 'USD'));
-        $request->setParentUid($parent->getUid());
+        $money = new Money($amount, 'USD');
+        $parentUid = $parent->getUid();
+        $request = $this->getTestRequest($money, $parentUid);
 
         $response = $this->getApiClient()->send($request);
 
@@ -78,10 +83,9 @@ class CaptureOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount + 1, 'USD'));
-        $request->setParentUid($parent->getUid());
+        $money = new Money($amount + 1, 'USD');
+        $parentUid = $parent->getUid();
+        $request = $this->getTestRequest($money, $parentUid);
 
         $response = $this->getApiClient()->send($request);
 
@@ -110,15 +114,10 @@ class CaptureOperationTest extends TestCase
         return $this->getApiClient()->send($request);
     }
 
-    private function getTestRequest($secure3D = false)
+    private function getTestRequest($money, $parentUid, $secure3D = false)
     {
         $this->authorize($secure3D);
 
-        $money = new Money(1256, 'USD');
-        $request = new CaptureOperation($money);
-
-        $request->setParentUid('12345678');
-
-        return $request;
+        return new CaptureOperation($money, $parentUid);
     }
 }
