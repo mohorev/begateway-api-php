@@ -15,32 +15,29 @@ class QueryByPaymentTokenTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new QueryByPaymentToken;
+        $request = $this->getTestRequest('123456');
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByPaymentToken::class, $request);
     }
 
-    public function testGetSetToken()
+    public function testGetToken()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
-        $token = '123456';
-        $request->setToken($token);
-        $this->assertSame($request->getToken(), $token);
+        $this->assertSame('123456', $request->getToken());
     }
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
-        $request->setToken('1234');
+        $request = $this->getTestRequest('123456');
 
-        $this->assertSame(Settings::$checkoutBase . '/ctp/api/checkouts/1234', $request->endpoint());
+        $this->assertSame(Settings::$checkoutBase . '/ctp/api/checkouts/123456', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
         $this->assertSame(null, $request->data());
     }
@@ -51,9 +48,7 @@ class QueryByPaymentTokenTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setToken($parent->getToken());
+        $request = $this->getTestRequest($parent->getToken());
 
         $response = $this->getApiClient()->send($request);
 
@@ -63,9 +58,7 @@ class QueryByPaymentTokenTest extends TestCase
 
     public function testQueryResponseForUnknownUid()
     {
-        $request = $this->getTestRequest();
-
-        $request->setToken('1234567890qwerty');
+        $request = $this->getTestRequest('1234567890qwerty');
 
         $response = $this->getApiClient()->send($request);
 
@@ -100,10 +93,10 @@ class QueryByPaymentTokenTest extends TestCase
         return $this->getApiClient()->send($request);
     }
 
-    private function getTestRequest()
+    private function getTestRequest($token)
     {
         $this->authorize();
 
-        return new QueryByPaymentToken;
+        return new QueryByPaymentToken($token);
     }
 }
