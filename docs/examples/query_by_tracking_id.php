@@ -39,8 +39,7 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Query by tracking id ' . $transaction->getTrackingId() . PHP_EOL;
 
-    $query = new QueryByTrackingId;
-    $query->setTrackingId($transaction->getTrackingId());
+    $query = new QueryByTrackingId($transaction->getTrackingId());
 
     $response = $client->send($query);
 

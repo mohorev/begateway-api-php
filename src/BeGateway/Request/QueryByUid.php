@@ -14,7 +14,7 @@ use BeGateway\Settings;
 class QueryByUid implements Request
 {
     /**
-     * @var string the transaction UID that you want to get information for.
+     * @var string the transaction UID that will be used to search for transaction.
      */
     private $uid;
 

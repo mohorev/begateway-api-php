@@ -16,32 +16,29 @@ class QueryByTrackingIdTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new QueryByTrackingId;
+        $request = $this->getTestRequest('123456');
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByTrackingId::class, $request);
     }
 
-    public function testGetSetTrackingId()
+    public function testGetTrackingId()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
-        $trackingId = 'test_tracking_id';
-        $request->setTrackingId($trackingId);
-        $this->assertSame($trackingId, $request->getTrackingId());
+        $this->assertSame('123456', $request->getTrackingId());
     }
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
-        $request->setTrackingId('1234');
+        $request = $this->getTestRequest('123456');
 
-        $this->assertSame(Settings::$gatewayBase . '/v2/transactions/tracking_id/1234', $request->endpoint());
+        $this->assertSame(Settings::$gatewayBase . '/v2/transactions/tracking_id/123456', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
         $this->assertSame(null, $request->data());
     }
@@ -54,9 +51,7 @@ class QueryByTrackingIdTest extends TestCase
 
         $parent = $this->runParentRequest($amount, $trackingId);
 
-        $request = $this->getTestRequest();
-
-        $request->setTrackingId($trackingId);
+        $request = $this->getTestRequest($trackingId);
 
         $response = $this->getApiClient()->send($request);
 
@@ -73,9 +68,7 @@ class QueryByTrackingIdTest extends TestCase
 
     public function testQueryResponseForUnknownUid()
     {
-        $request = $this->getTestRequest();
-
-        $request->setTrackingId('1234567890qwerty');
+        $request = $this->getTestRequest('1234567890qwerty');
 
         $response = $this->getApiClient()->send($request);
 
@@ -99,7 +92,6 @@ class QueryByTrackingIdTest extends TestCase
         $customer->setAddress($address);
 
         $request = new PaymentOperation($card, $money, $customer);
-
         $request->setDescription('test');
         $request->setTrackingId($trackingId);
         $request->setTestMode(true);
@@ -107,10 +99,10 @@ class QueryByTrackingIdTest extends TestCase
         return $this->getApiClient()->send($request);
     }
 
-    private function getTestRequest()
+    private function getTestRequest($trackingId)
     {
         $this->authorize();
 
-        return new QueryByTrackingId;
+        return new QueryByTrackingId($trackingId);
     }
 }
