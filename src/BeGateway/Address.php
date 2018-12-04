@@ -2,12 +2,14 @@
 
 namespace BeGateway;
 
+use BeGateway\Contract\Arrayable;
+
 /**
  * Address is the class for data of billing address.
  *
  * @package BeGateway
  */
-class Address
+class Address implements Arrayable
 {
     /**
      * @var string the billing country in ISO 3166-1 Alpha-2 format.
@@ -91,5 +93,19 @@ class Address
     public function getState()
     {
         return $this->state;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray()
+    {
+        return [
+            'country' => $this->country,
+            'city' => $this->city,
+            'address' => $this->address,
+            'zip' => $this->zip,
+            'state' => $this->state,
+        ];
     }
 }

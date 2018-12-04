@@ -2,12 +2,14 @@
 
 namespace BeGateway;
 
+use BeGateway\Contract\Arrayable;
+
 /**
  * AdditionalData is the class for additional transaction data.
  *
  * @package BeGateway
  */
-class AdditionalData
+class AdditionalData implements Arrayable
 {
     /**
      * @var array the array of strings that will be added to client's mail.
@@ -42,5 +44,16 @@ class AdditionalData
     public function getContract()
     {
         return $this->contract;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray()
+    {
+        return [
+            'receipt_text' => $this->receipt,
+            'contract' => $this->contract,
+        ];
     }
 }

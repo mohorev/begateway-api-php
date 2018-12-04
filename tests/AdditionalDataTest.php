@@ -3,6 +3,7 @@
 namespace BeGateway\Tests;
 
 use BeGateway\AdditionalData;
+use BeGateway\Contract\Arrayable;
 
 class AdditionalDataTest extends TestCase
 {
@@ -22,5 +23,16 @@ class AdditionalDataTest extends TestCase
         $this->assertInstanceOf(AdditionalData::class, $data);
         $this->assertSame([], $data->getReceipt());
         $this->assertSame([], $data->getContract());
+    }
+
+    public function testToArray()
+    {
+        $data = new AdditionalData(['foo', 'bar'], ['credit' => 'xxx']);
+
+        $this->assertInstanceOf(Arrayable::class, $data);
+        $this->assertSame([
+            'receipt_text' => ['foo', 'bar'],
+            'contract'=> ['credit' => 'xxx'],
+        ], $data->toArray());
     }
 }

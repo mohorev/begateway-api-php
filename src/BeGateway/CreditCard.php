@@ -2,6 +2,7 @@
 
 namespace BeGateway;
 
+use BeGateway\Contract\Arrayable;
 use BeGateway\Contract\Card;
 
 /**
@@ -9,7 +10,7 @@ use BeGateway\Contract\Card;
  *
  * @package BeGateway
  */
-class CreditCard implements Card
+class CreditCard implements Card, Arrayable
 {
     /**
      * @var string the card number. Length: from 12 to 19 digits.
@@ -91,5 +92,19 @@ class CreditCard implements Card
     public function getCvc()
     {
         return $this->cvc;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray()
+    {
+        return [
+            'number' => $this->number,
+            'holder' => $this->holder,
+            'exp_month' => $this->expMonth,
+            'exp_year' => $this->expYear,
+            'verification_value' => $this->cvc,
+        ];
     }
 }

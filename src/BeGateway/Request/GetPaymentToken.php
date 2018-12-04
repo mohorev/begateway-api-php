@@ -114,10 +114,7 @@ class GetPaymentToken implements Request
         ];
 
         if ($this->additionalData) {
-            $request['checkout']['order']['additional_data'] = [
-                'receipt_text' => $this->additionalData->getReceipt(),
-                'contract' => $this->additionalData->getContract(),
-            ];
+            $request['checkout']['order']['additional_data'] = $this->additionalData->toArray();
         }
 
         if ($this->customer) {
@@ -128,13 +125,7 @@ class GetPaymentToken implements Request
             ];
 
             if ($address = $this->customer->getAddress()) {
-                $customer = array_merge($customer, [
-                    'country' => $address->getCountry(),
-                    'city' => $address->getCity(),
-                    'state' => $address->getState(),
-                    'zip' => $address->getZip(),
-                    'address' => $address->getAddress(),
-                ]);
+                $customer = array_merge($customer, $address->toArray());
             }
 
             $customer['phone'] = $this->customer->getPhone();

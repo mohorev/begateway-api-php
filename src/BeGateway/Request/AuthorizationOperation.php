@@ -154,40 +154,23 @@ class AuthorizationOperation implements Request
         ];
 
         if ($this->card instanceof CreditCard) {
-            $data['request']['credit_card'] = [
-                'number' => $this->card->getNumber(),
-                'verification_value' => $this->card->getCvc(),
-                'holder' => $this->card->getHolder(),
-                'exp_month' => $this->card->getExpMonth(),
-                'exp_year' => $this->card->getExpYear(),
-            ];
+            $data['request']['credit_card'] = $this->card->toArray();
         }
 
         if ($this->card instanceof TokenCard) {
-            $data['request']['credit_card'] = [
-                'token' => $this->card->getToken(),
-                'skip_three_d_secure_verification' => $this->card->getSkip3D(),
-            ];
+            $data['request']['credit_card'] = $this->card->toArray();
         }
 
         if ($address = $this->customer->getAddress()) {
-            $data['request']['billing_address'] = [
+            $data['request']['billing_address'] = array_merge([
                 'first_name' => $this->customer->getFirstName(),
                 'last_name' => $this->customer->getLastName(),
-                'country' => $address->getCountry(),
-                'city' => $address->getCity(),
-                'state' => $address->getState(),
-                'zip' => $address->getZip(),
-                'address' => $address->getAddress(),
                 'phone' => $this->customer->getPhone(),
-            ];
+            ], $address->toArray());
         }
 
         if ($this->additionalData) {
-            $data['request']['additional_data'] = [
-                'receipt_text' => $this->additionalData->getReceipt(),
-                'contract' => $this->additionalData->getContract(),
-            ];
+            $data['request']['additional_data'] = $this->additionalData->toArray();
         }
 
         return $data;

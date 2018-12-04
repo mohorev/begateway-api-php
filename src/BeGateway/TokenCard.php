@@ -2,6 +2,7 @@
 
 namespace BeGateway;
 
+use BeGateway\Contract\Arrayable;
 use BeGateway\Contract\Card;
 
 /**
@@ -9,7 +10,7 @@ use BeGateway\Contract\Card;
  *
  * @package BeGateway
  */
-class TokenCard implements Card
+class TokenCard implements Card, Arrayable
 {
     /**
      * @var string the card token you've saved from the transaction response
@@ -49,5 +50,16 @@ class TokenCard implements Card
     public function getSkip3D()
     {
         return $this->skip3D;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function toArray()
+    {
+        return [
+            'token' => $this->token,
+            'skip_three_d_secure_verification' => $this->skip3D,
+        ];
     }
 }
