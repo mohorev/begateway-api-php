@@ -5,15 +5,32 @@ namespace BeGateway\Request;
 use BeGateway\Contract\Request;
 use BeGateway\Settings;
 
+/**
+ * Request for receive transaction information by UID.
+ *
+ * @see https://docs.bepaid.by/en/gateway/transactions/query
+ * @package BeGateway\Request
+ */
 class QueryByUid implements Request
 {
+    /**
+     * @var string the transaction UID that you want to get information for.
+     */
     private $uid;
 
-    public function setUid($uid)
+    /**
+     * Initialize a new QueryByUid.
+     *
+     * @param string $uid
+     */
+    public function __construct($uid)
     {
         $this->uid = $uid;
     }
 
+    /**
+     * @return string
+     */
     public function getUid()
     {
         return $this->uid;
@@ -24,7 +41,7 @@ class QueryByUid implements Request
      */
     public function endpoint()
     {
-        return Settings::$gatewayBase . '/transactions/' . $this->getUid();
+        return Settings::$gatewayBase . '/transactions/' . $this->uid;
     }
 
     /**

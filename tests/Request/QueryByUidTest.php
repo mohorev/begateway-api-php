@@ -16,44 +16,42 @@ class QueryByUidTest extends TestCase
 {
     public function testCreate()
     {
-        $request = new QueryByUid;
+        $request = $this->getTestRequest('123456');
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(QueryByUid::class, $request);
     }
 
-    public function testGetSetUid()
+    public function testGetUid()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
-        $uid = '123456';
-        $request->setUid($uid);
-        $this->assertSame($uid, $request->getUid());
+        $this->assertSame('123456', $request->getUid());
     }
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
-        $request->setUid('1234');
+        $request = $this->getTestRequest('123456');
 
-        $this->assertSame(Settings::$gatewayBase . '/transactions/1234', $request->endpoint());
+        $this->assertSame(Settings::$gatewayBase . '/transactions/123456', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $request = $this->getTestRequest('123456');
 
         $this->assertSame(null, $request->data());
     }
 
     public function testQueryRequest()
     {
+        $this->authorize();
+
         $amount = mt_rand(0, 10000);
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-        $request->setUid($parent->getUid());
+        $request = $this->getTestRequest($parent->getUid());
 
         $response = $this->getApiClient()->send($request);
 
@@ -65,8 +63,7 @@ class QueryByUidTest extends TestCase
 
     public function testQueryResponseForUnknownUid()
     {
-        $request = $this->getTestRequest();
-        $request->setUid('1234567890qwerty');
+        $request = $this->getTestRequest('1234567890qwerty');
 
         $response = $this->getApiClient()->send($request);
 
@@ -95,10 +92,10 @@ class QueryByUidTest extends TestCase
         return $this->getApiClient()->send($transaction);
     }
 
-    private function getTestRequest()
+    private function getTestRequest($uid)
     {
         $this->authorize();
 
-        return new QueryByUid;
+        return new QueryByUid($uid);
     }
 }

@@ -39,8 +39,7 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Query by UID ' . $response->getUid() . PHP_EOL;
 
-    $query = new QueryByUid;
-    $query->setUid($response->getUid());
+    $query = new QueryByUid($response->getUid());
 
     $response = $client->send($query);
 
