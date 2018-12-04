@@ -22,22 +22,18 @@ class RefundOperationTest extends TestCase
         $this->assertInstanceOf(RefundOperation::class, $request);
     }
 
-    public function testGetSetParentUid()
+    public function testGetParentUid()
     {
         $request = $this->getTestRequest();
 
-        $uid = '1234567';
-        $request->setParentUid($uid);
-        $this->assertSame($uid, $request->getParentUid());
+        $this->assertSame('12345678', $request->getParentUid());
     }
 
-    public function testGetSetReason()
+    public function testGetReason()
     {
         $request = $this->getTestRequest();
 
-        $reason = 'test reason';
-        $request->setReason($reason);
-        $this->assertSame($reason, $request->getReason());
+        $this->assertSame('merchant request', $request->getReason());
     }
 
     public function testEndpoint()
@@ -68,12 +64,8 @@ class RefundOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount, 'EUR'));
-
-        $request->setParentUid($parent->getUid());
-        $request->setReason('test reason');
+        $money = new Money($amount, 'EUR');
+        $request = new RefundOperation($money, $parent->getUid(), 'merchant request');
 
         $response = $this->getApiClient()->send($request);
 
@@ -90,10 +82,8 @@ class RefundOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount + 1, 'EUR'));
-        $request->setParentUid($parent->getUid());
+        $money = new Money($amount + 1, 'EUR');
+        $request = new RefundOperation($money, $parent->getUid(), 'merchant request');
 
         $response = $this->getApiClient()->send($request);
 
@@ -108,11 +98,8 @@ class RefundOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount, 'EUR'));
-        $request->setParentUid($parent->getUid());
-        $request->setReason('');
+        $money = new Money($amount, 'EUR');
+        $request = new RefundOperation($money, $parent->getUid(), '');
 
         $response = $this->getApiClient()->send($request);
 
@@ -146,11 +133,6 @@ class RefundOperationTest extends TestCase
     {
         $money = new Money(1256, 'EUR');
 
-        $request = new RefundOperation($money);
-
-        $request->setParentUid('12345678');
-        $request->setReason('merchant request');
-
-        return $request;
+        return new RefundOperation($money, '12345678', 'merchant request');
     }
 }

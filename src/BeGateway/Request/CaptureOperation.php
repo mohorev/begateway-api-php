@@ -63,7 +63,7 @@ class CaptureOperation implements Request
     }
 
     /**
-     * @return array|null the request data or NULL.
+     * @inheritdoc
      */
     public function data()
     {
