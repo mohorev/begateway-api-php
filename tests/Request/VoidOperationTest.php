@@ -16,31 +16,37 @@ class VoidOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'EUR');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(VoidOperation::class, $request);
     }
 
-    public function testGetSetParentUid()
+    public function testGetParentUid()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'EUR');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
-        $uid = '1234567';
-        $request->setParentUid($uid);
-        $this->assertSame($uid, $request->getParentUid());
+        $this->assertSame('12345678', $request->getParentUid());
     }
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'EUR');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $this->assertSame(Settings::$gatewayBase . '/transactions/voids', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1256, 'EUR');
+        $parentUid = '12345678';
+        $request = $this->getTestRequest($money, $parentUid);
 
         $expected = [
             'request' => [
@@ -58,10 +64,9 @@ class VoidOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount, 'EUR'));
-        $request->setParentUid($parent->getUid());
+        $money = new Money($amount, 'EUR');
+        $parentUid = $parent->getUid();
+        $request = $this->getTestRequest($money, $parentUid);
 
         $response = $this->getApiClient()->send($request);
 
@@ -78,10 +83,9 @@ class VoidOperationTest extends TestCase
 
         $parent = $this->runParentRequest($amount);
 
-        $request = $this->getTestRequest();
-
-        $request->setMoney(new Money($amount + 1, 'EUR'));
-        $request->setParentUid($parent->getUid());
+        $money = new Money($amount + 1, 'EUR');
+        $parentUid = $parent->getUid();
+        $request = $this->getTestRequest($money, $parentUid);
 
         $response = $this->getApiClient()->send($request);
 
@@ -111,16 +115,10 @@ class VoidOperationTest extends TestCase
         return $this->getApiClient()->send($request);
     }
 
-    private function getTestRequest()
+    private function getTestRequest($money, $parentUid)
     {
         $this->authorize();
 
-        $money = new Money(1256, 'EUR');
-
-        $request = new VoidOperation($money);
-
-        $request->setParentUid('12345678');
-
-        return $request;
+        return new VoidOperation($money, $parentUid);
     }
 }
