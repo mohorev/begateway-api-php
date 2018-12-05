@@ -3,14 +3,14 @@
 namespace BeGateway;
 
 use BeGateway\Contract\Arrayable;
-use BeGateway\Contract\Card;
+use BeGateway\Contract\Card as CardContract;
 
 /**
  * Token is the class for data of card token.
  *
  * @package BeGateway
  */
-class Token implements Card, Arrayable
+class Token implements CardContract, Arrayable
 {
     /**
      * @var string the card token you've saved from the transaction response

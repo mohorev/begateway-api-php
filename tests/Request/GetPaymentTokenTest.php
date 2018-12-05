@@ -8,6 +8,9 @@ use BeGateway\Contract\Request;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\PaymentMethod;
+use BeGateway\PaymentMethod\CreditCard;
+use BeGateway\PaymentMethod\EmexVoucher;
+use BeGateway\PaymentMethod\Erip;
 use BeGateway\Request\GetPaymentToken;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
@@ -196,8 +199,8 @@ class GetPaymentTokenTest extends TestCase
         $request = $this->getTestRequest();
         $request->setMoney(new Money(100, 'BYN'));
 
-        $request->addPaymentMethod(new PaymentMethod\Erip(100001, '1234', '99999999', ['Test payment']));
-        $request->addPaymentMethod(new PaymentMethod\CreditCard);
+        $request->addPaymentMethod(new Erip(100001, '1234', '99999999', ['Test payment']));
+        $request->addPaymentMethod(new CreditCard);
 
         $expected = [
             'checkout' => [
@@ -260,8 +263,8 @@ class GetPaymentTokenTest extends TestCase
         $request = $this->getTestRequest();
         $request->setMoney(new Money(100, 'USD'));
 
-        $request->addPaymentMethod(new PaymentMethod\EmexVoucher);
-        $request->addPaymentMethod(new PaymentMethod\CreditCard);
+        $request->addPaymentMethod(new EmexVoucher);
+        $request->addPaymentMethod(new CreditCard);
 
         $expected = [
             'checkout' => [

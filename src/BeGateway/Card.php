@@ -3,14 +3,14 @@
 namespace BeGateway;
 
 use BeGateway\Contract\Arrayable;
-use BeGateway\Contract\Card;
+use BeGateway\Contract\Card as CardContract;
 
 /**
- * CreditCard is the class for data of credit card.
+ * Card is the class for data of card.
  *
  * @package BeGateway
  */
-class CreditCard implements Card, Arrayable
+class Card implements CardContract, Arrayable
 {
     /**
      * @var string the card number. Length: from 12 to 19 digits.
@@ -37,7 +37,7 @@ class CreditCard implements Card, Arrayable
     private $cvc;
 
     /**
-     * Initialize a new CreditCard.
+     * Initialize a new Card.
      *
      * @param string $number
      * @param string $holder

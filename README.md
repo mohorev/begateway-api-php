@@ -96,7 +96,7 @@ Simple usage looks like:
 ```php
 use BeGateway\ApiClient;
 use BeGateway\Address;
-use BeGateway\CreditCard;
+use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
@@ -107,7 +107,7 @@ $client = new ApiClient([
     'language' => 'en',
 ]);
 
-$card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
+$card = new Card('4200000000000000', 'John Doe', 1, 2030, '123');
 
 $money = new Money(100, 'EUR'); // 1 EUR
 

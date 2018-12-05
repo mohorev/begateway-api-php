@@ -4,7 +4,7 @@ namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
 use BeGateway\Contract\Request;
-use BeGateway\CreditCard;
+use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\PaymentOperation;
@@ -75,7 +75,7 @@ class QueryByUidTest extends TestCase
     {
         $this->authorize();
 
-        $card = new CreditCard('4200000000000000', 'John Doe', 1, 2030, '123');
+        $card = new Card('4200000000000000', 'John Doe', 1, 2030, '123');
 
         $money = new Money($amount, 'EUR');
 

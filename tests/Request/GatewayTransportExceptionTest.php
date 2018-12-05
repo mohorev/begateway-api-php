@@ -3,7 +3,7 @@
 namespace BeGateway\Tests\Request;
 
 use BeGateway\Address;
-use BeGateway\CreditCard;
+use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
@@ -44,7 +44,7 @@ class GatewayTransportExceptionTest extends TestCase
     {
         $this->authorize();
 
-        $card = new CreditCard('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
+        $card = new Card('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
 
         $money = new Money(1233, 'EUR');
 

@@ -3,9 +3,9 @@
 namespace BeGateway\Request;
 
 use BeGateway\AdditionalData;
-use BeGateway\Contract\Card;
+use BeGateway\Contract\Card as CardContract;
 use BeGateway\Contract\Request;
-use BeGateway\CreditCard;
+use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Settings;
@@ -19,7 +19,7 @@ class AuthorizationOperation implements Request
     use SetLanguage, SetTestMode, IdempotentRequest;
 
     /**
-     * @var CreditCard
+     * @var CardContract
      */
     private $card;
     /**
@@ -40,14 +40,14 @@ class AuthorizationOperation implements Request
      */
     private $additionalData;
 
-    public function __construct(Card $card, Money $money, Customer $customer)
+    public function __construct(CardContract $card, Money $money, Customer $customer)
     {
         $this->card = $card;
         $this->money = $money;
         $this->customer = $customer;
     }
 
-    public function setCard(Card $card)
+    public function setCard(CardContract $card)
     {
         $this->card = $card;
     }
@@ -153,7 +153,7 @@ class AuthorizationOperation implements Request
             ],
         ];
 
-        if ($this->card instanceof CreditCard) {
+        if ($this->card instanceof Card) {
             $data['request']['credit_card'] = $this->card->toArray();
         }
 

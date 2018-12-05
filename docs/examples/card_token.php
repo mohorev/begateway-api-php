@@ -17,9 +17,9 @@ $client = new ApiClient([
     'test' => true,
 ]);
 
-$token = new CardToken('4200000000000000', 'John Doe', 1, 2029);
+$request = new CardToken('4200000000000000', 'John Doe', 1, 2029);
 
-$response = $client->send($token);
+$response = $client->send($request);
 
 if ($response->isSuccess()) {
     print 'Card token: ' . $response->token . PHP_EOL;
@@ -32,13 +32,13 @@ if ($response->isSuccess()) {
     $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
     $customer->setAddress($address);
 
-    $card = new Token($response->token);
+    $token = new Token($response->token);
 
 //    TODO: Payment operation with CVC
 //    $transaction->card->setCardCvc('123');
 //    $transaction->card->setCardToken();
 
-    $transaction = new PaymentOperation($card, $money, $customer);
+    $transaction = new PaymentOperation($token, $money, $customer);
     $transaction->setDescription('test');
     $transaction->setTrackingId('my_custom_variable');
 

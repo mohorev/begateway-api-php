@@ -5,7 +5,7 @@ namespace BeGateway\Tests\Request;
 use BeGateway\AdditionalData;
 use BeGateway\Address;
 use BeGateway\Contract\Request;
-use BeGateway\CreditCard;
+use BeGateway\Card;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\AuthorizationOperation;
@@ -201,22 +201,22 @@ class AuthorizationOperationTest extends TestCase
 
     private function getValidCard()
     {
-        return new CreditCard('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
+        return new Card('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
     }
 
     private function getInvalidCard()
     {
-        return new CreditCard('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
+        return new Card('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
     }
 
     private function getUnauthorizedCard()
     {
-        return new CreditCard('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
+        return new Card('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
     }
 
     private function getExpInvalidCard()
     {
-        return new CreditCard('4200000000000000', 'BEGATEWAY', 1, 10, '123');
+        return new Card('4200000000000000', 'BEGATEWAY', 1, 10, '123');
     }
 
     private function getTestRequest($secure3D = false)

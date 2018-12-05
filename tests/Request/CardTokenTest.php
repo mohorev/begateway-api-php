@@ -104,7 +104,7 @@ class CardTokenTest extends TestCase
     {
         $this->authorize();
 
-        $card = new Token($cardToken, false);
+        $token = new Token($cardToken, false);
 
         $money = new Money(mt_rand(0, 10000), 'EUR');
 
@@ -113,7 +113,7 @@ class CardTokenTest extends TestCase
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
 
-        $request = new AuthorizationOperation($card, $money, $customer);
+        $request = new AuthorizationOperation($token, $money, $customer);
         $request->setDescription('test');
         $request->setTrackingId('my_custom_variable');
 
