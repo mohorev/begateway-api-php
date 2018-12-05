@@ -11,7 +11,7 @@ use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
-use BeGateway\TokenCard;
+use BeGateway\Token;
 
 class CreditOperationTest extends TestCase
 {
@@ -32,13 +32,11 @@ class CreditOperationTest extends TestCase
         $this->assertSame($description, $request->getDescription());
     }
 
-    public function testGetSetTrackingId()
+    public function testGetTrackingId()
     {
         $request = $this->getTestRequest();
 
-        $trackingId = 'test_tracking_id';
-        $request->setTrackingId($trackingId);
-        $this->assertSame($trackingId, $request->getTrackingId());
+        $this->assertSame('tracking_id', $request->getTrackingId());
     }
 
     public function testEndpoint()
@@ -56,8 +54,8 @@ class CreditOperationTest extends TestCase
             'request' => [
                 'amount' => 1256,
                 'currency' => 'RUB',
+                'tracking_id' => 'tracking_id',
                 'description' => 'description',
-                'tracking_id' => 'tracking',
                 'credit_card' => [
                     'token' => '12345',
                 ],
@@ -75,11 +73,11 @@ class CreditOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->setMoney(new Money($amount * 2, 'EUR'));
+        $money = new Money($amount * 2, 'EUR');
+        $token = new Token($parent->getResponse()->transaction->credit_card->token);
 
+        $request = new CreditOperation($money, $token, 'tracking_id');
         $request->setDescription('test description');
-        $request->setTrackingId('tracking_id');
-        $request->setCard(new TokenCard($parent->getResponse()->transaction->credit_card->token));
 
         $response = $this->getApiClient()->send($request);
 
@@ -97,10 +95,11 @@ class CreditOperationTest extends TestCase
 
         $request = $this->getTestRequest();
 
-        $request->setMoney(new Money($amount * 2, 'EUR'));
+        $money = new Money($amount * 2, 'EUR');
+        $token = new Token('invalid-token');
 
+        $request = new CreditOperation($money, $token, 'tracking_id');
         $request->setDescription('test description');
-        $request->setTrackingId('tracking_id');
 
         $response = $this->getApiClient()->send($request);
 
@@ -129,17 +128,13 @@ class CreditOperationTest extends TestCase
         return $this->getApiClient()->send($request);
     }
 
-    private function getTestRequest($secure3D = false)
+    private function getTestRequest()
     {
-        $this->authorize($secure3D);
-
-        $card = new TokenCard('12345');
-
         $money = new Money(1256, 'RUB');
+        $token = new Token('12345');
 
-        $request = new CreditOperation($card, $money);
+        $request = new CreditOperation($money, $token, 'tracking_id');
         $request->setDescription('description');
-        $request->setTrackingId('tracking');
 
         return $request;
     }

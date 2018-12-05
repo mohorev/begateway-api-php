@@ -6,11 +6,11 @@ use BeGateway\Contract\Arrayable;
 use BeGateway\Contract\Card;
 
 /**
- * CreditCard is the class for data of card token.
+ * Token is the class for data of card token.
  *
  * @package BeGateway
  */
-class TokenCard implements Card, Arrayable
+class Token implements Card, Arrayable
 {
     /**
      * @var string the card token you've saved from the transaction response
@@ -25,7 +25,7 @@ class TokenCard implements Card, Arrayable
     private $skip3D;
 
     /**
-     * Initialize a new TokenCard.
+     * Initialize a new Token.
      *
      * @param string $token
      * @param boolean $skip3D

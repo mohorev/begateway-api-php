@@ -21,7 +21,7 @@ class QueryByPaymentToken implements Request
     /**
      * Initialize a new QueryByPaymentToken.
      *
-     * @param $token
+     * @param string $token
      */
     public function __construct($token)
     {

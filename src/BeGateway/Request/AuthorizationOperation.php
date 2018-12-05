@@ -9,7 +9,7 @@ use BeGateway\CreditCard;
 use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Settings;
-use BeGateway\TokenCard;
+use BeGateway\Token;
 use BeGateway\Traits\SetLanguage;
 use BeGateway\Traits\IdempotentRequest;
 use BeGateway\Traits\SetTestMode;
@@ -157,7 +157,7 @@ class AuthorizationOperation implements Request
             $data['request']['credit_card'] = $this->card->toArray();
         }
 
-        if ($this->card instanceof TokenCard) {
+        if ($this->card instanceof Token) {
             $data['request']['credit_card'] = $this->card->toArray();
         }
 

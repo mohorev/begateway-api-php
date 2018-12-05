@@ -21,7 +21,7 @@ class QueryByTrackingId implements Request
     /**
      * Initialize a new QueryByTrackingId.
      *
-     * @param $trackingId
+     * @param string $trackingId
      */
     public function __construct($trackingId)
     {

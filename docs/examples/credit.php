@@ -7,7 +7,7 @@ use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\CreditOperation;
 use BeGateway\Request\PaymentOperation;
-use BeGateway\TokenCard;
+use BeGateway\Token;
 
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -39,11 +39,10 @@ if ($response->isSuccess()) {
     print 'Transaction UID: ' . $response->getUid() . PHP_EOL;
     print 'Trying to Credit to card ' . $transaction->getCard()->getNumber() . PHP_EOL;
 
-    $card = new TokenCard($response->getResponse()->transaction->credit_card->token);
-
     $money = new Money(3000, 'EUR'); // 30 EUR
+    $token = new Token($response->getResponse()->transaction->credit_card->token);
 
-    $credit = new CreditOperation($card, $money);
+    $credit = new CreditOperation($money, $token, 'tracking_id');
     $credit->setDescription('Test credit');
 
     $response = $client->send($credit);

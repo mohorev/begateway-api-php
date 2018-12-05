@@ -11,7 +11,7 @@ use BeGateway\Request\CardToken;
 use BeGateway\Request\CardTokenUpdate;
 use BeGateway\Settings;
 use BeGateway\Tests\TestCase;
-use BeGateway\TokenCard;
+use BeGateway\Token;
 
 class CardTokenTest extends TestCase
 {
@@ -104,7 +104,7 @@ class CardTokenTest extends TestCase
     {
         $this->authorize();
 
-        $card = new TokenCard($cardToken, false);
+        $card = new Token($cardToken, false);
 
         $money = new Money(mt_rand(0, 10000), 'EUR');
 

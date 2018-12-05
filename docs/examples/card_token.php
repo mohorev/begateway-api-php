@@ -6,7 +6,7 @@ use BeGateway\Customer;
 use BeGateway\Money;
 use BeGateway\Request\CardToken;
 use BeGateway\Request\PaymentOperation;
-use BeGateway\TokenCard;
+use BeGateway\Token;
 
 require_once __DIR__ . '/test_shop_data.php';
 
@@ -32,7 +32,7 @@ if ($response->isSuccess()) {
     $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
     $customer->setAddress($address);
 
-    $card = new TokenCard($response->token);
+    $card = new Token($response->token);
 
 //    TODO: Payment operation with CVC
 //    $transaction->card->setCardCvc('123');
