@@ -1,0 +1,2 @@
+- Logger should filter sensitive data
+- Payment operation with CVC
