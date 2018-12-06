@@ -10,7 +10,7 @@ use BeGateway\Traits\IdempotentRequest;
 /**
  * Request for Refund transaction.
  *
- * @see https://docs.bepaid.by/en/beyag/transactions/refund
+ * @see https://docs.bepaid.by/en/gateway/transactions/refund
  * @package BeGateway\Request
  */
 class RefundOperation implements Request

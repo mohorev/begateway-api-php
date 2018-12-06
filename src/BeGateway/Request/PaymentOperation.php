@@ -4,6 +4,12 @@ namespace BeGateway\Request;
 
 use BeGateway\Settings;
 
+/**
+ * Request for Payment transaction.
+ *
+ * @see https://docs.bepaid.by/en/gateway/transactions/payment
+ * @package BeGateway\Request
+ */
 class PaymentOperation extends AuthorizationOperation
 {
     /**
