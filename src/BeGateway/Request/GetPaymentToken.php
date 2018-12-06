@@ -53,19 +53,9 @@ class GetPaymentToken implements Request
         $this->customer = $customer;
     }
 
-    public function setMoney(Money $money)
-    {
-        $this->money = $money;
-    }
-
     public function getMoney()
     {
         return $this->money;
-    }
-
-    public function setCustomer(Customer $customer)
-    {
-        $this->customer = $customer;
     }
 
     public function getCustomer()

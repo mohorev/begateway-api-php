@@ -38,9 +38,8 @@ if ($response->isSuccess()) {
 //    $transaction->card->setCardCvc('123');
 //    $transaction->card->setCardToken();
 
-    $transaction = new PaymentOperation($token, $money, $customer);
+    $transaction = new PaymentOperation($token, $money, $customer, 'tracking_id');
     $transaction->setDescription('test');
-    $transaction->setTrackingId('my_custom_variable');
 
     $response = $client->send($transaction);
 

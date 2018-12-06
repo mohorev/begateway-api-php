@@ -91,9 +91,8 @@ class QueryByTrackingIdTest extends TestCase
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
 
-        $request = new PaymentOperation($card, $money, $customer);
+        $request = new PaymentOperation($card, $money, $customer, $trackingId);
         $request->setDescription('test');
-        $request->setTrackingId($trackingId);
         $request->setTestMode(true);
 
         return $this->getApiClient()->send($request);

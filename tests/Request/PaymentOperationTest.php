@@ -16,7 +16,9 @@ class PaymentOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(PaymentOperation::class, $request);
@@ -24,26 +26,30 @@ class PaymentOperationTest extends TestCase
 
     public function testGetSetDescription()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $description = 'Test description';
         $request->setDescription($description);
         $this->assertSame($description, $request->getDescription());
     }
 
-    public function testGetSetTrackingId()
+    public function testGetTrackingId()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
-        $trackingId = 'test_tracking_id';
-        $request->setTrackingId($trackingId);
-        $this->assertSame($request->getTrackingId(), $trackingId);
+        $this->assertSame('tracking_id', $request->getTrackingId());
     }
 
 
     public function testGetSetNotificationUrl()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $url = 'http://www.example.com';
         $request->setNotificationUrl($url);
@@ -52,7 +58,9 @@ class PaymentOperationTest extends TestCase
 
     public function testGetSetReturnUrl()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $url = 'http://www.example.com';
         $request->setReturnUrl($url);
@@ -61,7 +69,9 @@ class PaymentOperationTest extends TestCase
 
     public function testGetSetTestMode()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertTrue($request->getTestMode());
 
@@ -74,21 +84,25 @@ class PaymentOperationTest extends TestCase
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertSame(Settings::$gatewayBase . '/transactions/payments', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $expected = [
             'request' => [
                 'amount' => 1233,
                 'currency' => 'EUR',
                 'description' => 'test',
-                'tracking_id' => 'my_custom_variable',
+                'tracking_id' => 'tracking_id',
                 'notification_url' => null,
                 'return_url' => null,
                 'language' => 'en',
@@ -132,9 +146,12 @@ class PaymentOperationTest extends TestCase
 
     public function testSuccessPayment()
     {
-        $request = $this->getTestRequest();
+        $this->authorize();
 
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $card = $this->getValidCard();
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
+
         $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
@@ -149,10 +166,12 @@ class PaymentOperationTest extends TestCase
 
     public function testIncompletePayment()
     {
-        $request = $this->getTestRequest(true);
+        $this->authorize(true);
 
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
-        $request->setCard(new Card('4012001037141112', 'BEGATEWAY', 1, 2030, '123'));
+        $card = new Card('4012001037141112', 'BEGATEWAY', 1, 2030, '123');
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
+
         $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
@@ -169,9 +188,11 @@ class PaymentOperationTest extends TestCase
 
     public function testFailedPayment()
     {
-        $request = $this->getTestRequest();
-        $request->setCard(new Card('4005550000000019', 'BEGATEWAY', 10, 2030, '123'));
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $this->authorize();
+
+        $card = new Card('4005550000000019', 'BEGATEWAY', 10, 2030, '123');
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $amount = $request->getMoney()->getAmount();
 
@@ -185,23 +206,21 @@ class PaymentOperationTest extends TestCase
         $this->assertSame($amount, $response->getResponse()->transaction->amount);
     }
 
-    private function getTestRequest($secure3D = false)
+    private function getValidCard()
     {
-        $this->authorize($secure3D);
+        return new Card('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
+    }
 
-        $card = new Card('4200000000000000', 'BEGATEWAY', 1, 2030, '123');
-
-        $money = new Money(1233, 'EUR');
-
+    private function getTestRequest($card, $money)
+    {
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
 
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
         $customer->setBirthDate('1970-01-01');
 
-        $request = new PaymentOperation($card, $money, $customer);
+        $request = new PaymentOperation($card, $money, $customer, 'tracking_id');
         $request->setDescription('test');
-        $request->setTrackingId('my_custom_variable');
         $request->setTestMode(true);
 
         $request->setAdditionalData(new AdditionalData);

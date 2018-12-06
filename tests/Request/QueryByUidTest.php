@@ -84,10 +84,8 @@ class QueryByUidTest extends TestCase
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
 
-        $transaction = new PaymentOperation($card, $money, $customer);
-
+        $transaction = new PaymentOperation($card, $money, $customer, 'tracking_id');
         $transaction->setDescription('test');
-        $transaction->setTrackingId('my_custom_variable');
 
         return $this->getApiClient()->send($transaction);
     }

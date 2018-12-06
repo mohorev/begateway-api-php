@@ -26,9 +26,8 @@ $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
 $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
 $customer->setAddress($address);
 
-$transaction = new AuthorizationOperation($card, $money, $customer);
+$transaction = new AuthorizationOperation($card, $money, $customer, 'tracking_id');
 $transaction->setDescription('test');
-$transaction->setTrackingId('my_custom_variable');
 
 $response = $client->send($transaction);
 

@@ -16,7 +16,9 @@ class AuthorizationOperationTest extends TestCase
 {
     public function testCreate()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(AuthorizationOperation::class, $request);
@@ -24,25 +26,29 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetDescription()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $description = 'Test description';
         $request->setDescription($description);
         $this->assertSame($description, $request->getDescription());
     }
 
-    public function testGetSetTrackingId()
+    public function testGetTrackingId()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
-        $trackingId = 'test_tracking_id';
-        $request->setTrackingId($trackingId);
-        $this->assertSame($trackingId, $request->getTrackingId());
+        $this->assertSame('tracking_id', $request->getTrackingId());
     }
 
     public function testGetSetNotificationUrl()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $url = 'http://www.example.com';
         $request->setNotificationUrl($url);
@@ -51,7 +57,9 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetReturnUrl()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $url = 'http://www.example.com';
         $request->setReturnUrl($url);
@@ -60,7 +68,9 @@ class AuthorizationOperationTest extends TestCase
 
     public function testGetSetTestMode()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertTrue($request->getTestMode());
 
@@ -73,21 +83,25 @@ class AuthorizationOperationTest extends TestCase
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $this->assertSame(Settings::$gatewayBase . '/transactions/authorizations', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $card = $this->getValidCard();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $expected = [
             'request' => [
                 'amount' => 1233,
                 'currency' => 'EUR',
                 'description' => 'test',
-                'tracking_id' => 'my_custom_variable',
+                'tracking_id' => 'tracking_id',
                 'notification_url' => null,
                 'return_url' => null,
                 'language' => 'de',
@@ -131,9 +145,12 @@ class AuthorizationOperationTest extends TestCase
 
     public function testSuccessAuthorization()
     {
-        $request = $this->getTestRequest();
+        $this->authorize();
 
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $card = $this->getValidCard();
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
+
         $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
@@ -148,10 +165,12 @@ class AuthorizationOperationTest extends TestCase
 
     public function testIncompleteAuthorization()
     {
-        $request = $this->getTestRequest(true);
+        $this->authorize(true);
 
-        $request->setCard($this->getInvalidCard());
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $card = $this->getInvalidCard();
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
+
         $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
@@ -168,10 +187,12 @@ class AuthorizationOperationTest extends TestCase
 
     public function testFailedAuthorization()
     {
-        $request = $this->getTestRequest();
+        $this->authorize();
 
-        $request->setCard($this->getUnauthorizedCard());
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $card = $this->getUnauthorizedCard();
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
+
         $amount = $request->getMoney()->getAmount();
 
         $response = $this->getApiClient()->send($request);
@@ -186,10 +207,11 @@ class AuthorizationOperationTest extends TestCase
 
     public function testErrorAuthorization()
     {
-        $request = $this->getTestRequest();
+        $this->authorize(true);
 
-        $request->setCard($this->getExpInvalidCard());
-        $request->setMoney(new Money(mt_rand(0, 10000), 'EUR'));
+        $card = $this->getExpInvalidCard();
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($card, $money);
 
         $response = $this->getApiClient()->send($request);
 
@@ -219,23 +241,16 @@ class AuthorizationOperationTest extends TestCase
         return new Card('4200000000000000', 'BEGATEWAY', 1, 10, '123');
     }
 
-    private function getTestRequest($secure3D = false)
+    private function getTestRequest($card, $money)
     {
-        $this->authorize($secure3D);
-
-        $card = $this->getValidCard();
-
-        $money = new Money(1233, 'EUR');
-
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
 
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
         $customer->setBirthDate('1970-01-01');
 
-        $request = new AuthorizationOperation($card, $money, $customer);
+        $request = new AuthorizationOperation($card, $money, $customer, 'tracking_id');
         $request->setDescription('test');
-        $request->setTrackingId('my_custom_variable');
         $request->setLanguage('de');
         $request->setTestMode(true);
 

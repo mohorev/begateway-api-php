@@ -30,10 +30,6 @@ class GatewayTransportExceptionTest extends TestCase
     {
         $request = $this->getTestRequest();
 
-        $amount = mt_rand(0, 10000);
-
-        $request->setMoney(new Money($amount, 'EUR'));
-
         $response = $this->getApiClient()->send($request);
 
         $this->assertTrue($response->isError());
@@ -53,9 +49,8 @@ class GatewayTransportExceptionTest extends TestCase
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
 
-        $request = new AuthorizationOperation($card, $money, $customer);
+        $request = new AuthorizationOperation($card, $money, $customer, 'tracking_id');
         $request->setDescription('test');
-        $request->setTrackingId('my_custom_variable');
         $request->setLanguage('de');
         $request->setTestMode(true);
 

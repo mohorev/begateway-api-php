@@ -107,9 +107,8 @@ class CaptureOperationTest extends TestCase
         $customer = new Customer('John', 'Doe', 'john@example.com', '127.0.0.1');
         $customer->setAddress($address);
 
-        $request = new AuthorizationOperation($card, $money, $customer);
+        $request = new AuthorizationOperation($card, $money, $customer, 'tracking_id');
         $request->setDescription('test');
-        $request->setTrackingId('my_custom_variable');
 
         return $this->getApiClient()->send($request);
     }

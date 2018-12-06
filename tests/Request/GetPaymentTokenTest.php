@@ -19,7 +19,8 @@ class GetPaymentTokenTest extends TestCase
 {
     public function testCreate()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $this->assertInstanceOf(Request::class, $request);
         $this->assertInstanceOf(GetPaymentToken::class, $request);
@@ -27,7 +28,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetDescription()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $description = 'Test description';
         $request->setDescription($description);
@@ -36,7 +38,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetTrackingId()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $trackingId = 'test_tracking_id';
         $request->setTrackingId($trackingId);
@@ -45,7 +48,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetExpiryDate()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $date = date(DATE_ISO8601, strtotime('2020-12-30 23:21:46'));
         $request->setExpiryDate($date);
@@ -58,7 +62,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetUrls()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $url = 'http://www.example.com';
 
@@ -77,7 +82,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testReadonlyFields()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $request->setFirstNameReadonly();
         $request->setLastNameReadonly();
@@ -93,7 +99,9 @@ class GetPaymentTokenTest extends TestCase
 
     public function testVisibleFields()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
+
         $request->setPhoneVisible();
         $request->setAddressVisible();
 
@@ -106,7 +114,9 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetTransactionType()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
+
         $this->assertSame('payment', $request->getTransactionType());
 
         $request->setAuthorizationTransactionType();
@@ -121,7 +131,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testGetSetTestMode()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $this->assertTrue($request->getTestMode());
 
@@ -134,14 +145,16 @@ class GetPaymentTokenTest extends TestCase
 
     public function testEndpoint()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $this->assertSame(Settings::$checkoutBase . '/ctp/api/checkouts', $request->endpoint());
     }
 
     public function testData()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(1233, 'EUR');
+        $request = $this->getTestRequest($money);
 
         $expected = [
             'checkout' => [
@@ -196,8 +209,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testDataWithErip()
     {
-        $request = $this->getTestRequest();
-        $request->setMoney(new Money(100, 'BYN'));
+        $money = new Money(100, 'BYN');
+        $request = $this->getTestRequest($money);
 
         $request->addPaymentMethod(new Erip(100001, '1234', '99999999', ['Test payment']));
         $request->addPaymentMethod(new CreditCard);
@@ -260,8 +273,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testDataWithEmexVoucher()
     {
-        $request = $this->getTestRequest();
-        $request->setMoney(new Money(100, 'USD'));
+        $money = new Money(100, 'USD');
+        $request = $this->getTestRequest($money);
 
         $request->addPaymentMethod(new EmexVoucher);
         $request->addPaymentMethod(new CreditCard);
@@ -319,11 +332,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testRedirectUrl()
     {
-        $request = $this->getTestRequest();
-
-        $amount = mt_rand(0, 10000);
-
-        $request->setMoney(new Money($amount, 'EUR'));
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($money);
 
         $response = $this->getApiClient()->send($request);
 
@@ -343,11 +353,8 @@ class GetPaymentTokenTest extends TestCase
 
     public function testSuccessTokenRequest()
     {
-        $request = $this->getTestRequest();
-
-        $amount = mt_rand(0, 10000);
-
-        $request->setMoney(new Money($amount, 'EUR'));
+        $money = new Money(mt_rand(0, 10000), 'EUR');
+        $request = $this->getTestRequest($money);
 
         $response = $this->getApiClient()->send($request);
 
@@ -358,9 +365,9 @@ class GetPaymentTokenTest extends TestCase
 
     public function testErrorTokenRequest()
     {
-        $request = $this->getTestRequest();
+        $money = new Money(0, 'EUR');
+        $request = $this->getTestRequest($money);
 
-        $request->setMoney(new Money(0, 'EUR'));
         $request->setDescription('');
 
         $response = $this->getApiClient()->send($request);
@@ -370,11 +377,9 @@ class GetPaymentTokenTest extends TestCase
         $this->assertSame('description must be filled', $response->getMessage());
     }
 
-    private function getTestRequest()
+    private function getTestRequest($money)
     {
         $this->authorize();
-
-        $money = new Money(1233, 'EUR');
 
         $address = new Address('LV', 'Riga', 'Demo str 12', 'LV-1082');
 
